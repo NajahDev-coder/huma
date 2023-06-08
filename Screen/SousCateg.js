@@ -39,7 +39,7 @@ const SousCateg = ({ navigation, OnFilter, CategId }) => {
     };
 
 
-    console.log('filt idcateg', Upfilter)
+    //console.log('filt idcateg', Upfilter)
 
     AsyncStorage.setItem('add_filter', JSON.stringify(Upfilter));
     OnFilter()
@@ -77,27 +77,27 @@ const SousCateg = ({ navigation, OnFilter, CategId }) => {
     return path;
   };
   return (
-    <ScrollView>
-      <FlatList
-        data={SsCateg}
-        renderItem={({ item }) => (
-          <View style={styles.viewThumbnail}>
-            <TouchableOpacity onPress={() => getSScateg(item.id)}>
-              <ImageBackground
-                style={styles.imageThumbnail}
-                imageStyle={{ borderRadius: 3 }}
-                defaultSource={defaultImage}
-                source={getBeerImage(CategId, item.slug)}>
-                <Text style={styles.txtThumb}>{item.titre}</Text>
-              </ImageBackground>
-            </TouchableOpacity>
-          </View>
-        )}
-        //Setting the number of column
-        numColumns={3}
-        keyExtractor={(item, index) => index}
-      />
-    </ScrollView>
+
+    <FlatList
+      data={SsCateg}
+      renderItem={({ item }) => (
+        <View style={styles.viewThumbnail}>
+          <TouchableOpacity onPress={() => getSScateg(item.id)}>
+            <ImageBackground
+              style={styles.imageThumbnail}
+              imageStyle={{ borderRadius: 3 }}
+              defaultSource={defaultImage}
+              source={getBeerImage(CategId, item.slug)}>
+              <Text style={styles.txtThumb}>{item.titre}</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+        </View>
+      )}
+      //Setting the number of column
+      numColumns={3}
+      keyExtractor={(item, index) => index}
+    />
+
   );
 };
 const styles = StyleSheet.create({

@@ -11,12 +11,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
-  Alert
+  Alert,
+  Pressable
 } from 'react-native';
+
+import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
 import { useStripe } from '@stripe/stripe-react-native';
 import Button from '../Components/Button';
 import PaymentScreen from '../Components/PaymentScreen';
-import ModalScreen from '../Modal'
+import ModalScreenIsVIP from '../ModalIsVIP';
 //import { API_URL } from '../Config';
 
 import { RequestOptionsPost, Base_url, API_URL, PublishableKeyStripe, UpdatePremium } from '../utils/utils';
@@ -26,7 +29,7 @@ const AbonnementScreen = ({ navigation }) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [paymentSheetEnabled, setPaymentSheetEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [User_VIP, setUser_VIP] = useState(false);
+  const [UserVIP, setUserVIP] = useState(0);
   //const [clientSecret, setClientSecret] = useState<string>();  
   const [clientSecret, setClientSecret] = useState('');
 
@@ -47,8 +50,8 @@ const AbonnementScreen = ({ navigation }) => {
     };
   };
 
-  const openPaymentSheet = async () => {
-    console.log('clientSecret', clientSecret);
+  const openPaymentSheet = async (choix) => {
+    //console.log('clientSecret', clientSecret);
     if (!clientSecret) {
       return;
     }
@@ -60,12 +63,12 @@ const AbonnementScreen = ({ navigation }) => {
     if (error) {
       Alert.alert(`Error code: ${error.code}`, error.message);
     } else {
-      UpdatePremium(global.User_connecte);
-      const actv = 'Vous avez changer en membre VIP!';
-      Add_historique(global.User_connecte, actv);
-      global.User_VIP = 1;
+      UpdatePremium(global.User_connecte, choix);
+      const actv = `Vous êtes abonné pour  {choix} mois!`;
+      Add_historique(global.User_connecte, actv, global.User_connecte);
+      global.User_VIP = choix;
 
-      setUser_VIP(true)
+      setUserVIP(choix)
       //Alert.alert('Success', 'The payment was confirmed successfully');
     }
     setPaymentSheetEnabled(false);
@@ -98,7 +101,7 @@ const AbonnementScreen = ({ navigation }) => {
     initialisePaymentSheet();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [User_VIP]);
+  }, [UserVIP]);
 
   return (
     <>
@@ -111,28 +114,79 @@ const AbonnementScreen = ({ navigation }) => {
             <ScrollView
               keyboardShouldPersistTaps="handled"
               contentContainerStyle={{
-                flex: 1,
+                // flex: 1,
                 alignItem: 'center',
                 justifyContent: 'center',
 
               }}>
               <View>
                 <KeyboardAvoidingView enabled>
-                  <View style={{ alignItems: 'center', marginTop: 100 }}>
-
-                    <PaymentScreen>
-
-                      <Button
-                        variant="primary"
-                        loading={loading}
-                        disabled={!paymentSheetEnabled}
-                        title="Abonnez-vous!"
-                        onPress={openPaymentSheet}
-                      />
-                    </PaymentScreen>
-                    {User_VIP && (
-                      <ModalScreen navigation={navigation} />
+                  <View style={{ alignItems: 'center', marginTop: 20, width: '100%' }}>
+                    {UserVIP > 0 && (
+                      <ModalScreenIsVIP navigation={navigation} choix={UserVIP} />
                     )}
+                    <View style={styles.threeBloc}>
+
+                      <View style={styles.blocAbnmt}>
+
+                        <Text style={styles.titleModal}>Devnir Membre VIP!</Text>
+
+                        <Text style={styles.titleModal}>1 Mois/ 10€</Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" />Ajouter des publicités.</Text>
+                        <View style={{ flexDirection: 'row' }}>
+
+                          <Pressable
+                            style={styles.buttVIP}
+                            onPress={() => { openPaymentSheet(1) }}>
+                            <Text style={styles.txtbutt}>Abonnez-vous!</Text>
+                          </Pressable>
+                        </View>
+                      </View>
+
+                      <View style={styles.blocAbnmt}>
+
+                        <Text style={styles.titleModal}>Devnir Membre VIP!</Text>
+
+                        <Text style={styles.titleModal}>3 Mois/ 25€</Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" />Ajouter des publicités.</Text>
+                        <View style={{ flexDirection: 'row' }}>
+
+                          <Pressable
+                            style={styles.buttVIP}
+                            onPress={() => { openPaymentSheet(2) }}>
+                            <Text style={styles.txtbutt}>Abonnez-vous!</Text>
+                          </Pressable>
+                        </View>
+                      </View>
+
+                      <View style={styles.blocAbnmt}>
+
+                        <Text style={styles.titleModal}>Devnir Membre VIP!</Text>
+
+                        <Text style={styles.titleModal}>6 Mois/ 45€</Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" />Ajouter des publicités.</Text>
+                        <View style={{ flexDirection: 'row' }}>
+
+                          <Pressable
+                            style={styles.buttVIP}
+                            onPress={() => { openPaymentSheet(3) }}>
+                            <Text style={styles.txtbutt}>Abonnez-vous!</Text>
+                          </Pressable>
+                        </View>
+                      </View>
+                    </View>
+
+
+
                   </View>
                 </KeyboardAvoidingView>
               </View>
@@ -151,5 +205,52 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
   },
+  threeBloc: {
+    // flexDirection:'column',
+    //flex:1,
+    width: '80%'
+  },
+  blocAbnmt: {
+    // width:'30%',
+    margin: 10,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 5.46,
+    elevation: 7,
+    flexDirection: 'column',
+  },
+
+  txtbutt:
+  {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  buttVIP:
+  {
+    margin: 10,
+    borderWidth: 0,
+    borderRadius: 10,
+    backgroundColor: '#c4d63c',
+    padding: 10,
+  },
+
+  titleModal:
+  {
+    fontSize: 15,
+    color: 'rgba(140, 153, 44 , 0.80)',
+    borderBottomColor: '#c4d63c',
+    borderBottomWidth: 5,
+    paddingBottom: 20,
+    marginBottom: 10
+  }
 })
 export default AbonnementScreen; 

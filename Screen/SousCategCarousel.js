@@ -19,7 +19,7 @@ const data = [
     { backgroundColor: 'yellow' }
 ];
 
-  const url = "https://huma.bzh/";
+const url = "https://huma.bzh/";
 /*const [SousCateg, setSousCateg] = useState([]);
 const [PCategID, setPCategID] = useState(1)*/
 
@@ -37,7 +37,7 @@ export default class SousCategCarousel extends Component {
     displaySCateg = () => {
         const PCategID = this.state.PCategID;
         const baseUrl = Platform.OS === 'android' ?
-            url+`api/api/categories/${PCategID}` : `api/api/categories/${PCategID}`;
+            url + `api/api/categories/${PCategID}` : `api/api/categories/${PCategID}`;
 
         fetch(baseUrl)
             .then((response) => response.json())
@@ -58,7 +58,7 @@ export default class SousCategCarousel extends Component {
         this.isComponentMounted = true;
         this.displaySCateg()
         const SsCateg = this.state.SousCateg
-        //console.log("this.state.SousCateg", SsCateg)
+        ////console.log("this.state.SousCateg", SsCateg)
     }
     componentWillUnmount = () => {
         this.isComponentMounted = false;

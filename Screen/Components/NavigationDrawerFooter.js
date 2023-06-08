@@ -21,13 +21,14 @@ export default function NavigationBottomTabs(props) {
 
   //export default function NavigationBottomTabs() {
   return (
-    <Tab.Navigator initialRouteName="AccueilScreen" tabBarOptions={{
+    <Tab.Navigator initialRouteName="AccueilScreen"
+      tabBarOptions={{
 
-      activeTintColor: '#a7b730',
-      inactiveTintColor: '#49382f'
-    }}>
+        activeTintColor: '#a7b730',
+        inactiveTintColor: '#49382f'
+      }}>
       <Tab.Screen
-        name="Accueil"
+        name="AccueilB"
         component={AccueilScreen}
         options={{
           headerShown: false,
@@ -45,7 +46,7 @@ export default function NavigationBottomTabs(props) {
         }}
       />
       <Tab.Screen
-        name="Annonces"
+        name="AnnoncesB"
         component={AnnoncesScreen}
         options={{
           headerShown: false,
@@ -64,7 +65,7 @@ export default function NavigationBottomTabs(props) {
       />
 
       <Tab.Screen
-        name="LoginSreen"
+        name="LoginSreenB"
         component={() => (<LoginScreen navigation={props.navigation} connecte={'false'} />)}
         options={{
           headerShown: false,
@@ -84,7 +85,7 @@ export default function NavigationBottomTabs(props) {
       />
 
       <Tab.Screen
-        name="Membres"
+        name="MembresB"
         component={MembresScreen}
         options={{
           headerShown: false,
@@ -102,7 +103,7 @@ export default function NavigationBottomTabs(props) {
         }}
       />
       <Tab.Screen
-        name="Login"
+        name="LoginB"
         component={LoginScreen}
         options={{
           headerShown: false,

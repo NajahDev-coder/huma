@@ -1,80 +1,87 @@
-import React, {useState , useEffect} from "react";
-import {Text, TextInput, StyleSheet,TouchableOpacity, View} from "react-native";
-import {RequestOptionsPut} from '../utils/utils';
-const DetailleOffre = ({id_offre , offre , etat }) => {
-  
-  const [detOffre, setDetOffre] = useState(offre) ;
-  const [etatUpOffre, setEtatUpOffre] = useState(etat) ;
+import React, { useState, useEffect } from "react";
+import { Text, TextInput, StyleSheet, TouchableOpacity, View } from "react-native";
+import { RequestOptionsPut } from '../utils/utils';
+import ModalAlert from "../ModalAlert";
+const DetailleOffre = ({ id_offre, offre, etat }) => {
+
+  const [isAlert, setIsAlert] = useState(false);
+  const [MsgAlerte, setMsgAlert] = useState('');
+  const [detOffre, setDetOffre] = useState(offre);
+  const [etatUpOffre, setEtatUpOffre] = useState(etat);
   //add offre
-  //console.log('eeee etat',etat)  
+  ////console.log('eeee etat',etat)  
   const handleSubmitPress = async () => {
-   
+
     if (!detOffre) {
-      alert('Veuillez saisir votre Offre');
+      const msg = "Veuillez saisir votre Offre!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     // setLoading(true);
     let dataToSend = {
-      detaille: detOffre,  
+      detaille: detOffre,
     };
-    console.log('modif offre:',dataToSend)
-      const fetchUrl =  `updatetext_offre/${id_offre}`;
-      const responseJson = RequestOptionsPut(dataToSend, fetchUrl).then( (response,error) => {
-      console.log(response)
-        if (response.status=='update offre reussi!!') {
-          setEtatUpOffre(0);
-  
-          setRefreshKey((oldKey) => oldKey + 1);
-      }
-       })
-      
-     
-  };
-  useEffect(()=>{
-    let isMounted=true;
-    if(isMounted)
-    {
-       if(etatUpOffre>0) console.log('etatUpOffre',etatUpOffre) 
-    }  
-    return ()=> isMounted=false;
-  },[etatUpOffre])  
+    //console.log('modif offre:',dataToSend)
+    const fetchUrl = `updatetext_offre/${id_offre}`;
+    const responseJson = RequestOptionsPut(dataToSend, fetchUrl).then((response, error) => {
+      //console.log(response)
+      if (response.status == 'update offre reussi!!') {
+        setEtatUpOffre(0);
 
-   return (   
-     <>
-     {(etatUpOffre > 0 && etatUpOffre == id_offre) ?        
-              <View style={{ width: '97%', padding: 3, marginLeft: 4 }}>
-           <TextInput  
+        setRefreshKey((oldKey) => oldKey + 1);
+      }
+    })
+
+
+  };
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      if (etatUpOffre > 0) console.log('etatUpOffre', etatUpOffre)
+    }
+    return () => isMounted = false;
+  }, [etatUpOffre])
+
+  return (
+    <>
+      {(etatUpOffre > 0 && etatUpOffre == id_offre) ?
+        <View style={{ width: '97%', padding: 3, marginLeft: 4 }}>
+          <TextInput
             multiline={true}
             style={styles.inputStyle}
-            onChangeText={(value) => { setDetOffre(value) }}              
+            onChangeText={(value) => { setDetOffre(value) }}
             value={detOffre}
-            defaultValue={detOffre}  
+            defaultValue={detOffre}
             placeholderTextColor="#8b9cb5"
             numberOfLines={3}
-          /> 
+          />
           <TouchableOpacity
             style={{ position: 'absolute', right: 17, bottom: 10 }}
             activeOpacity={0.5}
             onPress={handleSubmitPress}>
             <Text style={styles.buttonTextStyle}>Modifier</Text>
           </TouchableOpacity>
-           <TouchableOpacity
+          <TouchableOpacity
             style={{ position: 'absolute', left: 4, bottom: 10 }}
-            activeOpacity={0.5} 
-            onPress={()=>{setEtatUpOffre(0)}}>
+            activeOpacity={0.5}
+            onPress={() => { setEtatUpOffre(0) }}>
             <Text style={styles.buttonTextStyle}>Annuler</Text>
           </TouchableOpacity>
         </View>
         :
-        <Text style={styles.bcText}>{detOffre}</Text> 
-     }
-         </>
-   );
-  
-  
-};    
-const styles= StyleSheet.create({
-   bcText: { 
+        <Text style={styles.bcText}>{detOffre}</Text>
+      }
+      {isAlert && (
+        <ModalAlert msgAlerte={MsgAlerte} />
+      )}
+    </>
+  );
+
+
+};
+const styles = StyleSheet.create({
+  bcText: {
     maxWidth: '100%',
   },
   inputStyle: {
@@ -88,8 +95,8 @@ const styles= StyleSheet.create({
   },
   buttonTextStyle: {
     color: '#1E90FF',
-    fontSize:12,
-    paddingHorizontal:15, 
+    fontSize: 12,
+    paddingHorizontal: 15,
     fontWeight: '600',
   },
 })

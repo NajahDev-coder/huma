@@ -15,6 +15,7 @@ import MesFavAnnonces from './DrawerScreens/MesFavAnnonces';
 import CompteScreen from './CompteScreen';
 import EditProfile from './EditProfile'
 import CreateAnnonceScreen from './CreateAnnonceScreen';
+import EditAnnonceScreen from './EditAnnonceScreen';
 import TypeScreen from './TypeScreen';
 import CategScreen from './CategScreen';
 import ListNotifications from './Components/ListNotifications';
@@ -26,7 +27,6 @@ import NavigationCompteHeader from './Components/NavigationCompteHeader';
 import NavigationBottomTabsAuth from './Components/NavigationDrawerFooterAuth';
 import CreatePubliciteScreen from './CreatePubliciteScreen'
 import MembresScreen from './DrawerScreens/MembresScreen';
-import EditAnnonceScreen from './EditAnnonceScreen';
 import GetMessages from './Components/GetMessages';
 var AbonnementScreen;
 
@@ -70,7 +70,7 @@ const AnnonceScreenStack = ({ navigation }) => {
         component={DetailAnnonceScreen}
         options={{
           title: 'Détails Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
 
@@ -80,7 +80,7 @@ const AnnonceScreenStack = ({ navigation }) => {
         component={CompteScreen}
         options={{
           title: 'Compte', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
     </Stack.Navigator>
@@ -118,7 +118,7 @@ const HomeScreenStack = ({ navigation }) => {
           component={AbonnementScreen}
           options={{
             title: 'Devenir VIP', headerTintColor: '#97ab00',
-            headerTitleStyle: { olor: '#97ab00' }
+            headerTitleStyle: { color: '#97ab00' }
           }}
         />}
       <Stack.Screen
@@ -126,7 +126,7 @@ const HomeScreenStack = ({ navigation }) => {
         component={CompteScreen}
         options={{
           title: 'Profile', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
       <Stack.Screen
@@ -134,7 +134,7 @@ const HomeScreenStack = ({ navigation }) => {
         component={ListNotifications}
         options={{
           title: 'Notifications', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
       <Stack.Screen
@@ -142,7 +142,7 @@ const HomeScreenStack = ({ navigation }) => {
         component={HistoriqueScreen}
         options={{
           title: 'Historiques', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
       <Stack.Screen
@@ -150,7 +150,7 @@ const HomeScreenStack = ({ navigation }) => {
         component={MembresScreen}
         option={{
           title: 'Membres', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
       <Stack.Screen
@@ -158,7 +158,7 @@ const HomeScreenStack = ({ navigation }) => {
         component={EditProfile}
         options={{
           title: 'Modifier Profile', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
 
@@ -167,7 +167,7 @@ const HomeScreenStack = ({ navigation }) => {
         component={GetMessages}
         options={{
           title: 'Messages', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
 
@@ -176,7 +176,7 @@ const HomeScreenStack = ({ navigation }) => {
         component={AnnoncesScreen}
         options={{
           title: 'Annonces', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
 
@@ -186,23 +186,16 @@ const HomeScreenStack = ({ navigation }) => {
         component={DetailAnnonceScreen}
         options={{
           title: 'Détails Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
-      <Stack.Screen
-        name="EditAnnonce"
-        component={EditAnnonceScreen}
-        options={{
-          title: 'Modifier Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
-        }}
-      />
+
       <Stack.Screen
         name="Categ"
         component={CategScreen}
         options={{
           title: 'Nouvelle Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
       <Stack.Screen
@@ -210,7 +203,7 @@ const HomeScreenStack = ({ navigation }) => {
         component={CreateAnnonceScreen}
         options={{
           title: 'Nouvelle Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
       <Stack.Screen
@@ -218,7 +211,7 @@ const HomeScreenStack = ({ navigation }) => {
         component={MesAnnonces}
         options={{
           title: 'Annonces', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
       <Stack.Screen
@@ -226,7 +219,15 @@ const HomeScreenStack = ({ navigation }) => {
         component={MesFavAnnonces}
         options={{
           title: 'Mes Annonces Favoris', headerTintColor: '#97ab00',
-          headerTitleStyle: { olor: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
+      <Stack.Screen
+        name="EditAnnonce"
+        component={EditAnnonceScreen}
+        options={{
+          title: 'Modifier Annonce', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' }
         }}
       />
     </Stack.Navigator>
@@ -389,6 +390,14 @@ const MonCompteScreenStack = ({ navigation }) => {
         component={MesFavAnnonces}
         options={{
           title: 'Mes Annonces Favoris', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
+      <Stack.Screen
+        name="EditAnnonce"
+        component={EditAnnonceScreen}
+        options={{
+          title: 'Modifier Annonce', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
       />

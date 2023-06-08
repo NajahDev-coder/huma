@@ -45,6 +45,7 @@ import FileUpload from './Components/FileUpload';
 import Loader from './Components/Loader';
 //import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
+import ModalAlert from './ModalAlert';
 //import { CameraIcon, ImageIcon } from './icons';
 //import UploadImageScreen from './Components/UploadImageScreen';
 import CameraImage, { IdAnnonceImage } from './Components/CameraImageScreen';
@@ -67,6 +68,8 @@ export default function CreatePubliciteScreen(props) {
   const [show, setShow] = useState(true);
   const [Photo, setPhoto] = useState('');
 
+  const [isAlert, setIsAlert] = useState(false);
+  const [MsgAlerte, setMsgAlert] = useState('');
   const [LinkPublicite, setLinkPublicite] = useState('');
   const [UserID, setUserID] = useState(null);
   const titreInputRef = createRef();
@@ -90,18 +93,21 @@ export default function CreatePubliciteScreen(props) {
 
     setErrortext('');
     if (!titre) {
-      alert('Veuillez remplir le titre de votre publicite');
-      return;
+      const msg = "Veuillez remplir le titre de votre publicite";
+      setMsgAlert(msg);
+      setIsAlert(true);
     }
 
     if (!LinkPublicite) {
-      alert('Veuillez remplir le lien de votre publicite');
-      return;
+      const msg = "Veuillez remplir le lien de votre publicite";
+      setMsgAlert(msg);
+      setIsAlert(true);
     }
 
     if (!Photo) {
-      alert('Veuillez remplir la photo de votre publicite');
-      return;
+      const msg = "Veuillez remplir la photo de votre publicite";
+      setMsgAlert(msg);
+      setIsAlert(true);
     }
 
     //Show Loader
@@ -115,13 +121,13 @@ export default function CreatePubliciteScreen(props) {
     const fetchUrl = `publicite/create`;
     const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
 
-    //console.log('responseJson create publicite:', responseJson)
+    ////console.log('responseJson create publicite:', responseJson)
 
     //Hide Loader
     setLoading(false);
     var dataToSend;
     if (responseJson.status) {
-      //console.log('Photo', responseJson);
+      ////console.log('Photo', responseJson);
       if (Photo != '') {
         dataToSend = {
           imgsource: Photo.assets[0].base64,
@@ -137,8 +143,8 @@ export default function CreatePubliciteScreen(props) {
       setTimeout(function () {
         setIsCreationSuccess(false);
       }, 2000);
-      //console.log('Création annonce réussi!');
-      //console.log(responseJson.status)
+      ////console.log('Création annonce réussi!');
+      ////console.log(responseJson.status)
     } else {
       setErrortext('Création publicite échouée!');
     }
@@ -236,6 +242,11 @@ export default function CreatePubliciteScreen(props) {
               onPress={handleSubmitButton}>
               <Text style={styles.buttonTextStyle}>Valider</Text>
             </TouchableOpacity>
+
+            {isAlert && (
+              <ModalAlert msgAlerte={MsgAlerte} />
+            )}
+
           </KeyboardAvoidingView>
         </ScrollView>
       </ImageBackground>

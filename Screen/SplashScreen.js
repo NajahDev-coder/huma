@@ -2,9 +2,10 @@
 
 // Import React and Component
 import React, { useState, useEffect } from 'react';
+import { durationInMonths } from '@progress/kendo-date-math';
 //import { useNavigate } from "react-router-dom";
 
-import { Base_url } from './utils/utils';
+import { Base_url, UpdatePremium } from './utils/utils';
 import {
     ActivityIndicator,
     View,
@@ -33,11 +34,17 @@ const SplashScreen = ({ navigation }) => {
 
         const fetchUrl = `user/${global.User_connecte}`;
         const response = await RequestOptionsGet(fetchUrl)
-        //console.log('isvip?',response)
+        ////console.log('isvip?',response)
         if (response.data.length > 0) {
             const MmebreisVIP = response.data[0].VIP;
-            console.log('MmebreisVIP:', MmebreisVIP)
-            if (MmebreisVIP == 1) global.User_VIP = null
+            const Date_abonnement = new Date(response.data[0].date_abonnement)
+            const ToDay = new Date();
+            const duration = durationInMonths(Date_abonnement, ToDay);
+            //console.log('MmebreisVIP:', MmebreisVIP)
+            if ((MmebreisVIP == 1 && duration < 1) || (MmebreisVIP == 2 && duration < 2) || (MmebreisVIP == 3 && duration < 3)) {
+                UpdatePremium(global.User_connecte, 0);
+                global.User_VIP = null
+            }
             else global.User_VIP = 0
         }
         else
@@ -56,7 +63,7 @@ const SplashScreen = ({ navigation }) => {
                 .then(keys => AsyncStorage.multiRemove(keys));
         }
         const Access = async () => {
-            console.log('Access!');
+            //console.log('Access!');
             try {
                 await AsyncStorage.getItem('user_id').then((value) => {
                     if (value !== null) {
@@ -72,7 +79,7 @@ const SplashScreen = ({ navigation }) => {
 
             } catch (e) {
                 // error reading value
-                console.log('error', e);
+                //console.log('error', e);
                 clearAllData();
                 navigation.replace('DrawerNavigationRoutes');
             }

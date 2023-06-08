@@ -13,6 +13,7 @@ import {
   Keyboard,
   TouchableOpacity,
   ScrollView,
+  RefreshControl,
   Switch,
   Modal,
   Alert,
@@ -23,7 +24,7 @@ import Loader from './Components/Loader';
 import NavigationBackHeader from './Components/NavigationBackHeader';
 import { Base_url, Add_historique, SaveImage, RequestOptionsPost, RequestOptionsGet, GOOGLE_PLACES_API_KEY } from './utils/utils';
 import CameraImage, { IdAnnonceImage } from './Components/CameraImageScreen';
-
+import ModalAlert from './ModalAlert';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import {
   GooglePlacesAutocomplete,
@@ -51,25 +52,36 @@ const EditProfile = ({ route }) => {
   const [userCache, setUserCache] = useState(0);
   const [userImageProfile, setUserImageProfile] = useState('');
   const [userImageCouvProfile, setUserImageCouvProfile] = useState('');
-
+  const [UriProfile, setUriProfile] = useState(false);
+  const [UriCouverture, setUriCouverture] = useState(false);
   const [ImageProfile, setImageProfile] = useState(null);
   const [ImageCouvProfile, setImageCouvProfile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
   const [successtext, setSuccesstext] = useState('');
 
+  const [isAlert, setIsAlert] = useState(false);
+  const [MsgAlerte, setMsgAlert] = useState('');
   const [captureProfileVisible, setCaptureProfileVisible] = useState(false);
 
   const [captureCouvertVisible, setCaptureCouvertVisible] = useState(false);
 
   const [currentPosition, setCurrentPosition] = useState(null);
 
+  const [refreshing, setRefreshing] = React.useState(false);
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   const DefaultimageCouvProfile = { uri: Base_url + 'images/no-couverture.png' };
   const DefaultimageProfile = { uri: Base_url + 'images/compte.png' };
 
   const id_user = route.params?.id_user;
+
 
   const getProfile = async () => {
     const fetchUrl = `user/${id_user}`;
@@ -138,23 +150,33 @@ const EditProfile = ({ route }) => {
 
     setErrortext('');
     if (!userName) {
-      Alert.alert('Veuillez remplir votre Nom');
+      const msg = "Veuillez remplir votre Pseudo!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!userEmail) {
-      Alert.alert('Veuillez remplir votre Email');
+      const msg = "Veuillez remplir votre Email!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!userAge) {
-      Alert.alert('Veuillez remplir votre Age');
+      const msg = "Veuillez remplir votre Age!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!userTel) {
-      Alert.alert('Veuillez remplir votre Tel');
+      const msg = "Veuillez remplir votre Tél!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!userAddress) {
-      Alert.alert('Veuillez remplir votre Addresse');
+      const msg = "Veuillez remplir votre Addresse!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     //Show Loader
@@ -182,8 +204,8 @@ const EditProfile = ({ route }) => {
       //console.log(responseJson.status);
       // If server response message same as Data Matched
       if (responseJson.status === 'success') {
-        const activite = "Vous avez modifier votre profile!"
-        Add_historique(global.User_connecte, activite);
+        const activite = "Vous avez modifié votre profile!"
+        Add_historique(global.User_connecte, activite, global.User_connecte);
 
         if (ImageProfile && ImageProfile.canceled == false) {
 
@@ -204,7 +226,7 @@ const EditProfile = ({ route }) => {
           //const Imgsource = "data:image/jpeg;base64," + source;
           const Imgsource = ImageCouvProfile.assets[0].base64;
 
-          console.log('ImageCouvProfile', Imgsource);
+          //console.log('ImageCouvProfile', Imgsource);
 
           dataToSend = {
             imgsource: Imgsource,
@@ -214,7 +236,7 @@ const EditProfile = ({ route }) => {
           }
           SaveImage(dataToSend);
         }
-        console.log('Edit profile réussi!.');
+        // console.log('Edit profile réussi!.');
 
         setSuccesstext('Edit profile réussi!');
       } else {
@@ -222,7 +244,36 @@ const EditProfile = ({ route }) => {
       }
     }
   }
+  const UpdatePhotoProfile = (val) => {
 
+    setCaptureProfileVisible(!captureProfileVisible);
+    if (val.assets && val.assets[0].uri) {
+      setUriProfile(true);
+      setUserImageProfile(val.assets[0].uri);
+      setImageProfile(val)
+    }
+    else {
+
+      setUriProfile(false);
+      setUserImageCouvProfile(val)
+      setImageCouvProfile(val)
+    }
+  }
+
+  const UpdatePhotoCouverture = (val) => {
+
+    setCaptureCouvertVisible(!captureCouvertVisible);
+    if (val.assets && val.assets[0].uri) {
+      setUriCouverture(true);
+      setUserImageCouvProfile(val.assets[0].uri);
+      setImageCouvProfile(val)
+    }
+    else {
+      setUriCouverture(false);
+      setUserImageCouvProfile(val)
+      setImageCouvProfile(val)
+    }
+  }
   return (
     <View style={styles.mainBody}>
       <ImageBackground
@@ -234,12 +285,15 @@ const EditProfile = ({ route }) => {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
             alignContent: 'center',
-          }}>
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
           <View style={{ alignItems: 'center' }}>
             <TouchableOpacity style={styles.post}>
               <ImageBackground
                 //ref={img_annonce_cv}
-                source={userImageCouvProfile}
+                source={UriCouverture ? { uri: userImageCouvProfile } : userImageCouvProfile}
                 onError={(e) =>
                   setUserImageCouvProfile(DefaultimageCouvProfile)
                 }
@@ -258,7 +312,7 @@ const EditProfile = ({ route }) => {
                   <View style={styles.bcProfile}>
 
                     <Image
-                      source={userImageProfile}
+                      source={UriProfile ? { uri: userImageProfile } : userImageProfile}
                       onError={(e) => setUserImageProfile(DefaultimageProfile)}
                       style={styles.imgbcProfile}
                     />
@@ -287,7 +341,7 @@ const EditProfile = ({ route }) => {
               onChangeText={(userName) => setUserName(userName)}
               value={userName}
               underlineColorAndroid="#f000"
-              placeholder="Entrer Nom"
+              placeholder="Pseudo"
               placeholderTextColor="#8b9cb5"
               autoCapitalize="sentences"
             />
@@ -298,7 +352,7 @@ const EditProfile = ({ route }) => {
               onChangeText={(userEmail) => setUserEmail(userEmail)}
               value={userEmail}
               underlineColorAndroid="#f000"
-              placeholder="Entrer Email"
+              placeholder="Email"
               placeholderTextColor="#8b9cb5"
               keyboardType="email-address"
             />
@@ -309,7 +363,7 @@ const EditProfile = ({ route }) => {
               onChangeText={(userAge) => setUserAge(userAge)}
               value={String(userAge)}
               underlineColorAndroid="#f000"
-              placeholder="Entrer Age"
+              placeholder="Age"
               placeholderTextColor="#8b9cb5"
             ///keyboardType="numeric"
             />
@@ -318,11 +372,12 @@ const EditProfile = ({ route }) => {
             <TextInput
               style={styles.inputStyle}
               onChangeText={(userTel) => setUserTel(userTel)}
-              value={userTel}
+              value={userTel.toString()}
               underlineColorAndroid="#f000"
-              placeholder="Entrer Tel"
+              placeholder="Tel"
               placeholderTextColor="#8b9cb5"
-              autoCapitalize="sentences"
+              // autoCapitalize="sentences"
+              keyboardType='tel'
             />
           </View>
           <View style={styles.SectionStyle2}>
@@ -414,6 +469,11 @@ const EditProfile = ({ route }) => {
             onPress={handleSubmitButton}>
             <Text style={styles.buttonTextStyle}>valider</Text>
           </TouchableOpacity>
+          {isAlert && (
+            <ModalAlert msgAlerte={MsgAlerte} />
+          )}
+
+
           {captureProfileVisible && (
             <View style={styles.centeredView}>
               <Modal
@@ -428,7 +488,7 @@ const EditProfile = ({ route }) => {
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
                     <CameraImage
-                      captureImage={(val) => { setCaptureProfileVisible(!captureProfileVisible); setUserImageProfile(val); setImageProfile(val) }}
+                      captureImage={(val) => UpdatePhotoProfile(val)}
                       PStyle={{ width: 150, height: 150 }}
                       isinvisible={true}
                     />
@@ -451,7 +511,7 @@ const EditProfile = ({ route }) => {
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
                     <CameraImage
-                      captureImage={(val) => { setCaptureCouvertVisible(!captureCouvertVisible); setUserImageCouvProfile(val); setImageCouvProfile(val) }}
+                      captureImage={(val) => UpdatePhotoCouverture(val)}
                       PStyle={{ width: 150, height: 150 }}
                       isinvisible={true}
                     />

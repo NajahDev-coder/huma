@@ -10,24 +10,26 @@ import {
   View,
   Text,
   ScrollView,
+  RefreshControl,
   Image,
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   FlatList, Linking,
-  useWindowDimensions
+  useWindowDimensions,
+  Dimensions
 } from 'react-native';
 
 import { Entypo } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
-import Slideshow from 'react-native-slideshow-improved';
+
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import moment from 'moment';
 import RenderHtml from 'react-native-render-html';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Carousel from 'react-native-anchor-carousel';
 import GetCategorie from '../Components/GetCategorie';
 import Loader from '../Components/Loader';
 import GetType from '../Components/GetType';
@@ -57,19 +59,48 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
   const [position, setPosition] = useState(1);
 
   const { width } = useWindowDimensions();
-
+  const sliderWidth = Dimensions.get('window').width;
   const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   const img_annonce_cv = createRef();
 
+  const carouselRef = React.useRef(null);
+  const renderItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => {
+          carouselRef.current.scrollToIndex(index);
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View style={styles.containerCarousel}>
+          <Image
+            source={{ uri: item.img }}
+            style={styles.imageCarousel}
+
+          />
+
+        </View>
+      </TouchableOpacity>
+    );
+  }
   const update_NbreVue = (id_annce) => {
     const fetchUrl = `updateNbreVueAnnc/${id_annce}`;
     RequestOptionsGet(fetchUrl);
   }
-  const visitVedio=(val)=>{ 
-   Linking.openURL('http://'+val);        
-}
+  const visitVedio = (val) => {
+    Linking.openURL('http://' + val);
+  }
   const UpdtFavorisAnnonce = useCallback(async () => {
     var fetchUrl;
     if (favorisAnnonce == 1) {
@@ -80,7 +111,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
     }
     response = await RequestOptionsGet(fetchUrl);
     if (response.affectedRows == 1) {
-      console.log('update favorisanno avec success!');
+      // console.log('update favorisanno avec success!');
       setFavorisAnnonce(!favorisAnnonce);
       setRefreshKey((oldKey) => oldKey + 1)
     }
@@ -121,15 +152,25 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
     const fetchUrl = `file_existe/${id_annonce}`;
 
     const responseJson = await RequestOptionsGet(fetchUrl);
-    console.log('imgAnnonce', responseJson.data);
+    // console.log('imgAnnonce', responseJson.data);
 
     if (responseJson.data.length > 0) {
-      setImageAnnonce(responseJson.data);
+
+      let dataImg = [];
+      Object.entries(responseJson.data).map(([key, value]) => {
+        dataImg.push({
+          id: key,
+          img: value.url
+        });
+      });
+      //console.log(dataImg)
+      setImageAnnonce(dataImg);
     }
     else {
-      setImageAnnonce([{ url: `${Base_url}images/img/no-picture.png` }]);
+      //setImageAnnonce([{ url: `${Base_url}images/img/no-picture.png` }]);
+      setImageAnnonce([{ id: 0, img: `${Base_url}images/img/no-picture.png` }]);
 
-      console.log('imgAnnonce', imageAnnonce);
+      //console.log('imgAnnonce', imageAnnonce);
     }
   }
 
@@ -202,156 +243,182 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
             alignContent: 'center',
-          }}>
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
           <View style={{ padding: 10, flex: 1, width: '100%' }}>
-            <View style={styles.column}>
 
-              <View style={styles.post}>
+            <KeyboardAvoidingView enabled>
+              <View style={styles.column}>
+
+                <View style={styles.post}>
 
 
-                <Slideshow containerStyle={{ backgroundColor: 'white', mrginLeft: -10 }} dataSource={imageAnnonce} indicatorColor='#a7bd00' />
-                <View style={styles.bcBlockpf}>
-                  <View style={{ width: 50, justifyContent: 'center', marginLeft: 10 }}>
-                    <GetProfile user_id={AnnonceDetails.user_id} navigation={navigation} img_prof={imageProfile} />
-                  </View>
-                  <View style={styles.auteurProfile}>
-                    <Text style={styles.titAuteurProfile}>{NomAuteur.toUpperCase()}</Text>
+
+                  <SafeAreaView style={{ flex: 1, width: '100%' }}>
+                    <View
+                      style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '100%'
+                      }}
+                    >
+
+                      <Carousel
+                        ref={carouselRef}
+                        data={imageAnnonce}
+                        renderItem={renderItem}
+                        style={styles.carousel}
+                        itemWidth={sliderWidth}
+                        containerWidth={sliderWidth}
+                        separatorWidth={0}
+                      />
+                    </View>
+                  </SafeAreaView>
+                  <View style={styles.bcBlockpf}>
+                    <View style={{ width: 50, justifyContent: 'center', marginLeft: 10 }}>
+                      <GetProfile user_id={AnnonceDetails.user_id} navigation={navigation} img_prof={imageProfile} />
+                    </View>
+                    <View style={styles.auteurProfile}>
+                      <Text style={styles.titAuteurProfile}>{NomAuteur.toUpperCase()}</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
 
-              <TouchableOpacity style={styles.post}>
+                <TouchableOpacity style={styles.post}>
 
-                <Animated.View style={{ width: '100%', opacity: fadeAnimation }}>
-                  <View style={styles.bcBlock}>
-                    <View style={styles.bcDetaille}>
-                      <View style={styles.row}>
-                        <Text style={styles.postLabel}>{AnnonceDetails.titre} </Text>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-end',
-                            position: 'absolute',
-                            right: 20,
-                            top: 0,
-                          }}>
-                          <AntDesign name="eyeo" size={24} color="black" />
-                        </View>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-end',
-                            position: 'absolute',
-                            right: 0,
-                            top: 3,
-                          }}>
-                          <Text >{NbreVue}</Text>
-                        </View>
-                        {AuteurUserId != global.User_connecte && (
+                  <Animated.View style={{ width: '100%', opacity: fadeAnimation }}>
+                    <View style={styles.bcBlock}>
+                      <View style={styles.bcDetaille}>
+                        <View style={styles.row}>
+                          <Text style={styles.postLabel}>{AnnonceDetails.titre} </Text>
                           <View
                             style={{
                               flexDirection: 'row',
                               justifyContent: 'flex-end',
                               position: 'absolute',
-                              right: 50,
+                              right: 20,
                               top: 0,
                             }}>
-
-                            <MaterialIcons
-                              name={favorisAnnonce == 1 ? "favorite" : "favorite-border"}
-                              size={24}
-                              color="#c4d63c"
-                              onPress={() => { UpdtFavorisAnnonce(); }}
-                            />
+                            <AntDesign name="eyeo" size={24} color="black" />
                           </View>
-                        )}
-                        {AuteurUserId == global.User_connecte && (
                           <View
                             style={{
                               flexDirection: 'row',
                               justifyContent: 'flex-end',
                               position: 'absolute',
-                              right: 50,
-                              top: 0,
+                              right: 0,
+                              top: 3,
                             }}>
-
-                            <AntDesign
-                              name="edit"
-                              size={24}
-                              color="#c4d63c"
-                              onPress={() => {
-                                navigation.navigate({
-                                  name: 'EditAnnonceScreen',
-                                  params: {
-                                    id_user: AuteurUserId,
-                                    id_annonce: IdAnnonce
-                                  },
-                                })
-                              }}
-                            />
+                            <Text >{NbreVue}</Text>
                           </View>
-                        )}
+                          {AuteurUserId != global.User_connecte && (
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-end',
+                                position: 'absolute',
+                                right: 50,
+                                top: 0,
+                              }}>
+
+                              <MaterialIcons
+                                name={favorisAnnonce == 1 ? "favorite" : "favorite-border"}
+                                size={24}
+                                color="#c4d63c"
+                                onPress={() => { UpdtFavorisAnnonce(); }}
+                              />
+                            </View>
+                          )}
+                          {AuteurUserId == global.User_connecte && (
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-end',
+                                position: 'absolute',
+                                right: 50,
+                                top: 0,
+                              }}>
+
+                              <AntDesign
+                                name="edit"
+                                size={24}
+                                color="#c4d63c"
+                                onPress={() => {
+                                  navigation.navigate({
+                                    name: 'EditAnnonce',
+                                    params: {
+                                      //id_user: AuteurUserId,
+                                      id_annonce: IdAnnonce
+                                    },
+                                  })
+                                }}
+                              />
+                            </View>
+                          )}
 
 
-                      </View>
-                      <View >
-                        <Text style={styles.postDateLabel}>
-                          Publié le  {moment(AnnonceDetails.Date).format('MM-DD-YYYY')}
-                        </Text>
-                      </View>
-                     
-                      <View style={styles.bcText}>
-                        {AnnonceDetails.description != '' && AfficheDescrp(AnnonceDetails.description)}
-                      </View>
- <View style={styles.bcText}>
-                        {AnnonceDetails.link_vedio != '' && ( 
-                          <TouchableOpacity onPress= {()=>{ visitVedio(AnnonceDetails.link_vedio)}}>
-                      
-                         
-                          <Text> <Entypo name="video-camera" size={18} color="black" style={{marginTop:5, marginRight:5}} /> https://{AnnonceDetails.link_vedio}</Text>     
-                          </TouchableOpacity>
-                        )}
+                        </View>
+                        <View >
+                          <Text style={styles.postDateLabel}>
+                            Publié le  {moment(AnnonceDetails.Date).format('MM-DD-YYYY')}
+                          </Text>
+                        </View>
+
+                        <View style={styles.bcText}>
+                          {AnnonceDetails.description != '' && AfficheDescrp(AnnonceDetails.description)}
+                        </View>
+                        <View style={styles.bcText}>
+                          {AnnonceDetails.link_vedio != '' && (
+                            <TouchableOpacity onPress={() => { visitVedio(AnnonceDetails.link_vedio) }}>
+
+
+                              <Text> <Entypo name="video-camera" size={18} color="black" style={{ marginTop: 5, marginRight: 5 }} /> https://{AnnonceDetails.link_vedio}</Text>
+                            </TouchableOpacity>
+                          )}
+                        </View>
                       </View>
                     </View>
-                  </View>
 
-                  <View style={styles.bcBlock2}>
-                    <Text style={styles.bcText2}>
-                      <Entypo name="location-pin" size={20} color="grey" />
+                    <View style={styles.bcBlock2}>
+                      <Text style={styles.bcText2}>
+                        <Entypo name="location-pin" size={20} color="grey" />
 
-                      {AnnonceDetails.adresse}
-                    </Text>
-                  </View>
-
-                  <View style={styles.bcBlock}>
-                    <View style={styles.btCateg}>
-                      <GetCategorie id_annonce={AnnonceCateg} />
+                        {AnnonceDetails.adresse}
+                      </Text>
                     </View>
-                    <View style={styles.btType}>
-                      <GetType id_annonce={AnnonceType} />
+
+                    <View style={styles.bcBlock}>
+                      <View style={styles.btCateg}>
+                        <GetCategorie id_annonce={AnnonceCateg} />
+                      </View>
+                      <View style={styles.btType}>
+                        <GetType id_annonce={AnnonceType} />
+                      </View>
                     </View>
+
+                  </Animated.View>
+                </TouchableOpacity>
+
+                <View style={{ width: '100%' }}>
+
+                  <View style={styles.hrbc}>
+                    <Text style={styles.titreOff}>Offres </Text>
                   </View>
-
-                </Animated.View>
-              </TouchableOpacity>
-
-              <View style={{ width: '100%' }}>
-
-                <View style={styles.hrbc}>
-                  <Text style={styles.titreOff}>Offres </Text>
+                  {AuteurUserId !== null && IdAnnonce !== null &&
+                    <GetOffres
+                      id_annonce={IdAnnonce}
+                      id_auteur_annonce={AuteurUserId}
+                      id_user={global.User_connecte}
+                      navigation={navigation}
+                    />
+                  }
                 </View>
-                {AuteurUserId !== null && IdAnnonce !== null &&
-                  <GetOffres
-                    id_annonce={IdAnnonce}
-                    id_auteur_annonce={AuteurUserId}
-                    id_user={global.User_connecte}
-                    navigation={navigation}
-                  />
-                }
+
+
               </View>
-
-
-            </View>
+            </KeyboardAvoidingView>
           </View>
 
         </ScrollView>
@@ -493,6 +560,19 @@ const styles = StyleSheet.create({
     maxWidth: 130,
     fontSize: 11,
   },
-
+  containerCarousel: {
+    width: '100%',
+    height: 200,
+    alignItems: 'center',
+  },
+  imageCarousel: {
+    flex: 1,
+    width: '100%',
+  },
+  carousel: {
+    flexGrow: 0,
+    height: 180,
+    width: '100%',
+  }
 });
 export default DetailAnnonceScreen;

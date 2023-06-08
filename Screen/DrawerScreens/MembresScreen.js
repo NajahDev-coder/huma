@@ -14,7 +14,8 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  FlatList
+  FlatList,
+  RefreshControl
 } from 'react-native';
 import EstAmis from '../EstAmis';
 import { Base_url, RequestOptionsGet, RequestOptionsPut, RequestOptionsPost, ViewProfile } from '../utils/utils';
@@ -39,9 +40,21 @@ const MembresScreen = ({ navigation }) => {
 
   const [zIndexF, setZindexF] = useState(1);
   const [fadeAnimation] = useState(new Animated.Value(0));
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      GetFilter();
+      fetchData(filter);
+      fadeIn();
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
   const GetFilter = useCallback(async () => {
     await AsyncStorage.getItem('add_filter').then((value) => {
-      // console.log('value:', value);
+      // //console.log('value:', value);
 
       if (value != null && !Object.is(filter, value)) {
         setFilter(value);
@@ -64,14 +77,14 @@ const MembresScreen = ({ navigation }) => {
       filter = encodeURIComponent(filter);
 
     }
-    console.log('filter mmbre', filter)
+    //console.log('filter mmbre', filter)
     const fetchUrl = `membres/${filter}`;
 
-    console.log('param membres :', fetchUrl)
+    //console.log('param membres :', fetchUrl)
     const response = await RequestOptionsGet(fetchUrl);
     //const resp = json.data
 
-    //console.log('list membres :', response.data)
+    ////console.log('list membres :', response.data)
     if (response.length > 0)
       setMembresList(response);
     //else setMembresList({});
@@ -92,7 +105,7 @@ const MembresScreen = ({ navigation }) => {
 
 
 
-
+  var key = MembresList.length;
   return (
     <View style={styles.mainBody}>
       <ImageBackground
@@ -103,8 +116,12 @@ const MembresScreen = ({ navigation }) => {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
             alignContent: 'center',
-          }}>
-          <View style={{ zIndex: zIndexF }}>
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          <View style={{ position: 'absolute', top: 0, right: 0, width: '100%', zIndex: 100 }}>
+
             <FilterMembreForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
           </View>
           <Animated.View
@@ -112,7 +129,7 @@ const MembresScreen = ({ navigation }) => {
               width: '100%',
               position: 'relative',
               opacity: fadeAnimation,
-              marginTop: 20
+              marginTop: 90
             }}>
             {/* <TouchableOpacity onPress={AddFitler}>*/}
 
@@ -126,16 +143,16 @@ const MembresScreen = ({ navigation }) => {
                   {value.id != global.User_connecte && (
                     <TouchableOpacity
                       key={value.id}
-                      style={styles.post}
+                      style={[{ zIndex: key-- }, styles.post]}
                       onPress={() => { ViewProfile(value.id, navigation); }}>
-                      <View style={styles.bcBlock}>
+                      <View style={[{ zIndex: key-- }, styles.bcBlock]}>
 
 
 
                         <GetProfile user_id={value.id} navigation={navigation} img_prof={value.img_prof} />
 
 
-                        <View style={styles.bcDetaille}>
+                        <View style={[{ zIndex: key-- }, styles.bcDetaille]}>
                           <Text style={styles.postLabel}>{value.nom}</Text>
                           <RatingScreen user_id1={value.user_id} user_id2={0} />
                           {value.cache == 1 &&
@@ -159,9 +176,9 @@ const MembresScreen = ({ navigation }) => {
                             flexDirection: 'row',
                             justifyContent: 'flex-end',
                             position: 'absolute',
-                            right: 10,
+                            right: 5,
                             zIndex: 50,
-                            top: 28,
+                            top: -5,
                           }}>
 
                           {global.User_connecte != undefined && global.User_connecte != null &&
@@ -219,6 +236,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5.46,
     elevation: 7,
     flexDirection: 'column',
+
   },
 
   postLabel: {
@@ -234,7 +252,7 @@ const styles = StyleSheet.create({
   bcBlock: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    zIndex: 20,
+
     //justifyContent: 'end',
   },
   bcProfile: {
@@ -270,6 +288,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     margin: 7,
     width: '75%',
+
   },
   bcText: {
     maxWidth: 90,

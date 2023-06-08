@@ -5,7 +5,7 @@ import React, { useState, createRef, useEffect } from 'react';
 import SousCateg, { getSScateg } from './SousCateg';
 //import { FastImage } from 'react-native-fast-image';  
 //import Slideshow from './DrawerScreens/SlideshowScreen' ;
-import PublicitesSlideshow from './DrawerScreens/PublicitesSlideshow';
+//import PublicitesSlideshow from './DrawerScreens/PublicitesSlideshow';
 import * as Location from 'expo-location';
 
 import {
@@ -17,6 +17,7 @@ import {
   View,
   Text,
   ScrollView,
+  RefreshControl,
   Image,
   Keyboard,
   TouchableOpacity,
@@ -30,37 +31,35 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Carousel from 'react-native-anchor-carousel';
 import { Base_url, RequestOptionsGet } from './utils/utils';
-import ModalScreen from './Modal'
+import ModalScreenVIP from './Modal'
 //import Loader from './Components/Loader';
 //import MapView, { Polyline, Marker } from 'react-native-maps';
 import { decode } from '@mapbox/polyline';
 import FilterForm from './DrawerScreens/FilterForm';
 import CategCarousel from './CategCarousel';
-import MapGeoScreen  from './MapGeoScreen';
-  
+import MapGeoScreen from './MapGeoScreen';
+
 //import Constants from 'expo-constants';
 //const { manifest } = Constants;
 
 //let PCategID ;
- 
-var sizeButtonIcone=90
-if(Platform.OS!='web') 
-{
-  sizeButtonIcone=120
+
+var sizeButtonIcone = 95
+if (Platform.OS != 'web') {
+  sizeButtonIcone = 95
 }
 
-    
-   
+
+
 const AccueilScreen = ({ navigation }) => {
 
-var widthIcone=40
-if(Platform.OS!='web') 
-{
-  widthIcone=60
-}
-const image = {
+  var sizeIcone = 50
+  if (Platform.OS != 'web') {
+    sizeIcone = 50
+  }
+  const image = {
     uri: `${Base_url}images/bg_screen.png`,
-};
+  };
 
 
   const [CategroiesList, setCategroiesList] = useState([]);
@@ -74,27 +73,36 @@ const image = {
   const [selectedValue, setSelectedValue] = useState(1);
   const [Oldkey, setOldkey] = useState(0);
   const [NonVIP, setNonVIP] = useState(1);
-  const [UserLocation,setUserLocation]=useState(null);
+  const [UserLocation, setUserLocation] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
-const  FindAnnoncePosition=async()=>{
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      fetchData();
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+  const FindAnnoncePosition = async () => {
     //const  status  = await Location.requestForegroundPermissionsAsync();   
     //console.log('status:::',status);
- const { status } = await Location.requestForegroundPermissionsAsync();
+    const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
       /*setTxtError('Veuillez activer votre poisition!');*/
-      
+
       const defaultLocation = await Location.geocodeAsync('France');
-     // console.log('defaultLocation:::',defaultLocation);
+      // console.log('defaultLocation:::',defaultLocation);
       setUserLocation(defaultLocation[0]);
       return;
     }
-      const position = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
-      //setUserLocation(position.coords);
-      
-    
-      setUserLocation(position.coords);
-   
-      
+    const position = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
+    //setUserLocation(position.coords);
+
+
+    setUserLocation(position.coords);
+
+
   }
   /*const getDirections = async (startLoc, destinationLoc) => {
     try {
@@ -145,7 +153,7 @@ const  FindAnnoncePosition=async()=>{
     setCategroiesList(response);
     setCategSelected(1);
     await FindAnnoncePosition();
-       
+
   };
 
   useEffect(() => {
@@ -159,11 +167,11 @@ const  FindAnnoncePosition=async()=>{
 */
     if (isSubscribed) {
       fetchData();
-      
+
       fadeIn();
     }
     return () => (isSubscribed = false);
-  }, [selectedValue]);
+  }, [selectedValue, refreshing]);
 
   const GetFilter = () => {
 
@@ -185,8 +193,11 @@ const  FindAnnoncePosition=async()=>{
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
             alignContent: 'center',
-          }}>
-          <View style={{ zIndex: zIndexF }}>
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          <View style={{ position: 'absolute', top: 0, right: 0, width: '100%', zIndex: 100 }}>
             <FilterForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
           </View>
           <View
@@ -196,7 +207,7 @@ const  FindAnnoncePosition=async()=>{
               width: '100%',
               //minHeight: 200,
               position: 'relative',
-              top: 10,
+              top: 70,
               zIndex: 1,
             }}>
             <View style={styles.row}>
@@ -212,47 +223,48 @@ const  FindAnnoncePosition=async()=>{
                     styles.button,
                     selectedValue == value.id && styles.selected,
                   ]}>
-                  <Text
-                    style={[
-                      styles.buttonLabel,
-                      selectedValue == value.id && styles.selectedLabel,  
-                    ]}>
-                    {value.titre}
-                  </Text>
+
+                  <ImageBackground source={getBeerImage(value.slug)} resizeMode="cover" style={{ width: sizeIcone, height: sizeIcone, resizeMode: 'contain' }}>
+                    <Text
+                      style={{ position: 'absolute', bottom: 15 }}>
+                      {/* <Image
+                      defaultSource={defaultImage}
+                      source={getBeerImage(value.slug)}
+                      style={{ width: sizeIcone, height: sizeIcone, resizeMode: 'contain' }}
+                    />*/}
+                    </Text>
+
+                  </ImageBackground>
                   <Text
                     style={[
                       styles.buttonLabel,
                       selectedValue == value.id && styles.selectedLabel,
                     ]}>
-                    <Image
-                      defaultSource={defaultImage}
-                      source={getBeerImage(value.slug)}
-                      style={{  width: widthIcone, height: 40 }}   
-                    />
+                    {value.titre}
                   </Text>
                 </TouchableOpacity>
               ))}
             </View>
-           
-            {Platform.OS!='web' && UserLocation!==null && (   
-               <SafeAreaView>
-              <Animated.View
-                style={{
-                  width: '100%',
-                  position: 'relative',
-                  opacity: fadeAnimation,
-                }}>
-            <View style={{
-              padding: 10,  
-              flex: 1,  
-              width: '100%',
-              minHeight: 200,
-            }}> 
-            <MapGeoScreen navigation={navigation} position={UserLocation} />
-            </View>
-            </Animated.View>
-            </SafeAreaView>
-           )}
+
+            {Platform.OS != 'web' && UserLocation !== null && (
+              <SafeAreaView>
+                <Animated.View
+                  style={{
+                    width: '100%',
+                    position: 'relative',
+                    opacity: fadeAnimation,
+                  }}>
+                  <View style={{
+                    padding: 10,
+                    flex: 1,
+                    width: '100%',
+                    minHeight: 200,
+                  }}>
+                    <MapGeoScreen navigation={navigation} position={UserLocation} />
+                  </View>
+                </Animated.View>
+              </SafeAreaView>
+            )}
 
 
 
@@ -269,7 +281,7 @@ const  FindAnnoncePosition=async()=>{
 
             {/** pop up*/}
             {(global.User_connecte != null && global.User_VIP != null) && (
-              <ModalScreen navigation={navigation} />
+              <ModalScreenVIP navigation={navigation} />
             )}
           </View>
 
@@ -304,8 +316,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
+
   },
-  button: {  
+  button: {
     //backgroundColor: '#8c992c',
     backgroundColor: 'rgba(140, 153, 44 , 0.80)',
     alignItems: 'center',
@@ -313,10 +326,12 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     borderRadius: sizeButtonIcone,
     height: sizeButtonIcone,
-    width: sizeButtonIcone,   
+    width: '35%',
+
     paddingTop: 4,
     paddingLeft: 4,
-    justifyContent: 'center',
+    //justifyContent: 'center',
+    // textAlignVertical:'center'   
     //textAlign: 'center',
   },
   selected: {
@@ -324,12 +339,15 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   buttonLabel: {
-    fontSize: 12,
+    bottom: Platform.OS != 'web' ? 10 : 8,
+    position: 'absolute',
+    fontSize: 13,
     color: '#ffffff',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   selectedLabel: {
-    color: 'white',
+    color: '#ffffff',
   },
 
 });

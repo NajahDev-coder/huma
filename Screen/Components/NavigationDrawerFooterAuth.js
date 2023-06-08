@@ -36,14 +36,14 @@ export default function NavigationBottomTabsAuth(props) {
   }, [UserId]);
 
   return (
-    <Tab.Navigator
+    <Tab.Navigator initialRouteName="AccueilScreen"
       tabBarOptions={{
 
         activeTintColor: '#a7b730',
         inactiveTintColor: '#49382f'
       }}>
       <Tab.Screen
-        name="Accueil"
+        name="AccueilB"
         component={AccueilScreen}
         options={{
           headerShown: false,
@@ -61,7 +61,7 @@ export default function NavigationBottomTabsAuth(props) {
         }}
       />
       <Tab.Screen
-        name="Annonces"
+        name="AnnoncesB"
         component={AnnoncesScreen}
         options={{
           headerShown: false,
@@ -81,7 +81,7 @@ export default function NavigationBottomTabsAuth(props) {
         }}
       />
       <Tab.Screen
-        name="Ajout Annonce"
+        name="Ajout AnnonceB"
         component={TypeScreen}
         options={{
           headerShown: false,
@@ -102,7 +102,7 @@ export default function NavigationBottomTabsAuth(props) {
 
       <Tab.Screen
         //name={UserId}
-        name="Messages"
+        name="MessagesB"
         component={MesMessages}
         options={{
           headerShown: false,
@@ -120,7 +120,7 @@ export default function NavigationBottomTabsAuth(props) {
         }}
       />
       <Tab.Screen
-        name="Compte"
+        name="CompteB"
         id_user={global.User_connecte}
         component={CompteScreen}
         options={{

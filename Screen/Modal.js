@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Modal, StyleSheet, Platform, Text, Pressable, View, Linking, TouchableOpacity } from 'react-native';
 
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
-const ModalScreen = ({ navigation }) => {
+const ModalScreenVIP = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(true);
   return (
     <View style={styles.centeredView}>
@@ -15,44 +15,27 @@ const ModalScreen = ({ navigation }) => {
           setModalVisible(!modalVisible);
         }}>
         <View style={styles.centeredView}>
-          {global.User_VIP === 0 && (
-            <View style={styles.modalView}>
-              <Text style={styles.titleModal}>Membre Simple!</Text>
-              <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
-              <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-              <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
-              <Text><Ionicons name="lock-closed" size={24} color="grey" />Ajouter des publicités <Text style={styles.viptxt}>(VIP)</Text> </Text>
-              <View style={{ flexDirection: 'row' }}>
-                <Pressable
-                  style={styles.butt}
-                  onPress={() => setModalVisible(!modalVisible)}>
-                  <Text style={styles.txtbutt}>Ignorer</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.buttVIP}
-                  onPress={() => { Platform.OS == 'web' ? Linking.openURL('https://play.google.com/store/search?q=huma&c=apps') : navigation.navigate('Abonnement') }}>
-                  <Text style={styles.txtbutt}>Devenir VIP</Text>
-                </Pressable>
-              </View>
-            </View>
-          )}
-          {global.User_VIP === 1 && (
-            <View style={styles.modalView}>
-              <Text style={styles.titleModal}>Félicitations, vous  êtes un membre VIP!</Text>
-              <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
-              <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-              <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
-              <Text><Feather name="check" size={24} color="#c4d63c" />Ajouter des publicités.</Text>
-              <View style={{ flexDirection: 'row' }}>
 
-                <Pressable
-                  style={styles.buttVIP}
-                  onPress={() => { setModalVisible(!modalVisible); navigation.navigate('Accueil') }}>
-                  <Text style={styles.txtbutt}>OK</Text>
-                </Pressable>
-              </View>
+          <View style={styles.modalView}>
+            <Text style={styles.titleModal}>Membre Simple!</Text>
+            <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
+            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+            <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
+            <Text><Ionicons name="lock-closed" size={24} color="grey" />Ajouter des publicités <Text style={styles.viptxt}>(VIP)</Text> </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Pressable
+                style={styles.butt}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Text style={styles.txtbutt}>Ignorer</Text>
+              </Pressable>
+              <Pressable
+                style={styles.buttVIP}
+                onPress={() => { Platform.OS == 'web' ? Linking.openURL('https://play.google.com/store/search?q=huma&c=apps') : navigation.navigate('Abonnement') }}>
+                <Text style={styles.txtbutt}>Devenir VIP</Text>
+              </Pressable>
             </View>
-          )}
+          </View>
+
         </View>
       </Modal>
 
@@ -127,4 +110,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ModalScreen;
+export default ModalScreenVIP;   

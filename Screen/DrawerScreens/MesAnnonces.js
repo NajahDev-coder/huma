@@ -9,6 +9,7 @@ import {
   View,
   Text,
   ScrollView,
+  RefreshControl,
   Image,
   Keyboard,
   TouchableOpacity,
@@ -24,18 +25,21 @@ import {
   Octicons,
   Fontisto,
   Ionicons,
+  Feather
 } from '@expo/vector-icons';
 
 import Loader from '../Components/Loader';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import GetCategorie from '../Components/GetCategorie';
 import GetType from '../Components/GetType';
 import GetProfile from '../Components/GetProfile';
 import FilterForm from './FilterForm';
-
+import ModalSuppression from '../ModalSuppression'
 import { ViewProfile, ViewAnnonces, ShowDetailAnnonce, Base_url, RequestOptionsGet } from '../utils/utils'
+
+import { SelectList } from 'react-native-dropdown-select-list'
+import ActionDelete from '../Components/ActionDelete';
 
 const MesAnnonces = ({ navigation, route }) => {
   const [AnnoncesList, setAnnoncesList] = useState([]);
@@ -43,7 +47,21 @@ const MesAnnonces = ({ navigation, route }) => {
   const [filter, setFilter] = useState(JSON.stringify({ "adresse": "", "titre": "", "type": "", "categorie": "", "dateStart": "", "dateEnd": "" }));
   const [loading, setLoading] = useState(false);
   const [zIndexF, setZindexF] = useState(1);
+  const [Annonce_id_Sup, setAnnonce_id_Sup] = useState(null);
+  const [isAlerte, setIsAlerte] = useState(false);
 
+  const [selected, setSelected] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+      GetFilter();
+      fetchData(filter);
+    }, 2000);
+  }, []);
+  const msgAlerte = 'Êtes-vous sûr de vouloir supprimer cette annonce!';
   const [result, setResultat] = useState('Loading ....');
   const id_user = route.params.id_user;
 
@@ -70,17 +88,17 @@ const MesAnnonces = ({ navigation, route }) => {
 
           fetchData(filter);
         }
-      }, 100)
+      }, 10)
     }
     return () => (isSubscribed = false);
-  }, [filter, id_user, GetFilter]);
+  }, [filter, id_user, GetFilter, isAlerte]);
 
   const fetchData = async (filter) => {
     filter = encodeURIComponent(filter);
 
     const fetchUrl = `mesannonces/${id_user}/${filter}`;
     const json = await RequestOptionsGet(fetchUrl);
-    //console.log('json mesannonces', json)
+    ////console.log('json mesannonces', json)
     if (json.length > 0) {
       setAnnoncesList(json)
       setResultat('')
@@ -103,15 +121,20 @@ const MesAnnonces = ({ navigation, route }) => {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
             alignContent: 'center',
-          }}>
-          <View style={{ zIndex: zIndexF }}>
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+
+          <View style={{ position: 'absolute', top: 0, right: 0, width: '100%', zIndex: 100 }}>
             <FilterForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
           </View>
-          <View style={{ padding: 10, zIndex: 2, flex: 1, width: '100%' }}>
+          <View style={{ padding: 10, zIndex: 2, flex: 1, width: '100%', marginTop: 70 }}>
 
 
             <View style={styles.row}>
               {loading ? <Loader loading={loading} /> :
+
                 (AnnoncesList.length > 0 ? (
                   AnnoncesList.map((value) => (
                     <TouchableOpacity
@@ -137,28 +160,15 @@ const MesAnnonces = ({ navigation, route }) => {
                               position: 'absolute',
                               right: 10,
                               top: 0,
+                              zIndex: 100
                             }}>
                             {global.User_connecte == id_user &&
-                              <AntDesign
-                                name="edit"
-                                size={24}
-                                color="black"
-                                style={{ margin: 4 }}
-                                onPress={() => {
-                                  navigation.navigate({
-                                    name: 'EditAnnonceScreen',
-                                    params: {
+                              <ActionDelete navigation={navigation} id={value.ID_ance} type='annonce' msgAlerte={msgAlerte} />
 
-                                      id_user: id_user,
-                                      id_annonce: value.ID_ance
-                                    },
-                                  });
-                                }}
-                              />
                             }
                           </View>
                           <Text style={styles.bcText}>
-                            Description: {value.court_description}
+                            {value.court_description}
                           </Text>
                         </View>
                       </View>
@@ -172,6 +182,8 @@ const MesAnnonces = ({ navigation, route }) => {
                       </View>
                     </TouchableOpacity>
                   ))
+
+
                 ) : (
                   <View style={{ width: '100%' }}>
                     <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: '50%', padding: '25%' }}>
@@ -181,7 +193,11 @@ const MesAnnonces = ({ navigation, route }) => {
 
                   </View>
                 ))}
+
             </View>
+            {/*isAlerte && (
+              <ModalSuppression navigation={navigation} msgAlerte={msgAlerte} id={Annonce_id_Sup} type='annonce' />
+            )*/}
           </View>
         </ScrollView>
       </ImageBackground>
@@ -237,6 +253,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     //justifyContent: 'end',
+    zIndex: 1
   },
   bcProfile: {
     borderRadius: 60,
@@ -273,7 +290,7 @@ const styles = StyleSheet.create({
     width: '75%',
   },
   bcText: {
-    maxWidth: 90,
+    //maxWidth: 90,
     color: '#6d6d6d',
   },
   btType: {
@@ -300,6 +317,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
     maxWidth: 130,
+    zIndex: 1
   },
   bcnoreslt: {
     textAlign: 'center',
@@ -307,7 +325,37 @@ const styles = StyleSheet.create({
     padding: 50,
     width: '100%',
   },
+  boxdropstyle:
+  {
+    borderRadius: 0,
+    borderWidth: 0,
+    padding: 0,
+    zIndex: 100
 
+  },
+  dropstyle:
+  {
+    position: 'absolute',
+    top: 0,
+    right: 18,
+    zIndex: 20,
+
+    marginTop: -5,
+    padding: 0,
+    paddingVertical: 0,
+
+    borderRadius: 6,
+
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#909475'
+  },
+  itemdropstyle:
+  {
+    zIndex: 20,
+    paddingVertical: 5,
+    fontWeight: 'bold'
+  },
   txtnoreslt: { fontSize: 16, fontWeight: 'bold', color: '#acacac' },
 });
 export default MesAnnonces;

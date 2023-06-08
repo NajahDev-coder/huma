@@ -1,14 +1,16 @@
 {
+  "name": "HüMA",
+  "displayName": "HüMA",
   "expo": {
     "name": "HüMA",
     "slug": "HuMA",
-    "sdkVersion": "44.0.0",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "1.0.3",
+    "runtimeVersion": "1.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -27,13 +29,15 @@
       "transformer": "node_modules/react-native-css-transformer/index.js"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "http://localhost:3000/api/manifest"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.devnajah.HuMA"
     },
     "plugins": [
       [
@@ -46,6 +50,15 @@
     "extra": {
       "eas": {
         "projectId": "5e3e1641-a3b7-4c08-a955-23c9b9e1ba09"
+      }
+    },
+    "android": {
+      "package": "com.devnajah.HuMA",
+      "versionCode": 1,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAVWheD_CJmbOlCCKBTRKRRkeFJy_Mxzbg"
+        }
       }
     }
   }

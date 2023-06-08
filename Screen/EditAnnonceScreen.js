@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatePicker from 'react-native-datepicker';
 import * as ImagePicker from 'expo-image-picker';
 
+import { WebView } from "react-native-webview";
 import PlacesInput from 'react-native-places-input';
 
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -29,193 +30,268 @@ import {
   ScrollView,
   Button,
   Platform,
+  Switch,
   SafeAreaView,
   TouchableHighlight,
+  StatusBar,
 } from 'react-native';
-import {
-  actions,
-  RichEditor,
-  RichToolbar,
-} from 'react-native-pell-rich-editor';
 
+
+import { Base_url, RequestOptionsGet, SaveImage, RequestOptionsPost, GOOGLE_PLACES_API_KEY, Add_historique } from './utils/utils';
 import FileUpload from './Components/FileUpload';
 import Loader from './Components/Loader';
-//import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
-//import { CameraIcon, ImageIcon } from './icons';
-//import UploadImageScreen from './Components/UploadImageScreen';
+
 import CameraImage, { IdAnnonceImage } from './Components/CameraImageScreen';
+//import RichText from './Components/RichText';
 
-//import { API_URL, GOOGLE_PLACES_API_KEY } from '@env';
+import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 
 
-
+import RenderHtml from 'react-native-render-html';
+const handleHead = ({ tintColor }) => <Text style={{ color: tintColor }}>H1</Text>
+import ModalAlert from './ModalAlert';
 export default function EditAnnonceScreen({ navigation, route }) {
+  //const auteur = 1;
+  //const id_user = route.params?.id_user;
+  const id_annonce = route.params?.id_annonce;
+
   //const auteur = 1;
   const [titre, setTitre] = useState('');
   const [court_description, setCourtDescription] = useState('');
   const [description, setDescription] = useState('');
   const [adresse, setAdresse] = useState('');
-  const [codePostal, setCodePostal] = useState('');
-
-  //const Dateauj = new Date().getDate();
-  /*const [type, setType] = useState('');
-  const [categorie, setCategorie] = useState('');*/
-
-  const [loading, setLoading] = useState(false);
-  const [errortext, setErrortext] = useState('');
-  const [isCreationSuccess, setIsCreationSuccess] = useState(false);
-  const [show, setShow] = useState(true);
+  const [LinkVedio, setLinkVedio] = useState('');
+  const [qty, setQty] = useState(0);
+  const [proposLivraison, setProposLivraison] = useState(0);
   const [Photo, setPhoto] = useState('');
   const [Photo2, setPhoto2] = useState('');
   const [Photo3, setPhoto3] = useState('');
-  const [LinkVedio, setLinkVedio] = useState('');
-  const [UserID, setUserID] = useState(null);
+  const [annonceType, setAnnonceType] = useState(0);
+  const [annonceCateg, setAnnonceCateg] = useState(0);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [type, setType] = useState(0);
+  const [categorie, setCategorie] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [errortext, setErrortext] = useState('');
+  const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
+  const [PreviewVisible1, setPreviewVisible1] = useState(false);
+  const [PreviewVisible2, setPreviewVisible2] = useState(false);
+  const [PreviewVisible3, setPreviewVisible3] = useState(false);
+  const [isAlert, setIsAlert] = useState(false);
+  const [MsgAlerte, setMsgAlert] = useState('');
   const titreInputRef = createRef();
   const link_vedioRef = createRef();
   const court_descriptionInputRef = createRef();
   const descriptionInputRef = createRef();
   const adresseInputRef = createRef();
 
-  const API_URL = 'https://huma.bzh/'
-  const GOOGLE_PLACES_API_KEY = 'AIzaSyAVWheD_CJmbOlCCKBTRKRRkeFJy_Mxzbg'
+  const isExiteFile = async () => {
+    const fetchUrl = `file_existe/${id_annonce}`;
 
-  async function CreateAnnonce(credentials) {
-    return fetch(`${API_URL}api/api/annonce/create`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: credentials,
-    }).then((data) => data.json());
+    const responseJson = await RequestOptionsGet(fetchUrl);
+    // console.log('imgAnnonce', responseJson.data);
+
+    if (responseJson.data.length > 0) {
+
+      /*let dataImg = [];
+      Object.entries(responseJson.data).map(([key, value]) => {
+        dataImg.push({
+          id: key,
+          img: value.url
+        });
+      });*/
+      if (responseJson.data[0]) { setPhoto(responseJson.data[0].url); setPreviewVisible1(true); }
+      if (responseJson.data[1]) { setPhoto2(responseJson.date[1].url); setPreviewVisible2(true); }
+      if (responseJson.data[2]) { setPhoto3(responseJson.data[2].url); setPreviewVisible3(true); }
+      //console.log(dataImg)
+      //setImageAnnonce(dataImg);
+    }
   }
-  const SaveImage = async (Photo, id_annonce, num) => {
-    //alert(UserID);
-    await fetch(`${API_URL}api/api/upload`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      // send our base64 string as POST request
-      body: JSON.stringify({
-        imgsource: Photo.base64,
-        annonce_id: id_annonce,
-        user_id: UserID,
-        num: num
-      }),
-    }).then((response) => response.json()).then((responseJson) => {
-      //console.log('saveImage',responseJson);
-      //console.log('saveImage id',id_annonce);
-    });
+  const fetchData = async () => {
+    const fetchUrl = `annonce/${id_annonce}`;
+
+    const responseJson = await RequestOptionsGet(fetchUrl);
+    //console.log(responseJson)
+    if (responseJson.data.length > 0) {
+      //setAnnonceDetails(responseJson.data[0]);
+      //alert(responseJson.data[0].titre)
+      setTitre(responseJson.data[0].titre);
+      setCourtDescription(responseJson.data[0].court_description);
+      setDescription(responseJson.data[0].description);
+      setLinkVedio(responseJson.data[0].link_vedio)
+      setProposLivraison(responseJson.data[0].propos_livraison)
+      setQty(responseJson.data[0].qty)
+      setAdresse(responseJson.data[0].adresse)
+
+      // const defaultCoordinates = await Location.geocodeAsync(adresse);
+      setLatitude(responseJson.data[0].latitude);
+      setLongitude(responseJson.data[0].longitude);
+      setType(responseJson.data[0].type);
+      setCategorie(responseJson.data[0].categorie);
+      // fadeIn();
+    }
+    // setLoading(false);
   };
 
-  useEffect(() => {
-    (async () => {
-      const user_id = await AsyncStorage.getItem('user_id');
 
-      setUserID(user_id);
-    })();
-  }, [isCreationSuccess]);
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      fetchData();
+      isExiteFile();
+    }
+    return () => { isMounted = false }
+  }, [id_annonce])
+
+  const AfficheDescrp = (description) => {
+    const source = { html: description }
+    return (
+      <RenderHtml
+        // contentWidth={width}
+        source={source}
+      />
+    )
+  }
 
   const handleSubmitButton = async (e) => {
     e.preventDefault();
 
-    const type = await AsyncStorage.getItem('type_id');
-    const categorie = await AsyncStorage.getItem('categ_id');
-    const auteur = await AsyncStorage.getItem('user_email');
-    // const user_id = await AsyncStorage.getItem('user_id');
 
     setErrortext('');
     if (!titre) {
-      alert('Veuillez remplir le titre de votre annonce');
+      const msg = 'Veuillez remplir le titre de votre annonce';
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!court_description && !description) {
-      alert(
-        'Veuillez remplir la courte description et/ou la description de votre annonce'
-      );
+      const msg = 'Veuillez remplir la courte description et/ou la description de votre annonce';
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
-    //if (!adresse && !Ville && !codePostal) {
+    //if (!adresse && !Ville && !codePostal) {  
     if (!adresse) {
-      alert("Veuillez remplir l'adresse complète");
+      const msg = "Veuillez remplir l'adresse complète";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
-
-    //const replaceHTML = description.replace(/<(.|\n)*?>/g, '').trim();
-    //const descriptionHTML = replaceHTML.replace(/&nbsp;/g, '').trim();
+    if (!qty || qty <= 0) {
+      const msg = "Veuillez entrer une quantité valide!";
+      setMsgAlert(msg);
+      setIsAlert(true);
+      return;
+    }
     //Show Loader
     setLoading(true);
-    var dataToSend = {
-      user_id: UserID,
+    var dataToSend1 = {
       titre: titre,
+      linkVedio: LinkVedio,
       court_description: court_description,
       description: description,
-      auteur: auteur,
       adresse: adresse,
-      codePostal: codePostal,
+      latitude: latitude,
+      longitude: longitude,
       type: type,
       categorie: categorie,
+      qty: qty,
+      propos_livraison: proposLivraison
     };
-    var formBody = [];
-    for (var key in dataToSend) {
-      var encodedKey = encodeURIComponent(key);
-      var encodedValue = encodeURIComponent(dataToSend[key]);
-      formBody.push(encodedKey + '=' + encodedValue);
-    }
-    formBody = formBody.join('&');
+    console.log('dfsdsdfsdf:', dataToSend1)
+    const fetchUrl = `annonce/update/:id_annonce`;
+    const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
 
-    const responseJson = await CreateAnnonce(formBody);
+    //console.log('responseJson create annonce:', responseJson)
 
     //Hide Loader
     setLoading(false);
+    //var dataToSend;
+    //if (responseJson.status) {
+    if (responseJson.status === 'success') {
+      //console.log('Photo:::', Photo);
+      const activite = "Votre annonce est bien modifié!"
+      Add_historique(global.User_connecte, activite, global.User_connecte);
 
-    if (responseJson.status) {
-      //console.log('Photo', responseJson);
-      if (Photo != '') SaveImage(Photo, responseJson.data.insertId, 1);
-      if (Photo2 != '') SaveImage(Photo2, responseJson.data.insertId, 2);
-      if (Photo3 != '') SaveImage(Photo3, responseJson.data.insertId, 3);
+      if (Photo) {
+        var dataToSendPhoto = {
+          imgsource: Photo.assets[0].base64,
+          annonce_id: annonce_id,
+          user_id: global.User_connecte,
+          num: 1
+        }
+        SaveImage(dataToSendPhoto);
+      }
+      if (Photo2) {
+        var dataToSendPhoto2 = {
+          imgsource: Photo2.assets[0].base64,
+          annonce_id: annonce_id,
+          user_id: global.User_connecte,
+          num: 2
+        }
+        SaveImage(dataToSendPhoto2);
+      }
+      if (Photo3) {
+        var dataToSendPhoto3 = {
+          imgsource: Photo3.assets[0].base64,
+          annonce_id: annonce_id,
+          user_id: global.User_connecte,
+          num: 3
+        }
+        SaveImage(dataToSendPhoto3);
+      }
       // CameraImage.IdAnnonceImage(capturedImage,responseJson.ID)
-      setIsCreationSuccess(true);
+      setIsUpdateSuccess(true);
       setTimeout(function () {
-        setIsCreationSuccess(false);
+        setIsUpdateSuccess(false);
       }, 2000);
       //console.log('Création annonce réussi!');
       //console.log(responseJson.status)
     } else {
-      setErrortext('Création annonce échouée!');
+      setErrortext('Modification annonce échouée!');
     }
   };
 
-  if (isCreationSuccess) {
+  if (isUpdateSuccess) {
     return (
-      <View
-        style={{
-          flex: 1,
-          //justifyContent: 'center',
-        }}>
+      <View style={styles.mainBody}>
         <ImageBackground
-          source={{ uri: `${API_URL}images/bg_screen.png` }}
+          source={{ uri: Base_url + 'images/bg_screen.png' }}
           resizeMode="cover"
           style={styles.image}>
-          <Image
-            source={{ uri: `${API_URL}images/success.png` }}
-            style={{
-              height: 150,
-              resizeMode: 'contain',
-              alignSelf: 'center',
-            }}
-          />
-          <Text style={styles.successTextStyle}>
-            Annonce crée avec success!
-          </Text>
-          <TouchableOpacity
-            style={styles.buttonStyle}
-            activeOpacity={0.5}
-            onPress={() => props.navigation.navigate('Annonces')}>
-            <Text style={styles.buttonTextStyle}>Liste Annonces</Text>
-          </TouchableOpacity>
+          <Loader loading={loading} />
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{
+              alignContent: 'center',
+            }}>
+
+            <View>
+              <KeyboardAvoidingView enabled>
+                <View style={{ alignItems: 'center', margin: 20 }}>
+                  <Image
+                    source={{ uri: `${Base_url}images/success.png` }}
+                    style={{
+                      height: 150,
+                      resizeMode: 'contain',
+                      alignSelf: 'center',
+                    }}
+                  />
+                  <Text style={styles.successTextStyle}>
+                    Annonce modifiée avec success!
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.buttonStyle}
+                    activeOpacity={0.5}
+                    onPress={() => props.navigation.navigate('Annonces')}>
+                    <Text style={styles.buttonTextStyle}>Liste Annonces</Text>
+                  </TouchableOpacity>
+                </View>
+              </KeyboardAvoidingView>
+            </View>
+          </ScrollView>
         </ImageBackground>
       </View>
     );
@@ -225,7 +301,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
   return (
     <View style={styles.mainBody}>
       <ImageBackground
-        source={{ uri: `${API_URL}images/bg_screen.png` }}
+        source={{ uri: `${Base_url}images/bg_screen.png` }}
         resizeMode="cover"
         style={styles.image}>
         <Loader loading={loading} />
@@ -238,27 +314,86 @@ export default function EditAnnonceScreen({ navigation, route }) {
           }}>
           <KeyboardAvoidingView enabled>
             <View style={styles.sectionStyleImg}>
-              <CameraImage
-                setcaptureImage={setPhoto}
-                style={{ height: 150, width: '100%' }}
+
+
+              {PreviewVisible1 && Photo ? (
+                <ImageBackground
+                  source={{ uri: Photo && Photo }}
+                  style={{ width: '100%', height: 150 }}>
+                  <View>
+                    <AntDesign name="picture" size={24} color="black" onPress={() => setPreviewVisible1(false)} />
+                  </View>
+
+                </ImageBackground>
+              ) : (
+                <CameraImage
+                  captureImage={setPhoto}
+                  //style={{ height: 150, width: '100%' }}
+                  PStyle={{ width: '100%', height: 150 }}
+                  isinvisible={true}
+                />
+              )}
+            </View>
+            <View style={styles.section2Img}>
+              <View style={styles.sectionStyleImg2}>
+                {PreviewVisible3 && Photo3 ? (
+                  <ImageBackground
+                    source={{ uri: Photo3 }}
+                    style={{ width: 80, height: 80 }}>
+                    <View>
+                      <AntDesign name="picture" size={24} color="black" onPress={() => setPreviewVisible3(false)} />
+                    </View>
+
+                  </ImageBackground>
+                )
+                  : (
+                    <CameraImage
+                      captureImage={setPhoto3}
+                      //style={{ height: 150, width: '100%' }}
+                      PStyle={{ width: 80, height: 80 }}
+                      isinvisible={true}
+                    />
+                  )}
+              </View>
+
+              <View style={styles.sectionStyleImg2}>
+                {PreviewVisible2 && Photo2 ? (
+                  <ImageBackground
+                    source={{ uri: Photo2 }}
+                    style={{ width: 80, height: 80 }}>
+                    <View>
+                      <AntDesign name="picture" size={24} color="black" onPress={() => setPreviewVisible2(false)} />
+                    </View>
+
+                  </ImageBackground>
+                )
+                  : (
+                    <CameraImage
+                      captureImage={setPhoto2}
+                      //style={{ height: 150, width: '100%' }}
+                      PStyle={{ width: 80, height: 80 }}
+                      isinvisible={true}
+                    />
+                  )}
+              </View>
+            </View>
+            <View style={styles.sectionStyleSwitch}>
+              <Text style={styles.labelStyle}>Livraison </Text>
+              <Switch
+                trackColor={{ false: '#767577', true: '#c4d63c' }}
+                thumbColor={proposLivraison ? '#c4d63c' : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={() =>
+                  setProposLivraison((proposLivraison) => !proposLivraison)
+                }
+                value={proposLivraison}
               />
             </View>
-            {Photo ? (
-              <View style={styles.section2Img}>
-                <View style={styles.sectionStyleImg2}>
-                  <CameraImage setcaptureImage={setPhoto2} />
-                </View>
-                <View style={styles.sectionStyleImg2}>
-                  <CameraImage setcaptureImage={setPhoto3} />
-                </View>
-              </View>
-            ) : (
-              <></>
-            )}
             <View style={styles.sectionStyle}>
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(titre) => setTitre(titre)}
+                value={titre}
                 underlineColorAndroid="#f000"
                 placeholder="Entrez Le Titre  "
                 placeholderTextColor="#222222"
@@ -269,12 +404,13 @@ export default function EditAnnonceScreen({ navigation, route }) {
             <View style={styles.sectionStyle}>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(link_vedio) => setLinkVedio(LinkVedio)}
+                onChangeText={(LinkVedio) => setLinkVedio(LinkVedio)}
+                value={LinkVedio}
                 underlineColorAndroid="#f000"
-                placeholder="Entrez le Lien vidéo  "
+                placeholder="Entrez le Lien vidéo sans http(s):// "
                 placeholderTextColor="#222222"
                 autoCapitalize="sentences"
-
+                multiline={true}
               />
             </View>
             <View style={styles.sectionStyle}>
@@ -283,6 +419,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
                 onChangeText={(court_description) =>
                   setCourtDescription(court_description)
                 }
+                value={court_description}
                 underlineColorAndroid="#f000"
                 placeholder="Entrez votre courte description"
                 placeholderTextColor="#222222"
@@ -293,11 +430,13 @@ export default function EditAnnonceScreen({ navigation, route }) {
 
 
             <View style={styles.richTextContainer}>
+
               <RichEditor
                 ref={descriptionInputRef}
                 onChange={(description) => setDescription(description)}
-                placeholder="Entrez votre description"
-                androidHardwareAccelerationDisabled={true}
+                initialContentHTML={description}
+                //editorInitializedCallback={() => this.onEditorInitialized()}
+                //androidHardwareAccelerationDisabled={true}
                 style={styles.richTextEditorStyle}
                 initialHeight={250}
 
@@ -318,16 +457,18 @@ export default function EditAnnonceScreen({ navigation, route }) {
                 ]}
                 style={styles.richTextToolbarStyle}
               />
+
             </View>
 
             <View style={styles.sectionStyle2}>
               <GooglePlacesAutocomplete
-                placeholder="Entrez la localisation  "
+                //placeholder="Entrez la localisation  "
+                placeholder={adresse}
                 query={{
                   key: GOOGLE_PLACES_API_KEY,
                   language: 'fr', // language of the results
                 }}
-                onPress={(data, details = null) => setAdresse(data.description)}
+                onPress={(data, details = null) => { setAdresse(data.description) }}
                 onFail={(error) => console.error(error)}
                 requestUrl={{
                   url: 'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api',
@@ -353,6 +494,19 @@ export default function EditAnnonceScreen({ navigation, route }) {
                 ref={adresseInputRef}
               />
             </View>
+            <View style={styles.sectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(qty) => setQty(qty)}
+                keyboardType='numeric'
+                value={qty.toString()}
+                underlineColorAndroid="#f000"
+                placeholder="quantité "
+                placeholderTextColor="#222222"
+                autoCapitalize="sentences"
+                multiline={false}
+              />
+            </View>
             <Text style={styles.errorTextStyle}>{errortext}</Text>
 
             <TouchableOpacity
@@ -361,6 +515,9 @@ export default function EditAnnonceScreen({ navigation, route }) {
               onPress={handleSubmitButton}>
               <Text style={styles.buttonTextStyle}>Valider</Text>
             </TouchableOpacity>
+            {isAlert && (
+              <ModalAlert msgAlerte={MsgAlerte} />
+            )}
           </KeyboardAvoidingView>
         </ScrollView>
       </ImageBackground>
@@ -370,7 +527,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   mainBody: {
-    //flex: 1,
+    flex: 1,
     justifyContent: 'center',
     alignContent: 'center',
     //paddingTop: Constants.statusBarHeight + 10,
@@ -401,13 +558,14 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
   },
+
   sectionStyle: {
     flexDirection: 'row',
     height: 40,
-    marginTop: 20,
+    marginTop: 10,
     marginLeft: 25,
     marginRight: 25,
-    margin: 10,
+    marginBottom: 10,
   },
   sectionStyle2: {
     flex: 1,
@@ -438,6 +596,7 @@ const styles = StyleSheet.create({
   buttonTextStyle: {
     color: '#FFFFFF',
     paddingVertical: 10,
+    padding: 10,
     fontSize: 16,
   },
   inputStyle: {
@@ -467,7 +626,26 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     margin: 10,
   },
-
+  title: {
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    paddingVertical: 10,
+  },
+  root: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+    backgroundColor: '#eaeaea',
+  },
+  editor: {
+    flex: 1,
+    padding: 0,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginHorizontal: 30,
+    marginVertical: 5,
+    backgroundColor: 'white',
+    minHeight: 150
+  },
   richTextEditorStyle: {
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
@@ -493,4 +671,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     // width:'95%'
   },
+  sectionStyleSwitch: {
+    //flexDirection: 'row',
+    height: 40,
+    margin: 20,
+    marginBottom: 0
+  },
+  labelStyle: {
+    marginLeft: 10,
+    marginBottom: -35,
+    color: '#555555',
+    fontWeight: 'bold'
+    //width: '80%',
+  },
+
 });

@@ -13,10 +13,12 @@ import {
   Keyboard,
   TouchableOpacity,
   ScrollView,
+  Pressable
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Loader from './Components/Loader';
-
+import ModalAlert from './ModalAlert';
+import { useTogglePasswordVisibility } from './Components/useTogglePasswordVisibility';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Base_url, RequestOptionsPost, GOOGLE_PLACES_API_KEY } from './utils/utils';
 export default function RegisterScreen(props) {
@@ -26,8 +28,11 @@ export default function RegisterScreen(props) {
   const [userTel, setUserTel] = useState('');
   const [userAddress, setUserAddress] = useState('');
   const [userPassword, setUserPassword] = useState('');
+  const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
+  const [isAlert, setIsAlert] = useState(false);
+  const [MsgAlerte, setMsgAlert] = useState('');
   const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
 
 
@@ -44,27 +49,39 @@ export default function RegisterScreen(props) {
 
     setErrortext('');
     if (!userName) {
-      alert('Veuillez remplir votre Nom');
+      const msg = "Veuillez remplir votre Pseudo!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!userEmail) {
-      alert('Veuillez remplir votre Email');
+      const msg = "Veuillez remplir votre Email!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!userAge) {
-      alert('Veuillez remplir votre Age');
+      const msg = "Veuillez remplir votre Age!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!userTel) {
-      alert('Veuillez remplir votre Tel');
+      const msg = "Veuillez remplir votre Tél!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!userAddress) {
-      alert('Veuillez remplir votre Addresse');
+      const msg = "Veuillez remplir votre Addresse!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!userPassword) {
-      alert('Veuillez remplir votre Password');
+      const msg = "Veuillez remplir votre Password!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     //Show Loader
@@ -82,12 +99,11 @@ export default function RegisterScreen(props) {
     const responseJson = await RequestOptionsPost(dataToSend, fetchUrl);
     //Hide Loader
     setLoading(false);
-    console.log(responseJson);
+    //console.log(responseJson);
     // If server response message same as Data Matched
     if (responseJson.status == 'success') {
       setIsRegistraionSuccess(true);
-      console.log(
-        '	Inscription Réussie . Veuillez vous connecter pour continuer.'
+      console.log('Inscription Réussie . Veuillez vous connecter pour continuer.'
       );
       setErrortext('')
     } else {
@@ -127,6 +143,9 @@ export default function RegisterScreen(props) {
                     <Text style={styles.buttonTextStyle}>Se Connecter</Text>
                   </TouchableOpacity>
                 </View>
+                {isAlert && (
+                  <ModalAlert msgAlerte={MsgAlerte} />
+                )}
               </KeyboardAvoidingView>
             </View>
           </ScrollView>
@@ -165,7 +184,7 @@ export default function RegisterScreen(props) {
                   style={styles.inputStyle}
                   onChangeText={(UserName) => setUserName(UserName)}
                   underlineColorAndroid="#f000"
-                  placeholder="Nom"
+                  placeholder="Pseudo"
                   placeholderTextColor="#8b9cb5"
                   autoCapitalize="sentences"
                   returnKeyType="next"
@@ -195,17 +214,21 @@ export default function RegisterScreen(props) {
                 <TextInput
                   style={styles.inputStyle}
                   onChangeText={(UserPassword) => setUserPassword(UserPassword)}
+                  secureTextEntry={passwordVisibility}
                   underlineColorAndroid="#f000"
                   placeholder="Password"
                   placeholderTextColor="#8b9cb5"
                   ref={passwordInputRef}
                   returnKeyType="next"
-                  secureTextEntry={true}
+
                   onSubmitEditing={() =>
                     ageInputRef.current && ageInputRef.current.focus()
                   }
                   blurOnSubmit={false}
                 />
+                <Pressable onPress={handlePasswordVisibility}>
+                  <MaterialCommunityIcons name={rightIcon} size={22} color="grey" style={{ position: 'absolute', top: 7, right: 8 }} />
+                </Pressable>
               </View>
               <View style={styles.SectionStyle}>
                 <TextInput
@@ -319,11 +342,13 @@ const styles = StyleSheet.create({
     //paddingTop: Constants.statusBarHeight + 10,
   },
   SectionStyle: {
+    flex: 1,
     flexDirection: 'row',
     height: 35,
     marginLeft: 35,
     marginRight: 35,
     margin: 10,
+    width: '90%'
   },
   sectionStyle2: {
     //flex: 1,
@@ -360,13 +385,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   inputStyle: {
-    flex: 1,
+    //flex: 1,
     color: '#222222',
-    paddingLeft: 15,
-    paddingRight: 15,
+    padding: 8,
     borderWidth: 1,
     borderRadius: 30,
     borderColor: '#dadae8',
+    flexDirection: 'row',
+    width: '85%'
+
   },
   errorTextStyle: {
     color: 'red',

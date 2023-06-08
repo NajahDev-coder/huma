@@ -24,7 +24,7 @@ const PaymentScreen: React.FC<Props> = ({ paymentMethod, children }) => {
           urlScheme: 'stripe-example',
           setUrlSchemeOnAndroid: true,
         });
-        console.log('response stripe:', response)
+        //console.log('response stripe:', response)
         setLoading(false);
       }
     }

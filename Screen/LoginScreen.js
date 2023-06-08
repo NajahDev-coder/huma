@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Loader from './Components/Loader';
 import { Base_url } from './utils/utils'
+import ModalAlert from './ModalAlert';
 //import SocialLogin from './Components/SocialLogin';
 const LoginScreen = ({ navigation, connecte }) => {
   const [userEmail, setUserEmail] = useState('');
@@ -27,6 +28,9 @@ const LoginScreen = ({ navigation, connecte }) => {
   const [message, setMessage] = useState(' ');
   const [UserName, setUserName] = useState('HüMA');
   const [animating, setAnimating] = useState(false);
+  const [isAlert, setIsAlert] = useState(false);
+  const [MsgAlerte, setMsgAlert] = useState('');
+
   let componentMounted = true;
   const passwordInputRef = createRef();
   const image = { uri: Base_url + 'images/bg_screen.png' };
@@ -78,11 +82,15 @@ const LoginScreen = ({ navigation, connecte }) => {
   const handleSubmitPress = () => {
     setErrortext('');
     if (!userEmail) {
-      alert('Veuillez remplir votre Email');
+      const msg = "Veuillez remplir votre Email!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     if (!userPassword) {
-      alert('Veuillez remplir votre Password');
+      const msg = "Veuillez remplir votre Password!";
+      setMsgAlert(msg);
+      setIsAlert(true);
       return;
     }
     let dataToSend = { email: userEmail, password: userPassword };
@@ -106,7 +114,7 @@ const LoginScreen = ({ navigation, connecte }) => {
       .then((responseJson) => {
         //Hide Loader
         setLoading(false);
-        //console.log(responseJson);
+        ////console.log(responseJson);
         // If server response message same as Data Matched
         if (responseJson.status === 'success') {
           AsyncStorage.setItem('user_id', String(responseJson.data[0].id));
@@ -123,7 +131,7 @@ const LoginScreen = ({ navigation, connecte }) => {
           navigation.replace('SplashScreen');
         } else {
           setErrortext('Please check your email id or password');
-          //console.log('Please check your email id or password');
+          ////console.log('Please check your email id or password');
         }
       })
       .catch((error) => {
@@ -210,6 +218,9 @@ const LoginScreen = ({ navigation, connecte }) => {
                   Inscription
                 </Text>
               </View>
+              {isAlert && (
+                <ModalAlert msgAlerte={MsgAlerte} />
+              )}
             </KeyboardAvoidingView>
           </View>
           {/*<SocialLogin />*/}

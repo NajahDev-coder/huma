@@ -8,7 +8,7 @@ import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-lis
 import moment from 'moment';
 
 import GetProfile from '../Components/GetProfile';
-import { Base_url, RequestOptionsGet, ShowDetailAnnonce, ViewProfile } from '../utils/utils'
+import { NaVIG, Base_url, RequestOptionsGet, ShowDetailAnnonce, ViewProfile } from '../utils/utils'
 import { dateDiff } from '../includes/functions';
 
 
@@ -27,7 +27,7 @@ const Notifications = ({ navigation, id_user, widthIcone }) => {
 
 
   const showListNotif = () => {
-   // console.log('fadeAnimation', fadeAnimation);
+    // console.log('fadeAnimation', fadeAnimation);
 
     const stat = JSON.stringify(fadeAnimation) == '1' ? 0 : 1;
     const duration = JSON.stringify(fadeAnimation) == '1' ? 100 : 500
@@ -43,17 +43,7 @@ const Notifications = ({ navigation, id_user, widthIcone }) => {
       setEnable(stat);
     }, 20);
   };
-  const NaVIG = (idNotif, type_activite) => {
-    //console.log(idNotif);
-    setFadeAnimation(0)
-    if (type_activite.includes('amis')) {
-      ViewProfile(idNotif, navigation);
-    }
-    else {
-      ShowDetailAnnonce(idNotif, navigation);
-    }
 
-  }
   useEffect(() => {
     const today = new Date();
 
@@ -70,7 +60,7 @@ const Notifications = ({ navigation, id_user, widthIcone }) => {
           return (
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Notifications - </Text>
-              <TouchableOpacity onPress={() => navigation.navigate({ name: 'ListNotifications' })}>
+              <TouchableOpacity onPress={() => { navigation.navigate({ name: 'ListNotifications' }) }}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Voir tout</Text>
               </TouchableOpacity>
             </View>
@@ -103,7 +93,9 @@ const Notifications = ({ navigation, id_user, widthIcone }) => {
       const date = new Date(value.date);
       return (
 
-        <TouchableOpacity key={value.key} onPress={() => NaVIG(value.id_activite, value.type_activite)} style={styles.bcBlock}>
+        <TouchableOpacity key={value.key} onPress={() => {
+          NaVIG(value.id_activite, value.type_activite, navigation)
+        }} style={styles.bcBlock} >
           <GetProfile user_id={value.id_user1} navigation={navigation} img_prof={value.img_prof} />
 
           <View style={styles.bcDetaille}>
@@ -124,7 +116,7 @@ const Notifications = ({ navigation, id_user, widthIcone }) => {
       getNotification(id_user);
     }
     return () => (isSubscribed = false);
-  }, [fadeAnimation]);
+  }, []);
 
   return (
     <View style={styles.bc_notif}>
@@ -197,7 +189,7 @@ const styles = StyleSheet.create({
     elevation: 9,
     backgroundColor: '#ffffff',
     padding: 5,
-    paddingRight: 10,  
+    paddingRight: 10,
     zIndex: 20,
     borderRadius: 10,
     borderWidth: 0,
@@ -223,10 +215,13 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   bcText: {
-    width: '100%',
+    width: '95%',
+    paddingRight: 5,
   },
   bcSmText: {
     fontSize: 11,
+    // width: '95%',
+    paddingRight: 5,
   },
 });
 export default Notifications;

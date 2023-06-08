@@ -32,25 +32,22 @@ import {
   Platform,
   SafeAreaView,
   TouchableHighlight,
+  StatusBar,
 } from 'react-native';
-import {
-  actions,
-  RichEditor,
-  RichToolbar,
-} from 'react-native-pell-rich-editor';
+
 
 import { Base_url, SaveImage, RequestOptionsPost, GOOGLE_PLACES_API_KEY, Add_historique } from './utils/utils';
 import FileUpload from './Components/FileUpload';
 import Loader from './Components/Loader';
-//import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
-//import { CameraIcon, ImageIcon } from './icons';
-//import UploadImageScreen from './Components/UploadImageScreen';
+import ModalAlert from './ModalAlert';
 import CameraImage, { IdAnnonceImage } from './Components/CameraImageScreen';
+//import RichText from './Components/RichText';
+
+import { actions, RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 
 
-
-
+const handleHead = ({ tintColor }) => <Text style={{ color: tintColor }}>H1</Text>
 export default function CreateAnnonceScreen(props) {
   //const auteur = 1;
   const [titre, setTitre] = useState('');
@@ -58,6 +55,8 @@ export default function CreateAnnonceScreen(props) {
   const [description, setDescription] = useState('');
   const [adresse, setAdresse] = useState('');
   const [codePostal, setCodePostal] = useState('');
+  const [proposLivraison, setProposLivraison] = useState(0);
+  const [qty, setQty] = useState(0);
 
   //const Dateauj = new Date().getDate();
   /*const [type, setType] = useState('');
@@ -72,6 +71,8 @@ export default function CreateAnnonceScreen(props) {
   const [Photo3, setPhoto3] = useState('');
   const [LinkVedio, setLinkVedio] = useState('');
   const [UserID, setUserID] = useState(null);
+  const [isAlert, setIsAlert] = useState(false);
+  const [MsgAlerte, setMsgAlert] = useState('');
   const titreInputRef = createRef();
   const link_vedioRef = createRef();
   const court_descriptionInputRef = createRef();
@@ -93,41 +94,44 @@ export default function CreateAnnonceScreen(props) {
     const categorie = await AsyncStorage.getItem('categ_id');
     const auteur = await AsyncStorage.getItem('user_email');
     // const user_id = await AsyncStorage.getItem('user_id');
-    const defaultCoordinates= await Location.geocodeAsync(adresse); 
-    const latitude=defaultCoordinates[0].latitude;
-    const longitude=defaultCoordinates[0].longitude;
+    const defaultCoordinates = await Location.geocodeAsync(adresse);
+    const latitude = defaultCoordinates[0].latitude;
+    const longitude = defaultCoordinates[0].longitude;
 
     setErrortext('');
     if (!titre) {
-      alert('Veuillez remplir le titre de votre annonce');
-      return;
+      const msg = "Veuillez remplir le titre de votre annonce";
+      setMsgAlert(msg);
+      setIsAlert(true);
     }
     if (!court_description && !description) {
-      alert(
-        'Veuillez remplir la courte description et/ou la description de votre annonce'
-      );
-      return;
+      const msg = 'Veuillez remplir la courte description et/ou la description de votre annonce';
+      setMsgAlert(msg);
+      setIsAlert(true);
     }
     //if (!adresse && !Ville && !codePostal) {  
     if (!adresse) {
-      alert("Veuillez remplir l'adresse complète");
-      return;
+      const msg = "Veuillez remplir l'adresse complète";
+      setMsgAlert(msg);
+      setIsAlert(true);
     }
-    
+
     //Show Loader
     setLoading(true);
     var dataToSend1 = {
       user_id: global.User_connecte,
       titre: titre,
-      linkVedio:LinkVedio,
+      linkVedio: LinkVedio,
       court_description: court_description,
       description: description,
       auteur: auteur,
       adresse: adresse,
       latitude: latitude,
-      longitude:longitude,
+      longitude: longitude,
       type: type,
       categorie: categorie,
+      propos_livraison: proposLivraison,
+      qty: qty
     };
     //console.log('dataToSend', dataToSend)
     const fetchUrl = `annonce/create`;
@@ -141,8 +145,8 @@ export default function CreateAnnonceScreen(props) {
     //if (responseJson.status) {
     if (responseJson.status === 'success') {
       //console.log('Photo:::', Photo);
-      const activite = "Vous avez ajouter une nouvelle annonce!"
-      Add_historique(global.User_connecte, activite);
+      const activite = "Vous avez ajouté une nouvelle annonce!"
+      Add_historique(global.User_connecte, activite, global.User_connecte);
 
       if (Photo) {
         var dataToSendPhoto = {
@@ -218,6 +222,9 @@ export default function CreateAnnonceScreen(props) {
                     <Text style={styles.buttonTextStyle}>Liste Annonces</Text>
                   </TouchableOpacity>
                 </View>
+                {isAlert && (
+                  <ModalAlert msgAlerte={MsgAlerte} />
+                )}
               </KeyboardAvoidingView>
             </View>
           </ScrollView>
@@ -255,23 +262,34 @@ export default function CreateAnnonceScreen(props) {
               <View style={styles.section2Img}>
                 <View style={styles.sectionStyleImg2}>
                   <CameraImage
-                    captureImage={setPhoto2}
-                    PStyle={{ width: 80, height: 80 }}
-                    isinvisible={true}
-                  />
-                </View>
-                <View style={styles.sectionStyleImg2}>
-                  <CameraImage
                     captureImage={setPhoto3}
                     PStyle={{ width: 80, height: 80 }}
                     isinvisible={true}
 
                   />
                 </View>
+                <View style={styles.sectionStyleImg2}>
+                  <CameraImage
+                    captureImage={setPhoto2}
+                    PStyle={{ width: 80, height: 80 }}
+                    isinvisible={true}
+                  />
+                </View>
               </View>
             ) : (
               <></>
             )}
+            <View style={styles.SectionStyle}>
+              <Text style={styles.labelStyle}>Livraison </Text>
+              <Switch
+                trackColor={{ false: '#767577', true: '#c4d63c' }}
+                thumbColor={userTransporteur ? '#c4d63c' : '#f4f3f4'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={() =>
+                  setProposLivraison((proposLivraison) => !proposLivraison)
+                }
+              />
+            </View>
             <View style={styles.sectionStyle}>
               <TextInput
                 style={styles.inputStyle}
@@ -336,6 +354,41 @@ export default function CreateAnnonceScreen(props) {
                 ]}
                 style={styles.richTextToolbarStyle}
               />
+              {/*
+              {Platform=='web'? (
+              <RichText/> 
+              ):(
+              <SafeAreaView style={styles.root}>
+              
+      <StatusBar style="auto" />
+      <QuillToolbar editor={descriptionInputRef} options="basic" theme="light" />
+      <QuillEditor
+        style={styles.editor}
+        ref={descriptionInputRef}
+        initialHtml="<h1>Votre description...</h1>"
+      />
+    </SafeAreaView>
+    )}
+    
+    <SafeAreaView>
+      <ScrollView>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}	style={{ flex: 1 }}>
+          <Text>Description:</Text>
+          <RichEditor   
+              ref={descriptionInputRef}
+              onChange={(description) => setDescription(description)}
+              style={{height:100}} 
+          />
+        </KeyboardAvoidingView>
+      </ScrollView>
+
+      <RichToolbar
+        editor={descriptionInputRef}
+        actions={[ actions.setBold, actions.setItalic, actions.setUnderline, actions.heading1 ]}
+        iconMap={{ [actions.heading1]: handleHead }}
+      />
+    </SafeAreaView>
+    */}
             </View>
 
             <View style={styles.sectionStyle2}>
@@ -345,7 +398,7 @@ export default function CreateAnnonceScreen(props) {
                   key: GOOGLE_PLACES_API_KEY,
                   language: 'fr', // language of the results
                 }}
-                onPress={(data, details = null) => {console.log(details);setAdresse(data.description)}} 
+                onPress={(data, details = null) => { setAdresse(data.description) }}
                 onFail={(error) => console.error(error)}
                 requestUrl={{
                   url: 'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api',
@@ -486,7 +539,26 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     margin: 10,
   },
-
+  title: {
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    paddingVertical: 10,
+  },
+  root: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+    backgroundColor: '#eaeaea',
+  },
+  editor: {
+    flex: 1,
+    padding: 0,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginHorizontal: 30,
+    marginVertical: 5,
+    backgroundColor: 'white',
+    minHeight: 150
+  },
   richTextEditorStyle: {
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,

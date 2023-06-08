@@ -7,7 +7,7 @@ export const RichTextComponents = () => {
     const [value, setValue] = useState('');
 
     const getColor = (selected: boolean): string => {
-      return selected ? 'red' : 'black';
+        return selected ? 'red' : 'black';
     };
 
     const getActionMap = (): ActionMap => {
@@ -23,7 +23,7 @@ export const RichTextComponents = () => {
     };
 
     const onValueChange = (v: string): void => {
-        console.log('onValueChange', v);
+        //console.log('onValueChange', v);
         setValue(v);
     };
 

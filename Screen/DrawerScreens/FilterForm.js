@@ -39,7 +39,7 @@ const workPlace = {
   geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
 };
 const windowWidth = Dimensions.get('window').width - 100;
-const windowheight = Dimensions.get('window').height + 20;
+const windowheight = Dimensions.get('window').height - 150;
 
 /*const currentPlace = {
       description: 'Position',
@@ -88,7 +88,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
 
       setShowCalendar(false);
 
-      setWindowHeight(400)
+      // setWindowHeight(400)
     } else {
       setStartDate(date);
       setSelectedStartDate(dateselec);
@@ -144,11 +144,11 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
   };
   //let Adfilter;
   const getCoordinates = async () => {
-   /* const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      setTxtError('Veuillez activer votre poisition!');
-      return;
-    }*/ 
+    /* const { status } = await Location.requestForegroundPermissionsAsync();
+     if (status !== 'granted') {
+       setTxtError('Veuillez activer votre poisition!');
+       return;
+     }*/
     const userLocation = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
     // setcCULocation(userLocation);
 
@@ -177,7 +177,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
 
     const dateStart = selectedStartDate != null ? selectedStartDate : ''
     const dateEnd = selectedEndDate != null ? selectedEndDate : ''
-    console.log('categ', categ)
+    //console.log('categ', categ)
     let filter = {
       adresse: currAdresse,
       titre: titreF,
@@ -186,7 +186,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
       dateStart: dateStart,
       dateEnd: dateEnd,
     };
-    console.log('filter...', filter)
+    //console.log('filter...', filter)
     await AsyncStorage.setItem('add_filter', JSON.stringify(filter));
 
     setRefreshKey((oldKey) => oldKey + 1);
@@ -210,12 +210,13 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
     //console.log('refraichissement....');
 
     OnFilter();
+    ShowAllFilter(1)
     setRefreshKey((oldKey) => oldKey + 1);
   };
   const ShowAllFilter = (stat) => {
     setEnable(!stat)
     if (stat == 0) {
-      setWindowHeight(400)
+      setWindowHeight(windowheight)
       setIcoFilter("filter-variant-minus");
       OnIndex(20);
     }
@@ -242,7 +243,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
     }
     return () => (isSubscribed = false);
     //}, [RefreshKey, selectedStartDate, selectedEndDate, selectedDate]);
-  }, [RefreshKey, windowHeight, Enable]);
+  }, [RefreshKey, Enable]);
 
   const onPressCalendar = () => {
     setSelectedStartDate(null);
@@ -250,11 +251,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
     setSelectedDate('');
     setShowCalendar((oldValue) => !oldValue);
     //alert(showCalendar)
-    if (!showCalendar) {
-      setWindowHeight(windowheight - 170)
-    }
-    else
-      setWindowHeight(400)
+
   };
 
   //render() {
@@ -376,8 +373,8 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
                 //AddFilter();  
               }}
               data={TypeList}
-              boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
-              inputStyles={{ fontSize: 12, color: '#5a5959' }}
+              boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5, zIndex: 1 }}
+              inputStyles={{ fontSize: 12, color: '#5a5959', }}
               dropdownStyles={styles.dropselectStyle}
               dropdownItemStyles={styles.itemdropselectStyle}
               defaultOption={{ key: 0, value: 'Type' }}
@@ -467,7 +464,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     //flexWrap: 'wrap',
     width: '100%',
-    paddingLeft: Platform.OS == 'web' ? 0 : 12
+    paddingLeft: Platform.OS == 'web' ? 0 : 12,
+    zIndex: 1
   },
   rowF: {
     paddingVertical: 15,
@@ -571,8 +569,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   dropselectStyle:
-    { backgroundColor: 'white', position: 'absolute', top: 37, width: '100%', zIndex: 100 },
+    { backgroundColor: 'white', width: '100%' },
   itemdropselectStyle:
-    { borderBottomWidth: 1, borderBottomColor: '#efefef' }
+    { borderBottomWidth: 1, borderBottomColor: '#efefef', zIndex: 100 }
 });
 export default FilterForm;

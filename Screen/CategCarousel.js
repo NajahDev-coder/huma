@@ -19,7 +19,7 @@ const data = [
     { backgroundColor: 'yellow' }
 ];
 
-  const url = "https://huma.bzh/";
+const url = "https://huma.bzh/";
 /*const [SousCateg, setSousCateg] = useState([]);
 const [PCategID, setPCategID] = useState(1)*/
 
@@ -36,7 +36,7 @@ export default class CategCarousel extends Component {
     /*let isSubscribed = true*/
     displaySCateg = () => {
         //const PCategID = this.state.PCategID;
-        const baseUrl = url+'api/api/categories';
+        const baseUrl = url + 'api/api/categories';
 
         fetch(baseUrl)
             .then((response) => response.json())
@@ -57,7 +57,7 @@ export default class CategCarousel extends Component {
         this.isComponentMounted = true;
         this.displaySCateg()
         const Categs = this.state.Categ
-        //console.log("this.state.Categ", Categs)
+        ////console.log("this.state.Categ", Categs)
     }
     componentWillUnmount = () => {
         this.isComponentMounted = false;

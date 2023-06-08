@@ -20,8 +20,8 @@ const RatingScreen = ({ user_id1, user_id2 }) => {
       avis: avis
     }
     const responseJson = await RequestOptionsPost(dataToSend, 'update_user_evaluation')
-    //console.log("update_user_evaluation:" + responseJson);
-    // console.log("Evaluation: "+evaluation+" " + responseJson.rating);  
+    ////console.log("update_user_evaluation:" + responseJson);
+    // //console.log("Evaluation: "+evaluation+" " + responseJson.rating);  
     if (responseJson) {
 
       setTextSuccess('Votre avis est bien publié!')
@@ -31,18 +31,18 @@ const RatingScreen = ({ user_id1, user_id2 }) => {
   }
   const RatingProccess = (rating) => {
 
-    console.log("Rating is: ", rating);
+    //console.log("Rating is: ", rating);
     //Alert.alert(rating)
     setEvaluation(rating)
     setModalVisible(true)
 
   }
   const Noter = (user_id1 != user_id2 && user_id2 != 0) ? 1 : 0;
-  //console.log("Noter:", user_id1)
+  ////console.log("Noter:", user_id1)
   const getNbreEtoile = async () => {
     const fetchURL = `user_rating/${user_id1}`
     const resp = await RequestOptionsGet(fetchURL)
-    //console.log('user_rating', fetchURL)
+    ////console.log('user_rating', fetchURL)
 
     //alert(resp.rating)
     setRate(resp.rating);
@@ -69,9 +69,10 @@ const RatingScreen = ({ user_id1, user_id2 }) => {
             startingValue={rate > 0 ? rate : 0}
             defaultRating={rate > 0 ? rate : 0}
             size={16}
+            reviews={1}
             //style={{ marginTop: 3 }}
             onFinishRating={(val) => RatingProccess(val)}
-            ratingContainerStyle={{ marginTop: -55 }}
+            ratingContainerStyle={{ marginTop: -58 }}
           />
           :
           <Rating

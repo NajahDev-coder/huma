@@ -31,23 +31,22 @@ const GetSession = ({ navigation, route, id_user, style }) => {
   const [url] = useState('https://huma.bzh/');
   const [MyUserId, setMyUserId] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
- const [status, setStatus]=useState('warning')
+  const [status, setStatus] = useState('warning')
   useEffect(() => {
     let isSubscribed = true;
 
     if (isSubscribed) {
-      if(id_user!== null && id_user!== 0)
-      {
-        //console.log('getsession id_user:',id_user)
-      getSession(id_user);
+      if (id_user !== null && id_user !== 0) {
+        ////console.log('getsession id_user:',id_user)
+        getSession(id_user);
 
       }
-      
-          
+
+
     }
     return () => (isSubscribed = false);
-  //}, [ refreshKey]);
-   });
+    //}, [ refreshKey]);
+  });
 
   const getSession = async (id_user) => {
     const baseUrl = url + `api/api/session/${id_user}`;
@@ -66,24 +65,24 @@ const GetSession = ({ navigation, route, id_user, style }) => {
       });
   };
   return (
-    
-    <View style={styles.boule}>   
-       <Badge    
-       status = {status}    
-       containerStyle={style || styles.boules }                  
-       badgeStyle= {{width:15, height:15, borderRadius:50}}     
-      />          
-             
-    </View>  
-  ); 
+
+    <View style={styles.boule}>
+      <Badge
+        status={status}
+        containerStyle={style || styles.boules}
+        badgeStyle={{ width: 15, height: 15, borderRadius: 50 }}
+      />
+
+    </View>
+  );
 };
 const styles = StyleSheet.create({
   boule: {
-    position: 'absolute',  
-    top: 6,    
-    right: -3,  
-    zIndex:10      
+    position: 'absolute',
+    top: 6,
+    right: -3,
+    zIndex: 10
   },
- 
+
 });
 export default GetSession;

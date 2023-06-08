@@ -12,7 +12,7 @@ import { Avatar, Badge, Icon, withBadge } from 'react-native-elements'
 const GetProfile = ({ navigation, user_id, user_name, img_prof, StyleDimens }) => {
   const strUser = '_U' + user_id + '.jpeg'
   const imgProfile = img_prof && img_prof.includes(strUser) ? { uri: `${Base_url}images/${img_prof}` } : { uri: `${Base_url}images/compte.png` }
-  //  console.log("imgProfile",imgProfile)
+  //  //console.log("imgProfile",imgProfile)
   //const DefaultimageProfile = { uri:   `${Base_url}images/compte.png` }; 
   //const [imageProfile, setImageProfile]=useState(imgProfile  || DefaultimageProfile )  
 

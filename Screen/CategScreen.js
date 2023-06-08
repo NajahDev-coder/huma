@@ -43,7 +43,7 @@ const CategScreen = ({ navigation }) => {
 
     if (isSubscribed) {
       GetCategorie();
-      console.log('PCategID', PcategID)
+      //console.log('PCategID', PcategID)
       displaySCateg(PcategID);
     }
     //SousCateg = displaySCateg(1)
@@ -96,7 +96,7 @@ const CategScreen = ({ navigation }) => {
             alignContent: 'center',
           }}>
           <View style={{ padding: 10, flex: 1 }}>
-            
+
             <View style={styles.row}>
               {CategroiesList.map((value) => (
                 <TouchableOpacity
@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
   },
 
   row: {
-    flexDirection: 'row',  
-    justifyContent:'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
     flexWrap: 'wrap',
   },
   button: {

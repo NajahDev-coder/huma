@@ -1,5 +1,5 @@
 // Import React and Component
-import React, { useState, createRef,useLayoutEffect , useEffect } from 'react';
+import React, { useState, createRef, useLayoutEffect, useEffect } from 'react';
 import {
   Animated,
   SafeAreaView,
@@ -9,6 +9,7 @@ import {
   View,
   Text,
   ScrollView,
+  RefreshControl,
   Image,
   Keyboard,
   TouchableOpacity,
@@ -42,14 +43,21 @@ const MesMessages = ({ navigation }) => {
   const [UserId, setUserId] = useState(0);
 
   const [result, setResultat] = useState('Loading ....');
+  const [refreshing, setRefreshing] = useState(false);
 
- //get msg non lu count
- const getnbreMsg = async (UserId, id_user2) => {
-      const fetchUrl =  `isLuMessage/${UserId}/${id_user2}`;
-      const response = await RequestOptionsGet(fetchUrl);  
-       return   response.data[0].nbrNonLu      
-  }   
-  useLayoutEffect(() => {   
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+  //get msg non lu count
+  const getnbreMsg = async (UserId, id_user2) => {
+    const fetchUrl = `isLuMessage/${UserId}/${id_user2}`;
+    const response = await RequestOptionsGet(fetchUrl);
+    return response.data[0].nbrNonLu
+  }
+  useLayoutEffect(() => {
     //setLoading(true)
     let isSubscribed = true;
 
@@ -59,35 +67,34 @@ const MesMessages = ({ navigation }) => {
       setUserId(id_user);
     })();
 
-    //console.log('id_user MessagesList', UserId);
+    ////console.log('id_user MessagesList', UserId);
     const fetchData = async () => {
 
       const fetchUrl = `mesmessages/${UserId}`;
       const json = await RequestOptionsGet(fetchUrl);
-      if (json.length > 0)
-      { 
-        
-           
-          var data=[]
-         json.map( (value)=>{
-            getnbreMsg(UserId, value.amis.id).then((val)=>{
-             DeviceEventEmitter.addListener('sendNewMsg',sendNewMsg, null)
-             /*if(data && data.islu==true && data.id_user==value.amis.id)
-             {
-                Object.assign(value, {nbrNonLu: val});
-             }
-             else*/
-               Object.assign(value, {nbrNonLu: val});
-            
-            data.push(value);
-            if(data.length==json.length)
-            setMessagesList(data)
+      if (json.length > 0) {
 
-           
-           
+
+        var data = []
+        json.map((value) => {
+          getnbreMsg(UserId, value.amis.id).then((val) => {
+            DeviceEventEmitter.addListener('sendNewMsg', sendNewMsg, null)
+            /*if(data && data.islu==true && data.id_user==value.amis.id)
+            {
+               Object.assign(value, {nbrNonLu: val});
+            }
+            else*/
+            Object.assign(value, { nbrNonLu: val });
+
+            data.push(value);
+            if (data.length == json.length)
+              setMessagesList(data)
+
+
+
           });
         })
-        
+
       }
       else
         setResultat('Pas des messages trouvées! ')
@@ -97,11 +104,11 @@ const MesMessages = ({ navigation }) => {
     }
     return () => (isSubscribed = false);
   }, [UserId]);
-const sendNewMsg = (data)=>{    
-/*(data && data.id_user) ? alert(data.id_user) : alert(user_id)
-(data && data.islu) ? alert(data.islu) : alert('nn lu')*/
-alert(user_id)
-}
+  const sendNewMsg = (data) => {
+    /*(data && data.id_user) ? alert(data.id_user) : alert(user_id)
+    (data && data.islu) ? alert(data.islu) : alert('nn lu')*/
+    //alert(user_id)
+  }
   return (
     <View style={styles.mainBody}>
       <ImageBackground
@@ -117,13 +124,16 @@ alert(user_id)
 
           contentContainerStyle={{
             alignContent: 'center',
-          }}>
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
           <View style={{ padding: 10, flex: 1, width: '100%' }}>
             {/* <TouchableOpacity onPress={AddFitler}>
             <GetAmis />
 */}
             <View style={styles.row}>
-              { messagesList.length > 0 ? (
+              {messagesList.length > 0 ? (
                 messagesList.map((value) => (
                   <View style={styles.column}>
                     <TouchableOpacity
@@ -137,23 +147,23 @@ alert(user_id)
                           },
                         });
                       }}
-                      style={styles.post}>   
+                      style={styles.post}>
                       <View style={styles.bcBlock}>
 
 
 
                         <GetProfile user_id={value.amis.id} navigation={navigation} mg_prof={value.amis.img_prof} />
-  
+
                         <View style={styles.bcDetaille}>
-                        <View style={styles.bc_notifmsg}>
-                          <Text style={styles.postLabel}>{value.amis.nom} </Text> 
-                          {value.nbrNonLu>0 && <Text style={styles.notf}>{value.nbrNonLu}</Text>}
+                          <View style={styles.bc_notifmsg}>
+                            <Text style={styles.postLabel}>{value.amis.nom} </Text>
+                            {value.nbrNonLu > 0 && <Text style={styles.notf}>{value.nbrNonLu}</Text>}
                           </View>
                           <Text style={[styles.bcText, value.lu === 1 && styles.bcMsgNoLu]}>{value.message}</Text>
                           <Text style={styles.postDateLabel}>envoyé le  {moment(value.date).format('MM-DD-YYYY')}</Text>
                         </View>
                       </View>
-                    </TouchableOpacity>    
+                    </TouchableOpacity>
 
                     <View style={styles.rightpost}><Text></Text></View>
                   </View>
@@ -259,21 +269,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: "black"
   },
-  bc_notifmsg:{ 
-   flexDirection: 'row', 
-   //padding: 10, 
-   position:'relative'
-   },
+  bc_notifmsg: {
+    flexDirection: 'row',
+    //padding: 10, 
+    position: 'relative'
+  },
   notf: {
-    
-   // fontWeight:'bold',
 
-    backgroundColor: 'rgb(140, 153, 44)',  
+    // fontWeight:'bold',
+
+    backgroundColor: 'rgb(140, 153, 44)',
     width: 22,
     height: 22,
     borderRadius: 22,
-    
-     shadowColor: '#000',
+
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 4,
@@ -281,9 +291,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 5.46,
     elevation: 8,
-    color:'#fff',
+    color: '#fff',
     textAlign: 'center',
-    zIndex:20
+    zIndex: 20
   },
 });
 export default MesMessages;

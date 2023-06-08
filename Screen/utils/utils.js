@@ -1,19 +1,74 @@
-import React from 'react';    
+import React from 'react';
 import axios from "axios";
-import { Alert , TouchableOpacity, Text,  View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';  
+import { Alert, TouchableOpacity, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export const Base_url = 'https://huma.bzh/';
 export const API_URL = "https://expo-stripe-server-example.glitch.me"
 export const GOOGLE_PLACES_API_KEY = 'AIzaSyAVWheD_CJmbOlCCKBTRKRRkeFJy_Mxzbg'; // never save your real api key in a snack!
 //export const Google_Geocoding_API_KEY='AIzaSyB6XPphkYxCN7xgeTj2f6_jllc0T_MXt6o';     
 export const PublishableKeyStripe = 'pk_test_51MUWURCarNgzrgxJ4kpO0UjVcuWnig3mqitwea2SOQBKUlF4fPh9COYOsxz0O64Cwmu6lqTlqmAzrAINkdFWdgMN00xWufC1KN';
+export const deleteAction = async (id, type) => {
+  if (type == 'annonce') {
+    const fetchURL = `/delete_annonce/${id}`;
+    const response = await RequestOptionsGet(fetchURL);
+  }
+  else if (type == 'user') {
 
+    const fetchURL = `/delete_user/${id}`;
+    const response = await RequestOptionsGet(fetchURL);
+  }
+  else if (type == 'offre') {
+
+    const fetchURL = `/delete_offre/${id}`;
+    const response = await RequestOptionsGet(fetchURL);
+  }
+  else if (type == 'publicite') {
+
+    const fetchURL = `/delete_publicite/${id}`;
+    const response = await RequestOptionsGet(fetchURL);
+  }
+  else {
+
+  }
+}
+export const GetName = async (idActivite, type_activite) => {
+  //console.log(idNotif);
+
+  if (type_activite.includes('invitation') || type_activite.includes('amis') || type_activite.includes('profile') || type_activite.includes('abonn')) {
+
+    const fetchURL = `/user/${idActivite}`;
+    const response = await RequestOptionsGet(fetchURL);
+    var nom = response.data[0].nom;
+    //console.log(nom);
+    //return nom;
+  }
+  else {
+    const fetchURL = `/annonce/${idActivite}`;
+    const response = await RequestOptionsGet(fetchURL);
+    var annonce = response.data[0].titre;
+
+    // console.log(annonce);
+    // return annonce;         
+  }
+
+};
+export const NaVIG = (idNotif, type_activite, navigation) => {
+  //console.log(idNotif);
+
+  if (type_activite.includes('invitation') || type_activite.includes('amis') || type_activite.includes('profile') || type_activite.includes('abonn')) {
+    ViewProfile(idNotif, navigation);
+  }
+  else {
+    ShowDetailAnnonce(idNotif, navigation);
+  }
+
+}
 //export const GOOGLE_DIRECTIONS_API_KEY ='';     
 export const ViewProfile = (id_userp, navigation) => {
 
   navigation.navigate({
     name: 'Compte',
-    params: { id_userp: id_userp },   
+    params: { id_userp: id_userp },
   });
 };
 export const ViewAnnonces = (id_userp, navigation) => {
@@ -29,22 +84,24 @@ export const ShowDetailAnnonce = (id_annce, navigation) => {
     params: { id_annce: id_annce },
   });
 };
-export const Add_historique = async (Userid, activite) => {
+export const Add_historique = async (Userid, activite, id_activite) => {
   const fetchURL = 'Add_historique';
   const dataToSend = {
     user_id: Userid,
-    activite: activite
+    activite: activite,
+    id_activite
   }
   const response = await RequestOptionsPost(dataToSend, fetchURL)
-  console.log(response.status);
+  //console.log(response.status);
 };
-export const UpdatePremium = async (Userid) => {
+export const UpdatePremium = async (Userid, choix) => {
   const fetchURL = 'UpdatePremium';
   const dataToSend = {
     user_id: Userid,
+    abnnmnt: choix
   }
   const response = await RequestOptionsPost(dataToSend, fetchURL)
-  console.log(response.status);
+  //console.log(response.status);
 };
 export const GetAnnonce = async ({ annonceID, navigation }) => {
   const fetchURL = `/annonce/${annonceID}`;
@@ -150,10 +207,10 @@ export const RequestOptionsPost = async (dataToSend, Api) => {
 
 export const SaveImage = async (dataToSend) => {
   //alert(UserID);
-  console.log('SaveImage', dataToSend)
+  // console.log('SaveImage', dataToSend)
   const fetchUrl = 'upload';
   const response = await RequestOptionsPost(dataToSend, fetchUrl);
-  console.log('SaveImage response', response)
+  //console.log('SaveImage response', response)
 
 };
 export const DeleteSession = async (navigation) => {

@@ -1,5 +1,5 @@
 import React, { useState, createRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions, Platform, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, RefreshControl, StyleSheet, Animated, Dimensions, Platform, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,7 +8,7 @@ import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-lis
 import moment from 'moment';
 
 import GetProfile from './GetProfile';
-import { Base_url, RequestOptionsGet, ShowDetailAnnonce } from '../utils/utils'
+import { NaVIG, Base_url, RequestOptionsGet, ShowDetailAnnonce } from '../utils/utils'
 import { dateDiff } from '../includes/functions';
 //import { ScrollView } from 'react-native-gesture-handler';
 import GetActivite from './GetActiviteScreen'
@@ -23,16 +23,14 @@ const HistoriqueScreen = ({ navigation }) => {
     const [selected, setSelected] = useState("");
 
     const minDate = new Date(2022, 8, 30);
+    const [refreshing, setRefreshing] = useState(false);
 
-
-
-
-
-    const NaVIG = (idNotif) => {
-        console.log(idNotif);
-        ShowDetailAnnonce(idNotif, navigation);
-
-    }
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 2000);
+    }, []);
 
     const today = new Date();
     useEffect(() => {
@@ -47,6 +45,7 @@ const HistoriqueScreen = ({ navigation }) => {
 
 
                 setHistoriqueList(responseJson.data);
+                await GetName(5, 'Vous avez accepté une invitation de 5')
             }
             //setRefreshKey((oldKey) => oldKey + 1); 
 
@@ -57,24 +56,7 @@ const HistoriqueScreen = ({ navigation }) => {
         }
         return () => (isSubscribed = false);
     }, []);
-    /*const GetdetAnnonce = async (annonceID) => {
-        const fetchURL = `/annonce/${annonceID}`;
-        const response = await RequestOptionsGet(fetchURL)
-        const titre = response.data[0].titre
-        //const fetchURL = `/annonce/${id_annonce}`;
-            //const response = await RequestOptionsGet(fetchURL)
-            // const annonce = response.data[0].titre
 
-            //console.log('GetAnnonce::::', annonce)
-        //return titre
-        return (
-          <View>
-            <TouchableOpacity onPress={() => ShowDetailAnnonce = (annonceID, navigation)}>
-              <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{titre}</Text>
-            </TouchableOpacity>
-          </View> 
-        )
-    }*/
 
 
     return (
@@ -87,18 +69,23 @@ const HistoriqueScreen = ({ navigation }) => {
                     keyboardShouldPersistTaps="handled"
                     contentContainerStyle={{
                         alignContent: 'center',
-                    }}>
+                    }}
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }>
                     <View style={{ padding: 10, flex: 1, width: '100%' }}>
 
                         <View style={styles.row}>
                             {HistoriqueList.map((value) => (
                                 <View style={styles.lisnotif}>
-                                    <TouchableOpacity key={value.id} style={styles.bcBlock}>
+                                    <TouchableOpacity key={value.id} style={styles.bcBlock} onPress={() => NaVIG(value.id_activite, value.activite, navigation)}>
                                         {/*<GetProfile user_id={value.id_user} navigation={navigation} img_prof={value.img_prof} />*/}
 
                                         <View style={styles.bcDetaille}>
-                                            <Text style={styles.bcText}>{value.activite}</Text>
-                                            {/*<GetActivite activite={value.activite} navigation={navigation} />*/}
+
+                                            <Text style={styles.bcText}>{value.activite.replace(String(value.id_activite), ' ')}<GetActivite activite={value.activite} id_activite={value.id_activite} />
+                                            </Text>
+
                                             <View
                                                 style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 10 }}>
                                                 <Text style={styles.bcSmText}>{dateDiff(new Date(value.date), today)}  </Text>
@@ -129,40 +116,7 @@ const styles = StyleSheet.create({
     row: {
         width: '100%',
     },
-    bc_notif: {
-        flexDirection: 'row',
-        padding: 0,
-        position: 'relative'
-    },
-    isnotif: {
-        backgroundColor: 'rgb(140, 153, 44)',
-        width: 12,
-        height: 12,
-        borderRadius: 12,
-        position: 'absolute',
-        top: 10,
-        right: 20,
-        zIndex: 20,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.32,
-        shadowRadius: 5.46,
-        elevation: 9,
-    },
-    shownotif: {
-        //flexDirection: 'column',
-        //flexWrap: 'wrap',
-        width: Platform.OS == 'web' ? '90%' : '100%',
-        padding: 0,
-        //position:'relative',
-        top: 0,
-        zIndex: 0,
-        backgroundColor: 'transparent',
-        right: 0
-    },
+
     lisnotif: {
         shadowColor: '#000',
         shadowOffset: {
@@ -174,6 +128,7 @@ const styles = StyleSheet.create({
         elevation: 9,
         backgroundColor: '#ffffff',
         padding: 5,
+        paddingRight: 15,
         zIndex: 20,
         borderRadius: 10,
         borderWidth: 0,

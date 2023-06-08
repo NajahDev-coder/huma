@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import MapView, { Polyline, Marker } from 'react-native-maps';
 import { decode } from "@mapbox/polyline";
 //import * as Permissions from 'expo-permissions';
-import * as MediaLibrary from 'expo-media-library';
+//import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 //import Polyline from '@mapbox/polyline'
 
@@ -23,39 +23,39 @@ export default class MapScreen extends React.Component {
     }
 
     async componentDidMount() {
-       // const { status } = await Permissions.getAsync(Permissions.LOCATION)
+        // const { status } = await Permissions.getAsync(Permissions.LOCATION)
         const { status } = await Location.requestForegroundPermissionsAsync();
-          //  let { status } = await Location.requestForegroundPermissionsAsync();
+        //  let { status } = await Location.requestForegroundPermissionsAsync();
 
         /*if (status !== 'granted') {
             const response = await Permissions.askAsync(Permissions.LOCATION)
             //const response = await Location.requestPermissionsAsync();
         }*/
         if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;    
-      }
-      console.log('status',status);
-      var currentPlace = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});   
-      console.log('getCurrentPositionAsync', currentPlace.coords);  
-      const options = {
-  enableHighAccuracy: true, 
-  timeout: 5000,  
-  maximumAge: 0  
-}; 
-       //this.setState({ currentPlace.latitude , currentPlace.longitude , currentPlace});       
+            setErrorMsg('Permission to access location was denied');
+            return;
+        }
+        //console.log('status', status);
+        var currentPlace = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
+        //console.log('getCurrentPositionAsync', currentPlace.coords);
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        };
+        //this.setState({ currentPlace.latitude , currentPlace.longitude , currentPlace});       
         navigator.geolocation.getCurrentPosition(
-            ({ coords: { latitude, longitude } }) => this.setState({ latitude, longitude }, this.mergeCoords),  
-            (error) => console.log('Error:', error)  ,options
-        )  
-       // const { locations: [sampleLocation] } = this.state;
+            ({ coords: { latitude, longitude } }) => this.setState({ latitude, longitude }, this.mergeCoords),
+            (error) => //console.log('Error:', error), options
+        )
+        // const { locations: [sampleLocation] } = this.state;
 
-           
-          /*   this.setState({ 
-            desLatitude: currentPlace.coords.latitude,
-            desLongitude: currentPlace.coords.longitude
-        }, this.mergeCoords)*/
-         
+
+        /*   this.setState({ 
+          desLatitude: currentPlace.coords.latitude,
+          desLongitude: currentPlace.coords.longitude
+      }, this.mergeCoords)*/
+
     }
 
     mergeCoords = () => {
@@ -94,7 +94,7 @@ export default class MapScreen extends React.Component {
             })
             this.setState({ coords, distance, time })
         } catch (error) {
-            console.log('Error: ', error)
+            //console.log('Error: ', error)
         }
     }
 
@@ -138,7 +138,7 @@ export default class MapScreen extends React.Component {
             longitude,
             destination
         } = this.state
-       console.log('latitude',latitude)
+        //console.log('latitude', latitude)
         if (latitude) {
             return (
                 <MapView
@@ -178,7 +178,7 @@ export default class MapScreen extends React.Component {
                     />
 
 
-                     < Image
+                    < Image
                         source={{ uri: destination && destination.image_url }}
                         style={{
                             flex: 1,

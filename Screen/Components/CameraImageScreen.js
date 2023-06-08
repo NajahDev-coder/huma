@@ -90,7 +90,7 @@ export default function CameraImage({ captureImage, isinvisible, PStyle }) {
 
     SaveImage(capturedImage, id_annonce);
   };*/
-  //console.log('UserID', UserID);
+  ////console.log('UserID', UserID);
 
   const switchCamera = () => {
     if (previewVisible) {

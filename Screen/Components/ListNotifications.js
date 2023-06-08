@@ -28,7 +28,7 @@ const ListNotifications = ({ navigation }) => {
 
 
     const NaVIG = (idNotif) => {
-        console.log(idNotif);
+        //console.log(idNotif);
         ShowDetailAnnonce(idNotif, navigation);
 
     }

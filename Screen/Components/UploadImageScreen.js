@@ -12,13 +12,13 @@ import {
     TouchableHighlight
 } from "react-native";
 import storage from '@react-native-firebase/storage';
-import {Base_url} from '../utils/utils';
+import { Base_url } from '../utils/utils';
 
 import * as ImagePicker from 'expo-image-picker';
 const UploadImageScreen = () => {
 
-    
-    const imgCamera={uri:Base_url+"images/camera.png"}
+
+    const imgCamera = { uri: Base_url + "images/camera.png" }
     const [ImagePath, setImagePath] = useState(imgCamera)
     const [isLoading, setIsLoading] = useState(false)
     const [status, setStatus] = useState('')
@@ -39,11 +39,11 @@ const UploadImageScreen = () => {
         };
         /* ImagePicker.showImagePicker(options, response => {
              if (response.didCancel) {
-                 console.log('User cancelled image picker', storage());
+                 //console.log('User cancelled image picker', storage());
              } else if (response.error) {
-                 console.log('ImagePicker Error: ', response.error);
+                 //console.log('ImagePicker Error: ', response.error);
              } else if (response.customButton) {
-                 console.log('User tapped custom button: ', response.customButton);
+                 //console.log('User tapped custom button: ', response.customButton);
              } else {
                  let path = getPlatformPath(response).value;
                  let fileName = getFileName(response.fileName, path);
@@ -58,7 +58,7 @@ const UploadImageScreen = () => {
             quality: 1,
         });
 
-        console.log(result);
+        //console.log(result);
 
         if (!result.cancelled) {
             setShow(false);
@@ -86,12 +86,12 @@ const UploadImageScreen = () => {
         let reference = storage().ref(name);
         let task = reference.putFile(path);
         task.then(() => {
-            console.log('Image uploaded to the bucket!');
+            //console.log('Image uploaded to the bucket!');
             setStatus('Image uploaded successfully');
             setIsLoading(false);
         }).catch((e) => {
-            
-            console.log('uploading image error => ', e);
+
+            //console.log('uploading image error => ', e);
             setStatus('Something went wrong');
             setIsLoading(false);
         });
@@ -110,7 +110,7 @@ const UploadImageScreen = () => {
     const getPlatformURI = (imagePath) => {
         let imgSource = imagePath;
         if (isNaN(imagePath)) {
-            imgSource = {  ImagePath };
+            imgSource = { ImagePath };
             if (Platform.OS == 'android') {
                 imgSource.uri = "file:///" + imgSource.uri;
             }
@@ -132,7 +132,7 @@ const UploadImageScreen = () => {
                 </View>*/}
 
                 <TouchableHighlight onPress={chooseFile} style={[styles.blcAvatar, show === false && styles.camHide]}>
-                    <Image source={{uri :Base_url+"images/camera.png"}} style={[
+                    <Image source={{ uri: Base_url + "images/camera.png" }} style={[
                         styles.imgAvatar,
                         show === false && styles.camHide,
                     ]} />

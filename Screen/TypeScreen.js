@@ -38,7 +38,7 @@ const TypeScreen = ({ navigation }) => {
     Object.entries(responseJson).map(([key, value]) => {
       datas.push({ id: value.id, title: value.type });
     });
-    //console.log("PTypeID", PTypeID)
+    ////console.log("PTypeID", PTypeID)
     setData(datas);
     setTypesList(responseJson);
     setTypeSelected(1);

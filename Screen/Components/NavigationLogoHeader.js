@@ -29,7 +29,7 @@ const NavigationLogoHeader = ({ navigationProps }) => {
     navigationProps.navigate('MenuScreen');
   };
   return (
-    <View style={{ flexDirection: 'row' }}>
+    <View style={{ flexDirection: 'row', paddingTop: 5 }}>
       <TouchableOpacity onPress={toggleDrawer} style={styles.logo}>
         <Image
           source={{

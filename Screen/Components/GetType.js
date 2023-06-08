@@ -21,7 +21,7 @@ const GetType = ({ id_annonce }) => {
   const [Type, setType] = useState('');
   useEffect(() => {
     let isSubscribed = true;
-    // console.log('id_annonce:', id_annonce);
+    // //console.log('id_annonce:', id_annonce);
 
     const fetchData = async () => {
       const baseUrl = url + `api/api/type/${id_annonce}`;
@@ -36,7 +36,7 @@ const GetType = ({ id_annonce }) => {
 
       // convert data to json
       const json = await data.json();
-      //console.log('response gettype', json.data[0].type);
+      ////console.log('response gettype', json.data[0].type);
       setType(json.data[0].type);
     };
     if (isSubscribed) {
@@ -52,7 +52,7 @@ const GetType = ({ id_annonce }) => {
         textAlign: 'center',
         justifyContent: 'center',
       }}>
-     {Type}
+      {Type}
     </Text>
   );
 };

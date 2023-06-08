@@ -6,7 +6,7 @@ import axios from 'axios';
 const FileUpload = () => {
     const [file, setFile] = useState();
     const [fileName, setFileName] = useState("");
-const [url] = useState("https://huma.bzh/api/");
+    const [url] = useState("https://huma.bzh/api/");
 
     const saveFile = (e) => {
         setFile(e.target.files[0]);
@@ -35,7 +35,7 @@ const [url] = useState("https://huma.bzh/api/");
         formBody = formBody.join('&');
 
         try {
-            const res = await fetch(url+'api/upload', {
+            const res = await fetch(url + 'api/upload', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',

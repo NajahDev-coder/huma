@@ -8,11 +8,13 @@ import {
   View,
   Text,
   ScrollView,
+  RefreshControl,
   Image,
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Pressable
 } from 'react-native';
 
 import moment from 'moment';
@@ -53,71 +55,88 @@ const CompteScreen = ({ navigation, route }) => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [Mes, setMes] = useState('Mes ');
 
-  const url = 'https://huma.bzh/';
-  const image = { uri: url + 'images/bg_screen.png' };
-  const DefaultimageCouvProfile = { uri: url + 'images/no-couverture.png' };
-  const DefaultimageProfile = { uri: url + 'images/compte.png' };
+  const image = { uri: Base_url + 'images/bg_screen.png' };
+  const DefaultimageCouvProfile = { uri: Base_url + 'images/no-couverture.png' };
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+      if (UserId != MyUserId) {
+
+        update_NbreVisiteProfile(UserId);
+      }
+      if (UserId) {
+        getProfile(UserId);
+        fadeIn();
+      }
+    }, 2000);
+  }, []);
+
+  const DefaultimageProfile = { uri: Base_url + 'images/compte.png' };
+  const update_NbreVisiteProfile = (id_user) => {
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    };
+
+    const baseUrl = Base_url + `api/api/updateNbreVisiteProfile/${id_user}`;
+    fetch(baseUrl, requestOptions)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        setMes('');
+        // setMon('');
+        //console.log('update nbre view avec success!');
+      });
+  };
+
+  const fadeIn = () => {
+    Animated.timing(fadeAnimation, {
+      toValue: 1,
+      duration: 300,
+      nativeEvent: { contentOffset: { y: fadeAnimation } },
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const getProfile = async (id_user) => {
+    const baseUrl = Base_url + `api/api/user/${id_user}`;
+
+    fetch(baseUrl)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        setNomProfile(responseJson.data[0].nom);
+        setEmailProfile(responseJson.data[0].email);
+        setCacheValue(responseJson.data[0].cache);
+        setTelProfile(responseJson.data[0].tel);
+        setAgeProfile(responseJson.data[0].age);
+        setTransporteurProfile(responseJson.data[0].transporteur);
+        setDolmenProfile(responseJson.data[0].dolmen);
+        setAdresseProfile(responseJson.data[0].adresse);
+        const imgpf = responseJson.data[0].img_prof;
+        //const imgProfile = {uri:  `${Base_url}images/${imgpf}` }
+        setImageProfile(imgpf);
+        const imgcv = responseJson.data[0].img_couverture;
+        const imgCouv = { uri: `${Base_url}images/${imgcv}` };
+        setImageCouvProfile(imgCouv);
+        setNbreVisiteProfile(responseJson.data[0].nbre_visite);
+      });
+  };
+  const notConnecte = () => {
+    AsyncStorage.setItem(
+      'nonConnecte',
+      'Vous devrez se connecter :)'
+    );
+    navigation.navigate('LoginScreen');
+  };
+
 
   useEffect(() => {
     let isSubscribed = true;
-    const update_NbreVisiteProfile = (id_user) => {
-      const requestOptions = {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      };
-      const baseUrl = url + `api/api/updateNbreVisiteProfile/${id_user}`;
-      fetch(baseUrl, requestOptions)
-        .then((response) => response.json())
-        .then((responseJson) => {
-          setMes('');
-          // setMon('');
-          console.log('update nbre view avec success!');
-        });
-    };
-
-    const fadeIn = () => {
-      Animated.timing(fadeAnimation, {
-        toValue: 1,
-        duration: 300,
-        nativeEvent: { contentOffset: { y: fadeAnimation } },
-        useNativeDriver: true,
-      }).start();
-    };
-
-    const getProfile = async (id_user) => {
-      const baseUrl = url + `api/api/user/${id_user}`;
-
-      fetch(baseUrl)
-        .then((response) => response.json())
-        .then((responseJson) => {
-          setNomProfile(responseJson.data[0].nom);
-          setEmailProfile(responseJson.data[0].email);
-          setCacheValue(responseJson.data[0].cache);
-          setTelProfile(responseJson.data[0].tel);
-          setAgeProfile(responseJson.data[0].age);
-          setTransporteurProfile(responseJson.data[0].transporteur);
-          setDolmenProfile(responseJson.data[0].dolmen);
-          setAdresseProfile(responseJson.data[0].adresse);
-          const imgpf = responseJson.data[0].img_prof;
-          //const imgProfile = {uri:  `${Base_url}images/${imgpf}` }
-          setImageProfile(imgpf);
-          const imgcv = responseJson.data[0].img_couverture;
-          const imgCouv = { uri: `${Base_url}images/${imgcv}` };
-          setImageCouvProfile(imgCouv);
-          setNbreVisiteProfile(responseJson.data[0].nbre_visite);
-        });
-    };
-    const notConnecte = () => {
-      AsyncStorage.setItem(
-        'nonConnecte',
-        'Vous devrez se connecter :)'
-      );
-      navigation.navigate('LoginScreen');
-    };
-
 
     (async () => {
       /* id de user connecté*/
@@ -153,7 +172,10 @@ const CompteScreen = ({ navigation, route }) => {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
             alignContent: 'center',
-          }}>
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
           <View style={{ padding: 10, flex: 1, width: '100%', minHeight: 100 }}>
             <View style={styles.row}>
               <TouchableOpacity style={styles.post}>
@@ -179,6 +201,7 @@ const CompteScreen = ({ navigation, route }) => {
                         ]}>
                         {EmailProfile}
                       </Text>
+
                     </View>
                   </View>
                 </ImageBackground>
@@ -193,10 +216,11 @@ const CompteScreen = ({ navigation, route }) => {
                   }}>
                   <View>
                     <Text style={styles.titreOff}>Profile </Text>
+                    <View style={{ marginLeft: 10, width: '100%' }}>
+                      <RatingScreen user_id1={UserId} user_id2={MyUserId} />
+                    </View>
                   </View>
-                  <View style={{ marginLeft: '30%' }}>
-                    <RatingScreen user_id1={UserId} user_id2={MyUserId} />
-                  </View>
+
                   <View
                     style={{
                       flexDirection: 'row',
@@ -205,11 +229,18 @@ const CompteScreen = ({ navigation, route }) => {
                       right: 10,
                       top: 28,
                     }}>
-                    {MyUserId == UserId && (
-                      <AntDesign
+                    {MyUserId == UserId && (<Pressable onPress={() => {
+                      navigation.navigate({
+                        name: 'EditProfile',
+                        params: {
+                          id_user: MyUserId,
+                        },
+                      });
+                    }}>
+                      <Text style={styles.txtbutt} > <AntDesign
                         name="edit"
-                        size={24}
-                        color="black"
+                        size={22}
+                        color="white"
                         style={{ margin: 4 }}
                         onPress={() => {
                           navigation.navigate({
@@ -219,7 +250,8 @@ const CompteScreen = ({ navigation, route }) => {
                             },
                           });
                         }}
-                      />
+                      />Modifier Profile</Text>
+                    </Pressable>
                     )}
                     {global.User_connecte != null && MyUserId != UserId && (
                       <EstAmis id_user1={MyUserId} id_user2={UserId} navigation={navigation} />
@@ -287,7 +319,7 @@ const CompteScreen = ({ navigation, route }) => {
                   )}
                   <Text
                     style={styles.linkdtl}
-                    onPress={() => navigation.replace('AvisMembreScreen')}>
+                    onPress={() => navigation.replace('CompteScreen')}>
                     <MaterialIcons name="star-rate" size={24} color="#49382f" style={{ paddingRight: 5 }} /> {Mes}Évaluations
                   </Text>
                 </Animated.View>
@@ -411,6 +443,7 @@ const styles = StyleSheet.create({
   titreOff: {
     fontSize: 18,
     padding: 10,
+    paddingLeft: 15,
     color: '#49382f',
   },
   hrbc: {
@@ -420,6 +453,7 @@ const styles = StyleSheet.create({
     height: 10,
     marginLeft: 20,
     marginBottom: 20,
+    marginTop: 20
   },
   txtdtl: {
     paddingVertical: 5,
@@ -437,6 +471,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+  txtbutt:
+  {
+    color: '#FFFFFF',
+    fontSize: 12,
+    borderWidth: 0,
+    borderRadius: 3,
+    backgroundColor: '#a3ad56',
+    paddingBottom: 5,
+    paddingRight: 5,
+    marginRight: -5
+  },
 
- 
 });

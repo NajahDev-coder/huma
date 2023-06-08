@@ -19,7 +19,7 @@ export default function CustomSidebarMenu(props) {
 
 
 
-    //console.log("UserName", UserName)
+    ////console.log("UserName", UserName)
     return (
         <View style={stylesSidebar.sideMenuContainer}>
             <View style={stylesSidebar.profileHeader}>

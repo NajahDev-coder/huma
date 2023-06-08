@@ -51,7 +51,7 @@ const MesFavAnnonces = ({ navigation, route }) => {
     const baseUrl = `${Base_url}api/api/delfavannonces/${id_user}/${id_annce}`;
     fetch(baseUrl).then((response) => response.json())
       .then((responseJson) => {
-        console.log('delete favoris avec success!');
+        //console.log('delete favoris avec success!');
         setRefreshKey((oldKey) => oldKey + 1)
       }
       );
@@ -61,9 +61,9 @@ const MesFavAnnonces = ({ navigation, route }) => {
 
     const fetchUrl = `mesfavannonces/${id_user}/`;
 
-    console.log('favoris', fetchUrl)
+    //console.log('favoris', fetchUrl)
     const json = await RequestOptionsGet(fetchUrl);
-    console.log('favoris', json)
+    //console.log('favoris', json)
     if (json.length > 0)
       setAnnoncesList(json)
     else
@@ -145,7 +145,7 @@ const MesFavAnnonces = ({ navigation, route }) => {
                             />
                           </View>
                           <Text style={styles.bcText}>
-                            Description: {value.court_description}
+                            {value.court_description}
                           </Text>
                         </View>
                       </View>
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     width: '75%',
   },
   bcText: {
-    maxWidth: 90,
+    //maxWidth: 90,
     color: '#6d6d6d',
   },
   btType: {

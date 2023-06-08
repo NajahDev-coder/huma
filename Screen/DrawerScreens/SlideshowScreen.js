@@ -1,25 +1,25 @@
 //import Slideshow from 'react-native-slideshow';
 import React, { Component } from 'react';
 
-import {Base_url, RequestOptionsGet, RequestOptionsPut, RequestOptionsPost} from '../utils/utils';
+import { Base_url, RequestOptionsGet, RequestOptionsPut, RequestOptionsPost } from '../utils/utils';
 
 export default class Slideshow extends Component {
- /* async getPublicitec(){   
-  const fetchUrl =  `publicites`;
-  
-      const responseJson = await RequestOptionsGet(fetchUrl);
-      
+  /* async getPublicitec(){   
+   const fetchUrl =  `publicites`;
+   
+       const responseJson = await RequestOptionsGet(fetchUrl);
        
-     if(responseJson.data.length>0)
-      {
-        let datas = [];
-          Object.entries(responseJson.data).map(([key, value]) => {
-            datas.push({ title: value.titre, caption: value.lien , url : `${Base_url}images/${value.image}.jpg`});
-          });
-       //console.log(datas)
-        this.setState({dataSource: datas});
-      }   
-}*/
+        
+      if(responseJson.data.length>0)
+       {
+         let datas = [];
+           Object.entries(responseJson.data).map(([key, value]) => {
+             datas.push({ title: value.titre, caption: value.lien , url : `${Base_url}images/${value.image}.jpg`});
+           });
+        ////console.log(datas)
+         this.setState({dataSource: datas});
+       }   
+ }*/
   constructor({ props }) {
     super(props);
     this.state = {
@@ -35,7 +35,7 @@ export default class Slideshow extends Component {
     };
   }
 
-  UNSAFE_componentWillMount () {
+  UNSAFE_componentWillMount() {
     this.setState({
       interval: setInterval(() => {
         this.setState({

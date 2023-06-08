@@ -40,7 +40,7 @@ const workPlace = {
   geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
 };
 const windowWidth = Dimensions.get('window').width - 50;
-//const windowheight = Dimensions.get('window').height + 50;
+const windowheight = Dimensions.get('window').height / 2 - 50;
 
 /*const currentPlace = {
       description: 'Position',
@@ -121,9 +121,9 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
 
     AsyncStorage.setItem('add_filter', JSON.stringify(filter));
     //console.log('refraichissement....');
-
     OnFilter();
     setRefreshKey((oldKey) => oldKey + 1);
+    ShowAllFilter(1);
   };
   const ShowAllFilter = (stat) => {
     //console.log(fadeAnimation);
@@ -136,7 +136,7 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
 
     setEnable(!stat);
     if (stat == 0) {
-      setWindowHeight(120)
+      setWindowHeight(windowheight)
       setIcoFilter("filter-variant-minus");
       OnIndex(20);
     }
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   dropselectStyle:
-    { backgroundColor: 'white', position: 'absolute', top: 37, width: '100%', zIndex: 100 },
+    { backgroundColor: 'white', width: '100%' },
   itemdropselectStyle:
     { borderBottomWidth: 1, borderBottomColor: '#efefef' }
 });
