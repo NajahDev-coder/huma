@@ -23,13 +23,13 @@ import {
 
 import { Entypo } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
-
+import ScrollImage from './ScrollImage';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import moment from 'moment';
 import RenderHtml from 'react-native-render-html';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Carousel from 'react-native-anchor-carousel';
+
 import GetCategorie from '../Components/GetCategorie';
 import Loader from '../Components/Loader';
 import GetType from '../Components/GetType';
@@ -43,7 +43,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
   const [AnnonceDetails, setAnnonceDetails] = useState([]);
   const [AnnonceType, setAnnonceType] = useState('');
   const [AnnonceCateg, setAnnonceCateg] = useState('');
-  const [IdAnnonce, setIdAnnonce] = useState(null);
+  //const [IdAnnonce, setIdAnnonce] = useState(null);
   const [UserId, setUserId] = useState(null);
   const [AuteurUserId, setAuteurUserId] = useState(null);
   const [NbreVue, setNbreVue] = useState(0);
@@ -63,39 +63,22 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
 
+  const Id_Annonce = route.params?.id_annce;
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
+      fetchData();
+      isExiteFile();
     }, 2000);
   }, []);
 
   const img_annonce_cv = createRef();
 
-  const carouselRef = React.useRef(null);
-  const renderItem = ({ item, index }) => {
-    return (
-      <TouchableOpacity
-        style={styles.item}
-        onPress={() => {
-          carouselRef.current.scrollToIndex(index);
-        }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <View style={styles.containerCarousel}>
-          <Image
-            source={{ uri: item.img }}
-            style={styles.imageCarousel}
 
-          />
-
-        </View>
-      </TouchableOpacity>
-    );
-  }
-  const update_NbreVue = (id_annce) => {
-    const fetchUrl = `updateNbreVueAnnc/${id_annce}`;
+  const update_NbreVue = () => {
+    const fetchUrl = `updateNbreVueAnnc/${Id_Annonce}`;
     RequestOptionsGet(fetchUrl);
   }
   const visitVedio = (val) => {
@@ -104,10 +87,10 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
   const UpdtFavorisAnnonce = useCallback(async () => {
     var fetchUrl;
     if (favorisAnnonce == 1) {
-      fetchUrl = `delfavannonces/${UserId}/${IdAnnonce}`;
+      fetchUrl = `delfavannonces/${global.User_connecte}/${Id_Annonce}`;
     }
     else {
-      fetchUrl = `addfavannonces/${UserId}/${IdAnnonce}`;
+      fetchUrl = `addfavannonces/${global.User_connecte}/${Id_Annonce}`;
     }
     response = await RequestOptionsGet(fetchUrl);
     if (response.affectedRows == 1) {
@@ -116,10 +99,10 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
       setRefreshKey((oldKey) => oldKey + 1)
     }
 
-  }, [IdAnnonce, UserId, favorisAnnonce])
-  const GetFavorisAnnonce = async (Id_Annonce, UserId) => {
+  }, [Id_Annonce, favorisAnnonce])
+  const GetFavorisAnnonce = async () => {
 
-    const fetchUrl = `getfavannonces/${UserId}/${Id_Annonce}`;
+    const fetchUrl = `getfavannonces/${global.User_connecte}/${Id_Annonce}`;
 
     response = await RequestOptionsGet(fetchUrl);
 
@@ -148,8 +131,8 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
       setImageProfile(imgprof)
     }
   };
-  const isExiteFile = async (id_annonce) => {
-    const fetchUrl = `file_existe/${id_annonce}`;
+  const isExiteFile = async () => {
+    const fetchUrl = `file_existe/${Id_Annonce}`;
 
     const responseJson = await RequestOptionsGet(fetchUrl);
     // console.log('imgAnnonce', responseJson.data);
@@ -158,9 +141,10 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
 
       let dataImg = [];
       Object.entries(responseJson.data).map(([key, value]) => {
+        //const url = value.url
         dataImg.push({
           id: key,
-          img: value.url
+          url: value.url
         });
       });
       //console.log(dataImg)
@@ -168,13 +152,13 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
     }
     else {
       //setImageAnnonce([{ url: `${Base_url}images/img/no-picture.png` }]);
-      setImageAnnonce([{ id: 0, img: `${Base_url}images/img/no-picture.png` }]);
+      setImageAnnonce([{ id: 0, url: `${Base_url}images/img/no-picture1.png` }]);
 
       //console.log('imgAnnonce', imageAnnonce);
     }
   }
 
-  const fetchData = async (Id_Annonce, UserId) => {
+  const fetchData = async () => {
     const fetchUrl = `annonce/${Id_Annonce}`;
 
     const responseJson = await RequestOptionsGet(fetchUrl);
@@ -187,13 +171,13 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
       getAuteur(responseJson.data[0].user_id);
       setAuteurUserId(responseJson.data[0].user_id);
 
-      setIdAnnonce(responseJson.data[0].id);
+      //setIdAnnonce(responseJson.data[0].id);
       setNbreVue(responseJson.data[0].nbre_vue + 1)
 
 
-      if (responseJson.data[0].user_id != UserId && UserId != 0 && responseJson.data[0].user_id != 0 && responseJson.data[0].user_id != null) {
-        update_NbreVue(Id_Annonce);
-        GetFavorisAnnonce(Id_Annonce, UserId);
+      if (responseJson.data[0].user_id != global.User_connecte && global.User_connecte != 0 && responseJson.data[0].user_id != 0 && responseJson.data[0].user_id != null) {
+        update_NbreVue();
+        GetFavorisAnnonce();
       }
 
       fadeIn();
@@ -203,22 +187,10 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
   useEffect(() => {
     let isSubscribed = true;
 
-    let id_user;
-    //(async () => {
-    //id_user = await AsyncStorage.getItem('user_id');
-    id_user = global.User_connecte;
-    setUserId(id_user);
-    //})();
-
-    const Id_Annonce = route.params?.id_annce;
     if (isSubscribed) {
-      fetchData(Id_Annonce, global.User_connecte);
-      /*setInterval(() => {
-         setPosition( position === imageAnnonce.length ? 0 : position + 1)
-         
-       }, 3000); */
+      fetchData();
 
-      isExiteFile(Id_Annonce);
+      isExiteFile();
     }
     return () => (isSubscribed = false);
   }, []);
@@ -232,7 +204,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
       />
     )
   }
-  const DefaultimageAnnonce = { uri: `${Base_url}images/img/no-picture.png` };
+  const DefaultimageAnnonce = { uri: `${Base_url}images/img/no-picture1.png` };
   return (
     <View style={styles.mainBody}>
       <ImageBackground
@@ -254,28 +226,9 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
 
                 <View style={styles.post}>
 
+                  <ScrollImage images={imageAnnonce} />
 
 
-                  <SafeAreaView style={{ flex: 1, width: '100%' }}>
-                    <View
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: '100%'
-                      }}
-                    >
-
-                      <Carousel
-                        ref={carouselRef}
-                        data={imageAnnonce}
-                        renderItem={renderItem}
-                        style={styles.carousel}
-                        itemWidth={sliderWidth}
-                        containerWidth={sliderWidth}
-                        separatorWidth={0}
-                      />
-                    </View>
-                  </SafeAreaView>
                   <View style={styles.bcBlockpf}>
                     <View style={{ width: 50, justifyContent: 'center', marginLeft: 10 }}>
                       <GetProfile user_id={AnnonceDetails.user_id} navigation={navigation} img_prof={imageProfile} />
@@ -350,7 +303,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
                                     name: 'EditAnnonce',
                                     params: {
                                       //id_user: AuteurUserId,
-                                      id_annonce: IdAnnonce
+                                      id_annonce: Id_Annonce
                                     },
                                   })
                                 }}
@@ -406,9 +359,9 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
                   <View style={styles.hrbc}>
                     <Text style={styles.titreOff}>Offres </Text>
                   </View>
-                  {AuteurUserId !== null && IdAnnonce !== null &&
+                  {AuteurUserId !== null && Id_Annonce !== null &&
                     <GetOffres
-                      id_annonce={IdAnnonce}
+                      id_annonce={Id_Annonce}
                       id_auteur_annonce={AuteurUserId}
                       id_user={global.User_connecte}
                       navigation={navigation}
@@ -491,7 +444,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   bcBlockpf: {
-    width: '95%',
+    width: '100%',
+    marginLeft: 8,
     position: 'absolute',
     bottom: 30
   },
@@ -509,7 +463,6 @@ const styles = StyleSheet.create({
   auteurProfile: {
     flexDirection: 'column',
     //alignContent: 'flex-center',
-
     justifyContent: 'space-between',
     backgroundColor: 'rgba(255, 255, 255,0.5)',
     padding: 10,
@@ -560,19 +513,6 @@ const styles = StyleSheet.create({
     maxWidth: 130,
     fontSize: 11,
   },
-  containerCarousel: {
-    width: '100%',
-    height: 200,
-    alignItems: 'center',
-  },
-  imageCarousel: {
-    flex: 1,
-    width: '100%',
-  },
-  carousel: {
-    flexGrow: 0,
-    height: 180,
-    width: '100%',
-  }
+
 });
 export default DetailAnnonceScreen;

@@ -33,6 +33,8 @@ import {
   SafeAreaView,
   TouchableHighlight,
   StatusBar,
+  Switch
+
 } from 'react-native';
 
 
@@ -94,29 +96,39 @@ export default function CreateAnnonceScreen(props) {
     const categorie = await AsyncStorage.getItem('categ_id');
     const auteur = await AsyncStorage.getItem('user_email');
     // const user_id = await AsyncStorage.getItem('user_id');
-    const defaultCoordinates = await Location.geocodeAsync(adresse);
-    const latitude = defaultCoordinates[0].latitude;
-    const longitude = defaultCoordinates[0].longitude;
+
 
     setErrortext('');
     if (!titre) {
       const msg = "Veuillez remplir le titre de votre annonce";
       setMsgAlert(msg);
       setIsAlert(true);
+      return;
     }
     if (!court_description && !description) {
       const msg = 'Veuillez remplir la courte description et/ou la description de votre annonce';
       setMsgAlert(msg);
       setIsAlert(true);
+      return;
     }
     //if (!adresse && !Ville && !codePostal) {  
     if (!adresse) {
       const msg = "Veuillez remplir l'adresse complète";
       setMsgAlert(msg);
       setIsAlert(true);
+      return;
     }
-
+    if (!qty || qty <= 0) {
+      const msg = "Veuillez entrer une quantité valide!";
+      setMsgAlert(msg);
+      setIsAlert(true);
+      return;
+    }
     //Show Loader
+    const defaultCoordinates = await Location.geocodeAsync(adresse);
+    const latitude = defaultCoordinates[0].latitude;
+    const longitude = defaultCoordinates[0].longitude;
+
     setLoading(true);
     var dataToSend1 = {
       user_id: global.User_connecte,
@@ -279,11 +291,11 @@ export default function CreateAnnonceScreen(props) {
             ) : (
               <></>
             )}
-            <View style={styles.SectionStyle}>
+            <View style={styles.sectionStyleSwitch}>
               <Text style={styles.labelStyle}>Livraison </Text>
               <Switch
                 trackColor={{ false: '#767577', true: '#c4d63c' }}
-                thumbColor={userTransporteur ? '#c4d63c' : '#f4f3f4'}
+                thumbColor={proposLivraison ? '#c4d63c' : '#f4f3f4'}
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={() =>
                   setProposLivraison((proposLivraison) => !proposLivraison)
@@ -305,6 +317,7 @@ export default function CreateAnnonceScreen(props) {
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(LinkVedio) => setLinkVedio(LinkVedio)}
+                keyboardType='url'
                 underlineColorAndroid="#f000"
                 placeholder="Entrez le Lien vidéo sans http(s):// "
                 placeholderTextColor="#222222"
@@ -354,41 +367,7 @@ export default function CreateAnnonceScreen(props) {
                 ]}
                 style={styles.richTextToolbarStyle}
               />
-              {/*
-              {Platform=='web'? (
-              <RichText/> 
-              ):(
-              <SafeAreaView style={styles.root}>
-              
-      <StatusBar style="auto" />
-      <QuillToolbar editor={descriptionInputRef} options="basic" theme="light" />
-      <QuillEditor
-        style={styles.editor}
-        ref={descriptionInputRef}
-        initialHtml="<h1>Votre description...</h1>"
-      />
-    </SafeAreaView>
-    )}
-    
-    <SafeAreaView>
-      <ScrollView>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}	style={{ flex: 1 }}>
-          <Text>Description:</Text>
-          <RichEditor   
-              ref={descriptionInputRef}
-              onChange={(description) => setDescription(description)}
-              style={{height:100}} 
-          />
-        </KeyboardAvoidingView>
-      </ScrollView>
 
-      <RichToolbar
-        editor={descriptionInputRef}
-        actions={[ actions.setBold, actions.setItalic, actions.setUnderline, actions.heading1 ]}
-        iconMap={{ [actions.heading1]: handleHead }}
-      />
-    </SafeAreaView>
-    */}
             </View>
 
             <View style={styles.sectionStyle2}>
@@ -424,6 +403,20 @@ export default function CreateAnnonceScreen(props) {
                 ref={adresseInputRef}
               />
             </View>
+            <View style={styles.sectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(qty) => setQty(qty)}
+                keyboardType='numeric'
+                value={qty.toString()}
+                underlineColorAndroid="#f000"
+                placeholder="quantité "
+                placeholderTextColor="#222222"
+                autoCapitalize="sentences"
+                multiline={false}
+              />
+            </View>
+
             <Text style={styles.errorTextStyle}>{errortext}</Text>
 
             <TouchableOpacity
@@ -432,6 +425,9 @@ export default function CreateAnnonceScreen(props) {
               onPress={handleSubmitButton}>
               <Text style={styles.buttonTextStyle}>Valider</Text>
             </TouchableOpacity>
+            {isAlert && (
+              <ModalAlert msgAlerte={MsgAlerte} />
+            )}
           </KeyboardAvoidingView>
         </ScrollView>
       </ImageBackground>
@@ -584,4 +580,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     // width:'95%'
   },
+  sectionStyleSwitch: {
+    //flexDirection: 'row',
+    height: 40,
+    margin: 20,
+    marginBottom: 0
+  },
+  labelStyle: {
+    marginLeft: 10,
+    marginBottom: -35,
+    color: '#555555',
+    fontWeight: 'bold'
+    //width: '80%',
+  },
+
 });

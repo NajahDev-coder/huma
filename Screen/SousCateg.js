@@ -21,7 +21,7 @@ import {
   FlatList,
 } from 'react-native';
 import { Base_url, RequestOptionsGet } from './utils/utils'
-const SousCateg = ({ navigation, OnFilter, CategId }) => {
+const SousCateg = ({ navigation, OnFilter, CategId, refresh }) => {
   const [SsCateg, SetSsCateg] = useState({});
   const [CategorieId, setCategorieId] = useState(CategId)
 
@@ -68,7 +68,7 @@ const SousCateg = ({ navigation, OnFilter, CategId }) => {
       //Updtfilter(0);
     }
     return () => (isMounted = false);
-  }, [CategId]);
+  }, [CategId, refresh]);
 
   const defaultImage = { uri: Base_url + 'images/no-couverture.png' };
 

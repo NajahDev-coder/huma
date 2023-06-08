@@ -86,6 +86,9 @@ export default function RegisterScreen(props) {
     }
     //Show Loader
     setLoading(true);
+    const defaultCoordinates = await Location.geocodeAsync(adresse);
+    const latitude = defaultCoordinates[0].latitude;
+    const longitude = defaultCoordinates[0].longitude;
     var dataToSend = {
       nom: userName,
       email: userEmail,
@@ -93,6 +96,8 @@ export default function RegisterScreen(props) {
       tel: userTel,
       adresse: userAddress,
       password: userPassword,
+      latitude: latitude,
+      longitude: longitude
     };
 
     const fetchUrl = 'user/register'

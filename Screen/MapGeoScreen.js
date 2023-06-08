@@ -19,7 +19,7 @@ import * as Location from 'expo-location';
 import { Base_url, RequestOptionsGet, ShowDetailAnnonce } from './utils/utils';
 //import {GOOGLE_PLACES_API_KEY, Google_Geocoding_API_KEY} from './utils/utils'
 
-const MapGeoScreen = ({ navigation, position }) => {
+const MapGeoScreen = ({ navigation, position, refresh }) => {
   const mapRef = createRef();
   const { width, height } = Dimensions.get('window');
   const ASPECT_RATIO = width / 150;
@@ -47,10 +47,11 @@ const MapGeoScreen = ({ navigation, position }) => {
     if (json.length > 0) {
       let data = [];
       json.map((value) => {
-        const lat = parseFloat(value.latitude);
-        const longt = parseFloat(value.longitude);
-        ////console.log('lat:::',lat);
-        data.push({ id: value.ID_ance, latitude: lat, longitude: longt, title: value.titre, description: value.court_description });
+        let lat, longt;
+        if (value.latitude != '') lat = parseFloat(value.latitude);
+        if (value.longitude != '') longt = parseFloat(value.longitude);
+        if (lat && longt)
+          data.push({ id: value.ID_ance, latitude: lat, longitude: longt, title: value.titre, description: value.court_description });
 
       });
       setAnnoncesList(data);
@@ -91,7 +92,7 @@ const MapGeoScreen = ({ navigation, position }) => {
 
     }
     return () => (isMounted = false)
-  }, [])
+  }, [refresh])
   const imageMarker = {
     uri: `${Base_url}images/icone_Marker.png`,
   };
@@ -99,7 +100,7 @@ const MapGeoScreen = ({ navigation, position }) => {
 
     return (
       <>
-        {AnnoncesList.map((marker, key) => (
+        {AnnoncesList.length > 0 && AnnoncesList.map((marker, key) => (
           <Marker
             key={key}
             draggable

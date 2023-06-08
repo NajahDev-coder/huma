@@ -65,12 +65,14 @@ export default function EditAnnonceScreen({ navigation, route }) {
   const [qty, setQty] = useState(0);
   const [proposLivraison, setProposLivraison] = useState(0);
   const [Photo, setPhoto] = useState('');
+  const [PhotoNew, setPhotoNew] = useState('');
   const [Photo2, setPhoto2] = useState('');
+  const [Photo2New, setPhoto2New] = useState('');
   const [Photo3, setPhoto3] = useState('');
+  const [Photo3New, setPhoto3New] = useState('');
   const [annonceType, setAnnonceType] = useState(0);
   const [annonceCateg, setAnnonceCateg] = useState(0);
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
+
   const [type, setType] = useState(0);
   const [categorie, setCategorie] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -126,8 +128,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
       setAdresse(responseJson.data[0].adresse)
 
       // const defaultCoordinates = await Location.geocodeAsync(adresse);
-      setLatitude(responseJson.data[0].latitude);
-      setLongitude(responseJson.data[0].longitude);
+
       setType(responseJson.data[0].type);
       setCategorie(responseJson.data[0].categorie);
       // fadeIn();
@@ -186,6 +187,10 @@ export default function EditAnnonceScreen({ navigation, route }) {
       return;
     }
     //Show Loader
+    const defaultCoordinates = await Location.geocodeAsync(adresse);
+    const latitude = defaultCoordinates[0].latitude;
+    const longitude = defaultCoordinates[0].longitude;
+
     setLoading(true);
     var dataToSend1 = {
       titre: titre,
@@ -215,30 +220,40 @@ export default function EditAnnonceScreen({ navigation, route }) {
       const activite = "Votre annonce est bien modifié!"
       Add_historique(global.User_connecte, activite, global.User_connecte);
 
-      if (Photo) {
+
+      if (PhotoNew) {
+        let update = false;
+        if (Photo) update = true
         var dataToSendPhoto = {
-          imgsource: Photo.assets[0].base64,
-          annonce_id: annonce_id,
+          imgsource: PhotoNew.assets[0].base64,
+          annonce_id: id_annonce,
           user_id: global.User_connecte,
-          num: 1
+          num: 1,
+          update: update
         }
         SaveImage(dataToSendPhoto);
       }
-      if (Photo2) {
+      if (Photo2New) {
+        let update = false;
+        if (Photo2) update = true
         var dataToSendPhoto2 = {
-          imgsource: Photo2.assets[0].base64,
-          annonce_id: annonce_id,
+          imgsource: Photo2New.assets[0].base64,
+          annonce_id: id_annonce,
           user_id: global.User_connecte,
-          num: 2
+          num: 2,
+          update: update
         }
         SaveImage(dataToSendPhoto2);
       }
-      if (Photo3) {
+      if (Photo3New) {
+        let update = false;
+        if (Photo3) update = true
         var dataToSendPhoto3 = {
-          imgsource: Photo3.assets[0].base64,
-          annonce_id: annonce_id,
+          imgsource: Photo3New.assets[0].base64,
+          annonce_id: id_annonce,
           user_id: global.User_connecte,
-          num: 3
+          num: 3,
+          update: update
         }
         SaveImage(dataToSendPhoto3);
       }
@@ -285,7 +300,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
                   <TouchableOpacity
                     style={styles.buttonStyle}
                     activeOpacity={0.5}
-                    onPress={() => props.navigation.navigate('Annonces')}>
+                    onPress={() => navigation.navigate('Annonces')}>
                     <Text style={styles.buttonTextStyle}>Liste Annonces</Text>
                   </TouchableOpacity>
                 </View>
@@ -327,7 +342,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
                 </ImageBackground>
               ) : (
                 <CameraImage
-                  captureImage={setPhoto}
+                  captureImage={setPhotoNew}
                   //style={{ height: 150, width: '100%' }}
                   PStyle={{ width: '100%', height: 150 }}
                   isinvisible={true}
@@ -348,7 +363,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
                 )
                   : (
                     <CameraImage
-                      captureImage={setPhoto3}
+                      captureImage={setPhoto3New}
                       //style={{ height: 150, width: '100%' }}
                       PStyle={{ width: 80, height: 80 }}
                       isinvisible={true}
@@ -369,7 +384,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
                 )
                   : (
                     <CameraImage
-                      captureImage={setPhoto2}
+                      captureImage={setPhoto2New}
                       //style={{ height: 150, width: '100%' }}
                       PStyle={{ width: 80, height: 80 }}
                       isinvisible={true}
@@ -405,6 +420,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(LinkVedio) => setLinkVedio(LinkVedio)}
+                keyboardType='url'
                 value={LinkVedio}
                 underlineColorAndroid="#f000"
                 placeholder="Entrez le Lien vidéo sans http(s):// "

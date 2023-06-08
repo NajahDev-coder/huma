@@ -64,7 +64,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
   const [CatEgorie, setCatEgorie] = useState(0);
   const [Type, setType] = useState('');
   const [CountUpdtCAt, setCountUpdtCAt] = useState(0);
-  const [Enable, setEnable] = useState(0);
+  const [Enable, setEnable] = useState(false);
   const [fadeAnimation] = useState(new Animated.Value(0));
   const [RefreshKey, setRefreshKey] = useState(0);
   const [icoFilter, setIcoFilter] = useState("filter-variant-plus");
@@ -233,6 +233,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
     let isSubscribed = true;
 
     if (isSubscribed) {
+
       getCoordinates();
       fetchType();
       fetchCategorie();
@@ -561,6 +562,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingLeft: 20,
     marginLeft: 10,
+    marginTop: 10
   },
   buttonTextStyle: {
     color: '#FFFFFF',
@@ -569,7 +571,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   dropselectStyle:
-    { backgroundColor: 'white', width: '100%' },
+    { backgroundColor: 'white', width: '100%', marginTop: -5 },
   itemdropselectStyle:
     { borderBottomWidth: 1, borderBottomColor: '#efefef', zIndex: 100 }
 });

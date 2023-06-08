@@ -33,6 +33,7 @@ import {
   Platform,
   SafeAreaView,
   TouchableHighlight,
+  Switch
 } from 'react-native';
 import {
   actions,

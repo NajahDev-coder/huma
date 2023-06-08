@@ -29,7 +29,7 @@ export default class Slideshow extends Component {
         {
           title: 'Title 1',
           caption: 'Caption 1',
-          url: Base_url + 'images/img/no-picture.png',
+          url: Base_url + 'images/img/no-picture1.png',
         },
       ],
     };

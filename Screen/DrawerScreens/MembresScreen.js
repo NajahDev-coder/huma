@@ -22,13 +22,14 @@ import { Base_url, RequestOptionsGet, RequestOptionsPut, RequestOptionsPost, Vie
 import Loader from '../Components/Loader';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import * as Location from 'expo-location';
 import GetCategorie from '../Components/GetCategorie';
 import GetType from '../Components/GetType';
 import GetProfile from '../Components/GetProfile';
 import FilterMembreForm from './FilterMembreForm';
 
 import RatingScreen from '../Components/RatingScreen';
+import MapTransporteur from '../MapTransporteur';
 
 const MembresScreen = ({ navigation }) => {
   const [MembresList, setMembresList] = useState([]);
@@ -38,9 +39,32 @@ const MembresScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState(JSON.stringify({ "adresse": "", "nom": "", "type": "" }));
 
+  const [UserLocation, setUserLocation] = useState(null);
   const [zIndexF, setZindexF] = useState(1);
   const [fadeAnimation] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = React.useState(false);
+
+
+  const FindAnnoncePosition = async () => {
+    //const  status  = await Location.requestForegroundPermissionsAsync();   
+    //console.log('status:::',status);
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      /*setTxtError('Veuillez activer votre poisition!');*/
+
+      const defaultLocation = await Location.geocodeAsync('France');
+      // console.log('defaultLocation:::',defaultLocation);
+      setUserLocation(defaultLocation[0]);
+      return;
+    }
+    const position = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
+    //setUserLocation(position.coords);
+
+
+    setUserLocation(position.coords);
+
+
+  }
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -85,8 +109,11 @@ const MembresScreen = ({ navigation }) => {
     //const resp = json.data
 
     ////console.log('list membres :', response.data)
-    if (response.length > 0)
+    if (response.length > 0) {
       setMembresList(response);
+
+      await FindAnnoncePosition();
+    }
     //else setMembresList({});
   };
 
@@ -127,9 +154,25 @@ const MembresScreen = ({ navigation }) => {
           <Animated.View
             style={{
               width: '100%',
+              //position: 'relative',
+              opacity: fadeAnimation,
+              marginTop: 80,
+            }}>
+            <View style={{
+              padding: 10,
+              flex: 1,
+              width: '100%',
+              minHeight: 200,
+            }}>
+              <MapTransporteur navigation={navigation} refresh={refreshing} position={UserLocation} />
+            </View>
+          </Animated.View>
+          <Animated.View
+            style={{
+              width: '100%',
               position: 'relative',
               opacity: fadeAnimation,
-              marginTop: 90
+              marginTop: 20
             }}>
             {/* <TouchableOpacity onPress={AddFitler}>*/}
 

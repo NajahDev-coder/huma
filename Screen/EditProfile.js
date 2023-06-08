@@ -179,6 +179,9 @@ const EditProfile = ({ route }) => {
       setIsAlert(true);
       return;
     }
+    const defaultCoordinates = await Location.geocodeAsync(userAddress);
+    const latitude = defaultCoordinates[0].latitude;
+    const longitude = defaultCoordinates[0].longitude;
     //Show Loader
     setLoading(true);
     var dataToSend1 = {
@@ -188,10 +191,14 @@ const EditProfile = ({ route }) => {
       age: userAge,
       tel: userTel,
       adresse: userAddress,
+      longitude: longitude,
+      latitude: latitude,
       transporteur: userTransporteur,
       point_dolmen: userPointDolmen,
       cache: userCache,
     };
+
+
     //console.log("dataToSend1", dataToSend1)
     const fetchUrl = 'user/update';
     const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
@@ -361,23 +368,23 @@ const EditProfile = ({ route }) => {
             <TextInput
               style={styles.inputStyle}
               onChangeText={(userAge) => setUserAge(userAge)}
-              value={String(userAge)}
+              value={userAge.toString()}
               underlineColorAndroid="#f000"
               placeholder="Age"
               placeholderTextColor="#8b9cb5"
-            ///keyboardType="numeric"
+              keyboardType="numeric"
             />
           </View>
           <View style={styles.SectionStyle}>
             <TextInput
               style={styles.inputStyle}
+              keyboardType='numeric'
               onChangeText={(userTel) => setUserTel(userTel)}
               value={userTel.toString()}
               underlineColorAndroid="#f000"
               placeholder="Tel"
               placeholderTextColor="#8b9cb5"
-              // autoCapitalize="sentences"
-              keyboardType='tel'
+            // autoCapitalize="sentences"
             />
           </View>
           <View style={styles.SectionStyle2}>

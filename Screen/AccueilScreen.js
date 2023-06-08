@@ -79,8 +79,8 @@ const AccueilScreen = ({ navigation }) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      fetchData();
       setRefreshing(false);
+      fetchData();
     }, 2000);
   }, []);
 
@@ -247,23 +247,23 @@ const AccueilScreen = ({ navigation }) => {
             </View>
 
             {Platform.OS != 'web' && UserLocation !== null && (
-              <SafeAreaView>
-                <Animated.View
-                  style={{
-                    width: '100%',
-                    position: 'relative',
-                    opacity: fadeAnimation,
-                  }}>
-                  <View style={{
-                    padding: 10,
-                    flex: 1,
-                    width: '100%',
-                    minHeight: 200,
-                  }}>
-                    <MapGeoScreen navigation={navigation} position={UserLocation} />
-                  </View>
-                </Animated.View>
-              </SafeAreaView>
+
+              <Animated.View
+                style={{
+                  width: '100%',
+                  position: 'relative',
+                  opacity: fadeAnimation,
+                }}>
+                <View style={{
+                  padding: 10,
+                  flex: 1,
+                  width: '100%',
+                  minHeight: 200,
+                }}>
+                  <MapGeoScreen navigation={navigation} refresh={refreshing} position={UserLocation} />
+                </View>
+              </Animated.View>
+
             )}
 
 
@@ -275,7 +275,7 @@ const AccueilScreen = ({ navigation }) => {
                   position: 'relative',
                   opacity: fadeAnimation,
                 }}>
-                <SousCateg CategId={selectedValue} OnFilter={GetFilter} navigation={navigation} />
+                <SousCateg CategId={selectedValue} refresh={onRefresh} OnFilter={GetFilter} navigation={navigation} />
               </Animated.View>
             </SafeAreaView>
 
