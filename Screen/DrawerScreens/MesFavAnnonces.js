@@ -46,33 +46,33 @@ const MesFavAnnonces = ({ navigation, route }) => {
   const [result, setResultat] = useState('Loading ....');
   const id_user = route.params.id_user;
 
-  const DeFavorisAnnonce = (id_annce) => {
-
-    const baseUrl = `${Base_url}api/api/delfavannonces/${id_user}/${id_annce}`;
-    fetch(baseUrl).then((response) => response.json())
-      .then((responseJson) => {
-        //console.log('delete favoris avec success!');
-        setRefreshKey((oldKey) => oldKey + 1)
-      }
-      );
-  }
-
-  const fetchData = async () => {
-
-    const fetchUrl = `mesfavannonces/${id_user}/`;
-
-    //console.log('favoris', fetchUrl)
-    const json = await RequestOptionsGet(fetchUrl);
-    //console.log('favoris', json)
-    if (json.length > 0)
-      setAnnoncesList(json)
-    else
-      setResultat('Pas des annonces favoris trouvées! ')
-  }
 
   useEffect(() => {
     //setLoading(true)
     let isSubscribed = true;
+    const DeFavorisAnnonce = (id_annce) => {
+
+      const baseUrl = `${Base_url}api/api/delfavannonces/${id_user}/${id_annce}`;
+      fetch(baseUrl).then((response) => response.json())
+        .then((responseJson) => {
+          //console.log('delete favoris avec success!');
+          setRefreshKey((oldKey) => oldKey + 1)
+        }
+        );
+    }
+
+    const fetchData = async () => {
+
+      const fetchUrl = `mesfavannonces/${id_user}/`;
+
+      //console.log('favoris', fetchUrl)
+      const json = await RequestOptionsGet(fetchUrl);
+      //console.log('favoris', json)
+      if (json.length > 0)
+        setAnnoncesList(json)
+      else
+        setResultat('Pas des annonces favoris trouvées! ')
+    }
 
 
     if (isSubscribed) {

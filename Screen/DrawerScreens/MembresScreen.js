@@ -23,8 +23,7 @@ import Loader from '../Components/Loader';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
-import GetCategorie from '../Components/GetCategorie';
-import GetType from '../Components/GetType';
+
 import GetProfile from '../Components/GetProfile';
 import FilterMembreForm from './FilterMembreForm';
 
@@ -200,7 +199,7 @@ const MembresScreen = ({ navigation }) => {
 
                           <View style={[{ zIndex: key-- }, styles.bcDetaille]}>
                             <Text style={styles.postLabel}>{item.nom}</Text>
-                            <RatingScreen user_id1={item.user_id} user_id2={0} />
+                            <RatingScreen user_id1={item.id} user_id2={0} />
                             {item.cache == 1 &&
                               <Text style={styles.postLabel2}>
                                 {item.email}

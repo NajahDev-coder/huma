@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     textContainer: {
-        backgroundColor: 'rgba(0,0,0, 0.7)',
+        //backgroundColor: 'rgba(0,0,0, 0.7)',
         paddingHorizontal: 24,
         paddingVertical: 8,
         borderRadius: 5,

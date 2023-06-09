@@ -32,8 +32,7 @@ import Loader from '../Components/Loader';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import GetCategorie from '../Components/GetCategorie';
-import GetType from '../Components/GetType';
+
 import GetSession from '../Components/GetSession';
 import GetProfile from '../Components/GetProfile';
 import { GetAmis, viewProfile } from '../includes/functions';

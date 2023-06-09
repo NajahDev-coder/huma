@@ -69,11 +69,13 @@ const styles = StyleSheet.create({
         borderRadius: 0,
         borderWidth: 0,
         padding: 0,
+        position: 'relative',
+
 
     },
     dropstyle:
     {
-        minWidth: 80,
+        Width: 120,
         position: 'absolute',
         top: 0,
         right: 18,

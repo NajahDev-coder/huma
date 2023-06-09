@@ -26,28 +26,58 @@ const Notifications = ({ navigation, id_user, widthIcone }) => {
 
 
 
-  const showListNotif = () => {
-    // console.log('fadeAnimation', fadeAnimation);
 
-    const stat = JSON.stringify(fadeAnimation) == '1' ? 0 : 1;
-    const duration = JSON.stringify(fadeAnimation) == '1' ? 100 : 500
-    // console.log('stat', stat);
+  const clickNotif = async () => {
+    //
+    //NaVIG(value.id_activite, value.type_activite, navigation)
+    if (selected == 0) {
+      navigation.navigate({ name: 'ListNotifications' })
+    }
+    else {
+      // alert(selected)
+      //
 
-    Animated.timing(fadeAnimation, {
-      toValue: stat,
-      duration: duration,
-      nativeEvent: { contentOffset: { y: fadeAnimation } },
-      useNativeDriver: true,
-    }).start();
-    setTimeout(() => {
-      setEnable(stat);
-    }, 20);
-  };
+      const fetchUrl = `getNotification/${selected}`;
+
+      const responseJson = await RequestOptionsGet(fetchUrl)
+      if (responseJson.data.length > 0) {
+        responseJson.data.map((item) => {
+          NaVIG(item.id_activite, item.type_activite, navigation)
+        })
+      }
+      //NaVIG(selected, navigation)
+    }
+  }
+
 
   useEffect(() => {
     const today = new Date();
 
     let isSubscribed = true;
+
+    const displayNotif = (value) => {
+      const date = new Date(value.date);
+      return (
+
+
+        <View style={styles.bcBlock} key={value.key} >
+          <GetProfile user_id={value.id_user1} navigation={navigation} img_prof={value.img_prof} />
+
+          <View style={styles.bcDetaille}>
+            <Text style={styles.postLabel}>{value.nom} </Text>
+            <Text style={styles.bcText}>{value.notification}</Text>
+
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+              <Text style={styles.bcSmText}>{dateDiff(date, today)}  </Text>
+            </View>
+          </View>
+        </View>
+
+      )
+
+    };
+
     const getNotification = async (id_user) => {
       //alert(id_user)
       const fetchUrl = `getNotif/${id_user}`;
@@ -60,16 +90,17 @@ const Notifications = ({ navigation, id_user, widthIcone }) => {
           return (
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Notifications - </Text>
-              <TouchableOpacity onPress={() => { navigation.navigate({ name: 'ListNotifications' }) }}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Voir tout</Text>
-              </TouchableOpacity>
+
+              <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Voir tout</Text>
+
             </View>
           )
         }
         let newArray = [{ key: '0', value: valnotif() }];
         responseJson.data.map((item) => {
-
-          newArray.push({ key: item.id, activite: item.id_activite, value: displayNotif(item) })
+          // console.log(item)
+          newArray.push({ key: item.ID_notif, value: displayNotif(item) })
+          //newArray.push({ key: item.id, activite: item.id_activite, value: (<displayNotif value={item}/> ffff</Text>) })
         })
         setNotifList(newArray);
       }
@@ -86,37 +117,15 @@ const Notifications = ({ navigation, id_user, widthIcone }) => {
 
         setNotifList(newArray);
       }
-      //setRefreshKey((oldKey) => oldKey + 1); 
+
 
     }
-    const displayNotif = (value) => {
-      const date = new Date(value.date);
-      return (
 
-        <TouchableOpacity key={value.key} onPress={() => {
-          NaVIG(value.id_activite, value.type_activite, navigation)
-        }} style={styles.bcBlock} >
-          <GetProfile user_id={value.id_user1} navigation={navigation} img_prof={value.img_prof} />
-
-          <View style={styles.bcDetaille}>
-            <Text style={styles.postLabel}>{value.nom} </Text>
-            <Text style={styles.bcText}>{value.notification}</Text>
-
-            <View
-              style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-              <Text style={styles.bcSmText}>{dateDiff(date, today)}  </Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-
-      )
-
-    };
     if (isSubscribed) {
       getNotification(id_user);
     }
     return () => (isSubscribed = false);
-  }, []);
+  }, [refreshKey]);
 
   return (
     <View style={styles.bc_notif}>
@@ -124,16 +133,18 @@ const Notifications = ({ navigation, id_user, widthIcone }) => {
       <Animated.View style={styles.shownotif}>
 
         <SelectList
+
           setSelected={setSelected}
           data={NotifList}
-          //onSelect={() => NaVIG(selected)}     
+          onSelect={() => { clickNotif(selected) }}
           search={false}
           arrowicon={<Ionicons name="md-notifications" size={20} color="black" />}
           boxStyles={{ borderRadius: 0, borderWidth: 0, width: WidthIcone }}
-          inputStyles={{ opacity: 0 }}
-          //defaultOption={{ key:'1', value:' ' }}   
+          inputStyles={{ opacity: 0, fontSize: 0 }}
           dropdownStyles={[styles.lisnotif, { maxHeight: Dimensions.get('window').height - 50 }]}
           dropdownItemStyles={{ borderRadius: 0 }}
+        // defaultOption={{ key: '1', value: ' ' }}  
+        // save={activite}
         />
         {NbreNotif > 0 && (<Text style={styles.isnotif}></Text>)}
 

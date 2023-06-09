@@ -46,9 +46,8 @@ const AnnoncesScreen = ({ navigation }) => {
       setRefreshing(false);
       GetFilter();
       fetchData(filter);
-    }, 2000);
+    }, 1000);
   }, []);
-
   const GetFilter = async () => {
     await AsyncStorage.getItem('add_filter').then((value) => {
       //  console.log('value  filter:', value);
@@ -78,10 +77,12 @@ const AnnoncesScreen = ({ navigation }) => {
     }
     //if (json == null) setAnnoncesList({});
   };
-
   useEffect(() => {
     setLoading(true)
     let isSubscribed = true;
+
+
+
 
     if (isSubscribed) {
       setTimeout(() => {
@@ -151,11 +152,11 @@ const AnnoncesScreen = ({ navigation }) => {
 
 
 
-                            <GetProfile key={item.ID_ance} user_id={item.user_id} navigation={navigation} img_prof={item.img_prof} />
+                            <GetProfile user_id={item.user_id} navigation={navigation} img_prof={item.img_prof} />
 
                             <View style={styles.bcDetaille}>
                               <Text style={styles.postLabel}>{item.nom}</Text>
-                              <RatingScreen user_id1={item.user_id} user_id2={0} key={item.ID_ance} />
+                              <RatingScreen user_id1={item.user_id} user_id2={0} />
                               <Text style={styles.postLabel}>
                                 {item.titre}
                               </Text>
@@ -180,10 +181,10 @@ const AnnoncesScreen = ({ navigation }) => {
                           )}
                           <View style={styles.bcBlock}>
                             <View style={styles.btCateg}>
-                              <GetCategorie key={item.ID_ance} id_annonce={item.categorie} />
+                              <GetCategorie id_annonce={item.categorie} />
                             </View>
                             <View style={styles.btType}>
-                              <GetType key={item.ID_ance} id_annonce={item.type} />
+                              <GetType id_annonce={item.type} />
                             </View>
                           </View>
                         </TouchableOpacity>
@@ -200,6 +201,7 @@ const AnnoncesScreen = ({ navigation }) => {
                     )}
 
                     keyExtractor={item => item.ID_ance}
+                    style={{ minHeight: 600 }}
                   />
                 ) : (
 

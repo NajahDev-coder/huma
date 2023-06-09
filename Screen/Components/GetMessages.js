@@ -108,7 +108,6 @@ const GetMessages = ({ navigation, route }) => {
     // convert data to json
 
 
-    //console.log('response gettype', json.data[0].type);
     const id_user = await AsyncStorage.getItem('user_id');
     setMyUser(id_user);
     setMessages(json.data);

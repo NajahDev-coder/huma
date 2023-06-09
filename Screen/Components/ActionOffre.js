@@ -29,7 +29,7 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
   const [refreshKey, setRefreshKey] = useState(0);
 
   const [isAlert, setIsAlert] = useState(false);
-  const [MsgAlerte, setMsgAlert] = useState('');
+  const [MsgAlert, setMsgAlert] = useState('');
 
   const DataModifier = [{ key: '1', value: 'Modifier' }, { key: '3', value: 'Retirer' }]
   //modifier ou supprimer offre
@@ -79,16 +79,24 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
         .then((responseJson) => {
 
           setOffreEtat(etat_acc);
-          onValider();
-          var msg = '';
-          if (etat_acc == 1) { msg = 'Votre choix est enregistré!'; }
-          if (etat_acc == 2) { msg = 'Votre offre est confirmée!'; }
-          if (etat_acc == 3) { msg = 'Votre offre est annulée!'; }
-          if (msg != '') {
+
+          if (etat_acc == 1) {
+            const msg = 'Votre choix est enregistré!';
             setMsgAlert(msg);
             setIsAlert(true);
-
           }
+          if (etat_acc == 2) {
+            const msg = 'Votre offre est confirmée!';
+            setMsgAlert(msg);
+            setIsAlert(true);
+          }
+          if (etat_acc == 3) {
+            const msg = 'Votre offre est annulée!';
+            setMsgAlert(msg);
+            setIsAlert(true);
+          }
+
+          onValider();
           setRefreshKey((oldKey) => oldKey + 1);
         })
         .catch((error) => {
@@ -96,30 +104,36 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
         });
     }
   };
-
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      if (MsgAlert != '')
+        console.log(MsgAlert)
+    }
+  }, [isAlert])
   return (
     <>
 
       {(id_auteur_annonce == id_user && OffreEtat == 1) &&
-        <>
 
-          <Fontisto
-            name="checkbox-active"
-            size={16}
-            style={{ position: 'absolute', top: 0, right: 0 }}
-            color="#c4d63c"
-            onPress={() => {
-              ValidOffreAnnonce(
-                navigation,
-                id_annonce,
-                id_offre,
-                0,
-                id_auteur_annonce,
-                id_user_offre,
-              );
-            }}
-          />
-        </>
+
+        <Fontisto
+          name="checkbox-active"
+          size={16}
+          style={{ position: 'absolute', top: 0, right: 0 }}
+          color="#c4d63c"
+          onPress={() => {
+            ValidOffreAnnonce(
+              navigation,
+              id_annonce,
+              id_offre,
+              0,
+              id_auteur_annonce,
+              id_user_offre,
+            );
+          }}
+        />
+
       }
 
 
@@ -241,11 +255,15 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
         // save="value"
         />
       )}
+
+
       {isAlert && (
-        <ModalAlert msgAlerte={MsgAlerte} />
+        <ModalAlert msgAlerte={MsgAlert} />
       )}
 
     </>
+
+
   );
 };
 const styles = StyleSheet.create({

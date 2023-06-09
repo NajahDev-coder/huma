@@ -313,6 +313,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
 
       {Enable == true && (
         <View style={styles.showfilter}>
+
           <View style={styles.row}>
             <TextInput
               selectedValue={titreF}
@@ -369,6 +370,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
           <View style={styles.row}>
 
             <SelectList
+              //dropdownShown={false}
               setSelected={(val) => {
                 setType(val);
                 //AddFilter();  
@@ -387,6 +389,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
           <View style={styles.row}>
 
             <SelectList
+              ////dropdownShown={false}
               setSelected={(val) => { setCatEgorie(val); setSSCatEgorie(val); setSousSSCatEgorie(val); fetchSSCategorie(val); }}
               data={CategroiesList}
               boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
@@ -404,6 +407,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
             <View style={styles.row}>
 
               <SelectList
+                //dropdownShown={false}
                 setSelected={(val) => {
                   setSSCatEgorie(val);
                   fetchSousSSCategorie(val);
@@ -422,6 +426,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
             <View style={styles.row}>
 
               <SelectList
+                //dropdownShown={false}
                 setSelected={(val) => {
                   setSousSSCatEgorie(val);
                   // AddFilter();
@@ -453,7 +458,6 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
 
         </View>
       )}
-
     </View>
 
 

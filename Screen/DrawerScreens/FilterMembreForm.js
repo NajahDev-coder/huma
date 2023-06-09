@@ -242,6 +242,7 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
           <View style={styles.row}>
 
             <SelectList
+              //dropdownShown={false}
               setSelected={(val) => { setType(val); setWindowHeight((oldKey) => oldKey + 80) }}
               onSelect={() => { AddFilter() }}
               data={TypeList}

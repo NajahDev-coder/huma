@@ -48,67 +48,70 @@ const MesAnnonces = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [zIndexF, setZindexF] = useState(1);
   const [Annonce_id_Sup, setAnnonce_id_Sup] = useState(null);
-  const [isAlerte, setIsAlerte] = useState(false);
+
 
   const [selected, setSelected] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
+  const msgAlerte = 'Êtes-vous sûr de vouloir supprimer cette annonce!';
+  const [result, setResultat] = useState('');
+  const id_user = route.params.id_user;
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-      GetFilter();
-      fetchData(filter);
-    }, 2000);
+      // GetFilter();
+      //fetchData(filter);
+    }, 1000);
   }, []);
-  const msgAlerte = 'Êtes-vous sûr de vouloir supprimer cette annonce!';
-  const [result, setResultat] = useState('Loading ....');
-  const id_user = route.params.id_user;
 
-  const GetFilter = useCallback(async () => {
-    await AsyncStorage.getItem('add_filter').then((value) => {
 
-      if (value != null && !Object.is(filter, value)) {
-        setFilter(value);
-      }
 
-    });
-  }, [filter]);
+
   useEffect(() => {
     setLoading(true)
     let isSubscribed = true;
+    const GetFilter = async () => {
+      await AsyncStorage.getItem('add_filter').then((value) => {
 
-
-    if (isSubscribed) {
-
-      GetFilter();
-      setTimeout(() => {
-        setLoading(false);
-        if (Object.keys(filter).length > 0) {
-
-          fetchData(filter);
+        if (value != null && !Object.is(filter, value)) {
+          setFilter(value);
         }
-      }, 10)
-    }
-    return () => (isSubscribed = false);
-  }, [filter, id_user, GetFilter, isAlerte]);
 
-  const fetchData = async (filter) => {
-    filter = encodeURIComponent(filter);
+      });
+    };
 
-    const fetchUrl = `mesannonces/${id_user}/${filter}`;
-    const json = await RequestOptionsGet(fetchUrl);
-    ////console.log('json mesannonces', json)
-    if (json.length > 0) {
-      setAnnoncesList(json)
-      setResultat('')
-    }
-    else {
+    const fetchData = async (filter) => {
+      const detailFilter = encodeURIComponent(filter);
 
-      setAnnoncesList([])
-      setResultat('Pas des annonces trouvées! ')
+      const fetchUrl = `mesannonces/${id_user}/${detailFilter}`;
+      const json = await RequestOptionsGet(fetchUrl);
+      ////console.log('json mesannonces', json)
+      if (json.length > 0) {
+        setAnnoncesList(json)
+        setResultat('')
+      }
+      else {
+
+        setAnnoncesList([])
+        setResultat('Pas des annonces trouvées! ')
+      }
+    };
+    if (isSubscribed) {
+      setTimeout(() => {
+        GetFilter();
+        // alert(filter)
+        //if (Object.keys(filter).length > 0) {
+        setAnnoncesList([])
+        setResultat(<Loader loading={true} />);
+        setLoading(false);
+        fetchData(filter);
+        //}
+      }, 100)
     }
-  };
+    return () => { isSubscribed = false }
+  }, [filter, refreshing])
+
 
 
   return (
@@ -165,8 +168,9 @@ const MesAnnonces = ({ navigation, route }) => {
                                 zIndex: 100
                               }}>
                               {global.User_connecte == id_user &&
-                                <ActionDelete navigation={navigation} id={item.ID_ance} type='annonce' msgAlerte={msgAlerte} />
-
+                                <View style={{ position: 'absolute', right: 0, top: 0 }}>
+                                  <ActionDelete navigation={navigation} id={item.ID_ance} type='annonce' msgAlerte={msgAlerte} />
+                                </View>
                               }
                             </View>
                             <Text style={styles.bcText}>
@@ -186,6 +190,7 @@ const MesAnnonces = ({ navigation, route }) => {
                     )}
 
                     keyExtractor={item => item.ID_ance}
+                    style={{ minHeight: 600 }}
                   />
                 ) : (
                   <View style={{ width: '100%' }}>
@@ -198,9 +203,7 @@ const MesAnnonces = ({ navigation, route }) => {
                 ))}
 
             </View>
-            {/*isAlerte && (
-              <ModalSuppression navigation={navigation} msgAlerte={msgAlerte} id={Annonce_id_Sup} type='annonce' />
-            )*/}
+
           </View>
         </ScrollView>
       </ImageBackground>

@@ -1,5 +1,5 @@
 import React, { useState, createRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions, ImageBackground, ScrollView, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Animated, Dimensions, ImageBackground, ScrollView, Platform, TouchableOpacity } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -69,24 +69,29 @@ const ListNotifications = ({ navigation }) => {
                     <View style={{ padding: 10, flex: 1, width: '100%' }}>
 
                         <View style={styles.row}>
-                            {NotifList.map((value) => (
 
-                                <View style={styles.lisnotif}>
-                                    <TouchableOpacity key={value.id} onPress={() => NaVIG(value.id_activite)} style={styles.bcBlock}>
-                                        <GetProfile user_id={value.id_user1} navigation={navigation} img_prof={value.img_prof} />
+                            <FlatList
+                                data={NotifList}
+                                renderItem={({ item }) => (
+                                    <View style={styles.lisnotif}>
+                                        <TouchableOpacity key={item.id} onPress={() => NaVIG(item.id_activite)} style={styles.bcBlock}>
+                                            <GetProfile user_id={item.id_user1} navigation={navigation} img_prof={item.img_prof} />
 
-                                        <View style={styles.bcDetaille}>
-                                            <Text style={styles.postLabel}>{value.nom} </Text>
-                                            <Text style={styles.bcText}>{value.notification}</Text>
+                                            <View style={styles.bcDetaille}>
+                                                <Text style={styles.postLabel}>{item.nom} </Text>
+                                                <Text style={styles.bcText}>{item.notification}</Text>
 
-                                            <View
-                                                style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                                <Text style={styles.bcSmText}>{dateDiff(new Date(value.date), today)}  </Text>
+                                                <View
+                                                    style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                                                    <Text style={styles.bcSmText}>{dateDiff(new Date(item.date), today)}  </Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            ))}
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
+
+                                keyExtractor={item => item.id}
+                            />
                         </View>
                     </View>
                 </ScrollView>

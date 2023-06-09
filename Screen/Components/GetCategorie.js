@@ -22,26 +22,24 @@ const GetCategorie = ({ id_annonce }) => {
 
   //const [url] = useState('https://huma.bzh/');
 
+  const fetchData = async () => {
+    const baseUrl = `categorie/${id_annonce}`;
+    //const baseUrl = "https://jsonplaceholder.typicode.com/posts";
+    const responseJson = await RequestOptionsGet(baseUrl);
+
+    if (responseJson.data.length > 0) {
+      setCategorie(responseJson.data[0].titre);
+      if (responseJson.data[0].parent != 0) {
+        let parent = responseJson.data[0].parent;
+        //console.log('getcateg:::', parent)  
+        const baseUrl2 = `categorie/${parent}`;
+        const responseJson2 = await RequestOptionsGet(baseUrl2);
+        setParentCateg(responseJson2.data[0].titre + ' > ');
+      }
+    }
+  };
   useEffect(() => {
     let isSubscribed = true;
-
-
-    const fetchData = async () => {
-      const baseUrl = `categorie/${id_annonce}`;
-      //const baseUrl = "https://jsonplaceholder.typicode.com/posts";
-      const responseJson = await RequestOptionsGet(baseUrl);
-
-      if (responseJson.data.length > 0) {
-        setCategorie(responseJson.data[0].titre);
-        if (responseJson.data[0].parent != 0) {
-          let parent = responseJson.data[0].parent;
-          //console.log('getcateg:::', parent)  
-          const baseUrl2 = `categorie/${parent}`;
-          const responseJson2 = await RequestOptionsGet(baseUrl2);
-          setParentCateg(responseJson2.data[0].titre + ' > ');
-        }
-      }
-    };
     if (isSubscribed) {
       fetchData();
     }
