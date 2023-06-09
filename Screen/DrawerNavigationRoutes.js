@@ -15,6 +15,8 @@ import AccueilScreen from './AccueilScreen';
 import LoginScreen from './LoginScreen';
 import CompteScreen from './CompteScreen';
 import RegisterScreen from './RegisterScreen';
+
+import CategScreen from './CategScreen';
 import CustomSidebarMenu from './Components/CustomSidebarMenu';
 import NavigationDrawerHeader from './Components/NavigationDrawerHeader';
 import NavigationLogoHeader from './Components/NavigationLogoHeader';
@@ -139,6 +141,24 @@ const HomeScreenStack = ({ navigation }) => {
                 component={CompteScreen}
                 options={{
                     title: 'Compte', headerTintColor: '#97ab00',
+                    headerTitleStyle: { color: '#97ab00' }
+                }}
+            />
+            <Stack.Screen
+                name="Annonces"
+                component={AnnoncesScreen}
+                options={{
+                    title: 'Annonces', headerTintColor: '#97ab00',
+                    headerTitleStyle: { color: '#97ab00' }
+                }} />
+
+
+
+            <Stack.Screen
+                name="Categ"
+                component={CategScreen}
+                options={{
+                    title: 'Nouvelle Annonce', headerTintColor: '#97ab00',
                     headerTitleStyle: { color: '#97ab00' }
                 }}
             />

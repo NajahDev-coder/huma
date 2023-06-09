@@ -49,7 +49,8 @@ const MesMessages = ({ navigation }) => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+      fetchData();
+    }, 1000);
   }, []);
   //get msg non lu count
   const getnbreMsg = async (UserId, id_user2) => {
@@ -134,40 +135,47 @@ const MesMessages = ({ navigation }) => {
 */}
             <View style={styles.row}>
               {messagesList.length > 0 ? (
-                messagesList.map((value) => (
-                  <View style={styles.column}>
-                    <TouchableOpacity
-                      key={value.amis.id}
-                      onPress={() => {
-                        navigation.navigate({
-                          name: 'GetMessages',
-                          params: {
-                            id_user1: UserId,
-                            id_user2: value.amis.id,
-                          },
-                        });
-                      }}
-                      style={styles.post}>
-                      <View style={styles.bcBlock}>
+
+                <FlatList
+                  data={messagesList}
+                  renderItem={({ item }) => (
+
+                    <View style={styles.column}>
+                      <TouchableOpacity
+                        key={item.amis.id}
+                        onPress={() => {
+                          navigation.navigate({
+                            name: 'GetMessages',
+                            params: {
+                              id_user1: UserId,
+                              id_user2: item.amis.id,
+                            },
+                          });
+                        }}
+                        style={styles.post}>
+                        <View style={styles.bcBlock}>
 
 
 
-                        <GetProfile user_id={value.amis.id} navigation={navigation} mg_prof={value.amis.img_prof} />
+                          <GetProfile user_id={item.amis.id} navigation={navigation} mg_prof={item.amis.img_prof} />
 
-                        <View style={styles.bcDetaille}>
-                          <View style={styles.bc_notifmsg}>
-                            <Text style={styles.postLabel}>{value.amis.nom} </Text>
-                            {value.nbrNonLu > 0 && <Text style={styles.notf}>{value.nbrNonLu}</Text>}
+                          <View style={styles.bcDetaille}>
+                            <View style={styles.bc_notifmsg}>
+                              <Text style={styles.postLabel}>{item.amis.nom} </Text>
+                              {item.nbrNonLu > 0 && <Text style={styles.notf}>{item.nbrNonLu}</Text>}
+                            </View>
+                            <Text style={[styles.bcText, item.lu === 1 && styles.bcMsgNoLu]}>{item.message}</Text>
+                            <Text style={styles.postDateLabel}>envoyé le  {moment(item.date).format('MM-DD-YYYY')}</Text>
                           </View>
-                          <Text style={[styles.bcText, value.lu === 1 && styles.bcMsgNoLu]}>{value.message}</Text>
-                          <Text style={styles.postDateLabel}>envoyé le  {moment(value.date).format('MM-DD-YYYY')}</Text>
                         </View>
-                      </View>
-                    </TouchableOpacity>
+                      </TouchableOpacity>
 
-                    <View style={styles.rightpost}><Text></Text></View>
-                  </View>
-                ))
+                      <View style={styles.rightpost}><Text></Text></View>
+                    </View>
+                  )}
+
+                  keyExtractor={(item) => item.amis.id}
+                />
               ) : (
                 <View style={{ width: '100%' }}>
                   <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: '50%', padding: '25%' }}>

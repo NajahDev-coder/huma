@@ -163,39 +163,46 @@ const GetMessages = ({ navigation, route }) => {
           <View style={{ padding: 10, flex: 1, width: '100%' }}>
 
             <View style={styles.row}>
-              {Messages.map((value) => (
-                <View style={{ flex: 1, width: '100%' }} key={value.id}>
 
-                  <TouchableOpacity
-                    key={value.id}
-                    style={
-                      MyUser != value.id_user1 ? styles.post : styles.post2
-                    }>
-                    {MyUser != value.id_user1 ? (
-                      <View style={styles.leftpost}><Text></Text></View>
-                    ) : (
-                      <View style={styles.rightpost}><Text></Text></View>
-                    )
-                    }
-                    <View style={styles.bcBlock}>
+              <FlatList
+                data={Messages}
+                renderItem={({ item }) => (
+                  <View style={{ flex: 1, width: '100%' }} key={item.id}>
+
+                    <TouchableOpacity
+                      key={item.id}
+                      style={
+                        MyUser != item.id_user1 ? styles.post : styles.post2
+                      }>
+                      {MyUser != item.id_user1 ? (
+                        <View style={styles.leftpost}><Text></Text></View>
+                      ) : (
+                        <View style={styles.rightpost}><Text></Text></View>
+                      )
+                      }
+                      <View style={styles.bcBlock}>
 
 
 
-                      <GetProfile user_id={value.id_user1} navigation={navigation} img_prof={value.img_prof} />
+                        <GetProfile user_id={item.id_user1} navigation={navigation} img_prof={item.img_prof} />
 
 
-                      <View style={styles.bcDetaille}>
-                        <GetUser id_user={value.id_user1} />
+                        <View style={styles.bcDetaille}>
+                          <GetUser id_user={item.id_user1} />
 
-                        <Text style={styles.postLabel2}>{value.message}</Text>
+                          <Text style={styles.postLabel2}>{item.message}</Text>
+                        </View>
                       </View>
-                    </View>
-                  </TouchableOpacity>
+                    </TouchableOpacity>
 
-                </View>
+                  </View>
 
-              ))}
+                )}
+
+                keyExtractor={item => item.id}
+              />
             </View>
+
             <View style={{ alignSelf: 'flex-end', padding: 15 }}>
               <Text style={{ color: '#b1b1b0', fontSize: 11 }}>{Vu}</Text>
             </View>

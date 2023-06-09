@@ -1,5 +1,5 @@
 import React, { useState, createRef, useEffect } from 'react';
-import { View, Text, RefreshControl, StyleSheet, Animated, Dimensions, Platform, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
+import { View, FlatList, Text, RefreshControl, StyleSheet, Animated, Dimensions, Platform, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -76,24 +76,30 @@ const HistoriqueScreen = ({ navigation }) => {
                     <View style={{ padding: 10, flex: 1, width: '100%' }}>
 
                         <View style={styles.row}>
-                            {HistoriqueList.map((value) => (
-                                <View style={styles.lisnotif}>
-                                    <TouchableOpacity key={value.id} style={styles.bcBlock} onPress={() => NaVIG(value.id_activite, value.activite, navigation)}>
-                                        {/*<GetProfile user_id={value.id_user} navigation={navigation} img_prof={value.img_prof} />*/}
 
-                                        <View style={styles.bcDetaille}>
+                            <FlatList
+                                data={HistoriqueList}
+                                renderItem={({ item }) => (
+                                    <View style={styles.lisnotif}>
+                                        <TouchableOpacity key={item.id} style={styles.bcBlock} onPress={() => NaVIG(item.id_activite, item.activite, navigation)}>
+                                            {/*<GetProfile user_id={item.id_user} navigation={navigation} img_prof={item.img_prof} />*/}
 
-                                            <Text style={styles.bcText}>{value.activite.replace(String(value.id_activite), ' ')}<GetActivite activite={value.activite} id_activite={value.id_activite} />
-                                            </Text>
+                                            <View style={styles.bcDetaille}>
 
-                                            <View
-                                                style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 10 }}>
-                                                <Text style={styles.bcSmText}>{dateDiff(new Date(value.date), today)}  </Text>
+                                                <Text style={styles.bcText}>{item.activite.replace(String(item.id_activite), ' ')}<GetActivite activite={item.activite} id_activite={item.id_activite} />
+                                                </Text>
+
+                                                <View
+                                                    style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 10 }}>
+                                                    <Text style={styles.bcSmText}>{dateDiff(new Date(item.date), today)}  </Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            ))}
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
+
+                                keyExtractor={item => item.id}
+                            />
                         </View>
                     </View>
                 </ScrollView>

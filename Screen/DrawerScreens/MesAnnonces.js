@@ -126,7 +126,7 @@ const MesAnnonces = ({ navigation, route }) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
 
-          <View style={{ position: 'absolute', top: 0, right: 0, width: '100%', zIndex: 100 }}>
+          <View style={{ position: 'absolute', top: 0, right: 0, height: 70, width: '100%', zIndex: 100 }}>
             <FilterForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
           </View>
           <View style={{ padding: 10, zIndex: 2, flex: 1, width: '100%', marginTop: 70 }}>
@@ -136,54 +136,57 @@ const MesAnnonces = ({ navigation, route }) => {
               {loading ? <Loader loading={loading} /> :
 
                 (AnnoncesList.length > 0 ? (
-                  AnnoncesList.map((value) => (
-                    <TouchableOpacity
-                      key={value.ID_ance}
-                      onPress={() => {
-                        ShowDetailAnnonce(
-                          value.ID_ance,
-                          navigation
-                        );
-                      }}
-                      style={styles.post}>
-                      <View style={styles.bcBlock}>
+                  <FlatList
+                    data={AnnoncesList}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        key={item.ID_ance}
+                        onPress={() => {
+                          ShowDetailAnnonce(
+                            item.ID_ance,
+                            navigation
+                          );
+                        }}
+                        style={styles.post}>
+                        <View style={styles.bcBlock}>
 
 
-                        <GetProfile user_id={id_user} navigation={navigation} img_prof={value.img_prof} />
-                        <View style={styles.bcDetaille}>
-                          {global.User_connecte != id_user && <Text style={styles.postLabel}>{value.nom}</Text>}
-                          <Text style={styles.postLabel}>{value.titre}</Text>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-end',
-                              position: 'absolute',
-                              right: 10,
-                              top: 0,
-                              zIndex: 100
-                            }}>
-                            {global.User_connecte == id_user &&
-                              <ActionDelete navigation={navigation} id={value.ID_ance} type='annonce' msgAlerte={msgAlerte} />
+                          <GetProfile user_id={id_user} navigation={navigation} img_prof={item.img_prof} />
+                          <View style={styles.bcDetaille}>
+                            {global.User_connecte != id_user && <Text style={styles.postLabel}>{item.nom}</Text>}
+                            <Text style={styles.postLabel}>{item.titre}</Text>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-end',
+                                position: 'absolute',
+                                right: 10,
+                                top: 0,
+                                zIndex: 100
+                              }}>
+                              {global.User_connecte == id_user &&
+                                <ActionDelete navigation={navigation} id={item.ID_ance} type='annonce' msgAlerte={msgAlerte} />
 
-                            }
+                              }
+                            </View>
+                            <Text style={styles.bcText}>
+                              {item.court_description}
+                            </Text>
                           </View>
-                          <Text style={styles.bcText}>
-                            {value.court_description}
-                          </Text>
                         </View>
-                      </View>
-                      <View style={styles.bcBlock}>
-                        <View style={styles.btCateg}>
-                          <GetCategorie id_annonce={value.categorie} />
+                        <View style={styles.bcBlock}>
+                          <View style={styles.btCateg}>
+                            <GetCategorie id_annonce={item.categorie} />
+                          </View>
+                          <View style={styles.btType}>
+                            <GetType id_annonce={item.type} />
+                          </View>
                         </View>
-                        <View style={styles.btType}>
-                          <GetType id_annonce={value.type} />
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  ))
+                      </TouchableOpacity>
+                    )}
 
-
+                    keyExtractor={item => item.ID_ance}
+                  />
                 ) : (
                   <View style={{ width: '100%' }}>
                     <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: '50%', padding: '25%' }}>

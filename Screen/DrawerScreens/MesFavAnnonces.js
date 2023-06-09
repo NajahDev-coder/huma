@@ -104,61 +104,66 @@ const MesFavAnnonces = ({ navigation, route }) => {
             <View style={styles.row}>
               {loading ? <Loader loading={loading} /> :
                 (AnnoncesList.length > 0 ? (
-                  AnnoncesList.map((value) => (
-                    <TouchableOpacity
-                      //  key={value.ID_ance}
-                      onPress={() => {
-                        ShowDetailAnnonce(
-                          value.ID_ance, navigation
-                        );
-                      }}
-                      style={styles.post}>
-                      <View style={styles.bcBlock}>
+                  <FlatList
+                    data={AnnoncesList}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        //  key={item.ID_ance}
+                        onPress={() => {
+                          ShowDetailAnnonce(
+                            item.ID_ance, navigation
+                          );
+                        }}
+                        style={styles.post}>
+                        <View style={styles.bcBlock}>
 
 
 
-                        <GetProfile user_id={value.user_id} navigation={navigation} img_prof={value.img_prof} />
+                          <GetProfile user_id={item.user_id} navigation={navigation} img_prof={item.img_prof} />
 
 
-                        <View style={styles.bcDetaille}>
+                          <View style={styles.bcDetaille}>
 
-                          <Text style={styles.postLabel}>{value.nom}</Text>
-                          <Text style={styles.postLabel}>{value.titre}</Text>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-end',
-                              position: 'absolute',
-                              right: 5,
-                              top: 0,
-                            }}>
+                            <Text style={styles.postLabel}>{item.nom}</Text>
+                            <Text style={styles.postLabel}>{item.titre}</Text>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-end',
+                                position: 'absolute',
+                                right: 5,
+                                top: 0,
+                              }}>
 
 
-                            <MaterialIcons
-                              name="favorite-border"
-                              size={24}
+                              <MaterialIcons
+                                name="favorite-border"
+                                size={24}
 
-                              color="#c4d63c"
-                              onPress={() => {
-                                DeFavorisAnnonce(value.ID_ance);
-                              }}
-                            />
+                                color="#c4d63c"
+                                onPress={() => {
+                                  DeFavorisAnnonce(item.ID_ance);
+                                }}
+                              />
+                            </View>
+                            <Text style={styles.bcText}>
+                              {item.court_description}
+                            </Text>
                           </View>
-                          <Text style={styles.bcText}>
-                            {value.court_description}
-                          </Text>
                         </View>
-                      </View>
-                      <View style={styles.bcBlock}>
-                        <View style={styles.btCateg}>
-                          <GetCategorie id_annonce={value.categorie} />
+                        <View style={styles.bcBlock}>
+                          <View style={styles.btCateg}>
+                            <GetCategorie id_annonce={item.categorie} />
+                          </View>
+                          <View style={styles.btType}>
+                            <GetType id_annonce={item.type} />
+                          </View>
                         </View>
-                        <View style={styles.btType}>
-                          <GetType id_annonce={value.type} />
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  ))
+                      </TouchableOpacity>
+                    )}
+
+                    keyExtractor={item => item.ID_ance}
+                  />
                 ) : (
                   <View style={{ width: '100%' }}>
                     <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: '50%', padding: '25%' }}>

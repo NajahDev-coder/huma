@@ -37,19 +37,19 @@ const AnnoncesScreen = ({ navigation }) => {
   const [filter, setFilter] = useState(JSON.stringify({ "adresse": "", "titre": "", "type": "", "categorie": "", "dateStart": "", "dateEnd": "" }));
   const [loading, setLoading] = useState(false);
   const [zIndexF, setZindexF] = useState(1);
-  const [result, setResultat] = useState('Loading ....');
+  const [result, setResultat] = useState(<Loader loading={true} />);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
+      GetFilter();
+      fetchData(filter);
     }, 2000);
   }, []);
 
-  const GetFilter = useCallback(async () => {
-
-
+  const GetFilter = async () => {
     await AsyncStorage.getItem('add_filter').then((value) => {
       //  console.log('value  filter:', value);
 
@@ -57,15 +57,15 @@ const AnnoncesScreen = ({ navigation }) => {
         setFilter(value);
       }
 
-
     });
-  }, [filter])
+  }
 
   const fetchData = async (filter) => {
-    if (Object.keys(filter).length > 0) {
-      filter = encodeURIComponent(filter);
-    }
-    const fetchUrl = `annonces/${filter}`;
+    // if (Object.keys(filter).length > 0) {
+
+    const Detfilter = encodeURIComponent(filter);
+    // }
+    const fetchUrl = `annonces/${Detfilter}`;
     const json = await RequestOptionsGet(fetchUrl);
     if (json.length > 0) {
       setAnnoncesList(json)
@@ -85,15 +85,18 @@ const AnnoncesScreen = ({ navigation }) => {
 
     if (isSubscribed) {
       setTimeout(() => {
-        setLoading(false);
         GetFilter();
-        if (Object.keys(filter).length > 0) {
-          fetchData(filter);
-        }
+        // alert(filter)
+        //if (Object.keys(filter).length > 0) {
+        setAnnoncesList([])
+        setResultat(<Loader loading={true} />);
+        setLoading(false);
+        fetchData(filter);
+        //}
       }, 100)
     }
     return () => { isSubscribed = false }
-  }, [filter, GetFilter])
+  }, [filter])
 
 
   const isdivisibleNine = (num) => {
@@ -121,7 +124,7 @@ const AnnoncesScreen = ({ navigation }) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
 
-          <View style={{ zIndex: zIndexF, position: 'absolute', top: 0, right: 0, width: '100%', zIndex: 100 }}>
+          <View style={{ zIndex: zIndexF, position: 'absolute', top: 0, right: 0, height: 70, width: '100%', zIndex: 100 }}>
             <FilterForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
           </View>
 
@@ -130,68 +133,74 @@ const AnnoncesScreen = ({ navigation }) => {
             <View style={styles.row}>
               {loading ? <Loader loading={loading} /> :
                 (AnnoncesList.length > 0 ? (
-                  AnnoncesList.map((value, key) => (
-                    <>
-                      <TouchableOpacity
-                        key={value.ID_ance}
-                        onPress={() => {
-                          ShowDetailAnnonce(
-                            value.ID_ance,
-                            navigation
-                          );
-                        }}
-                        style={styles.post}>
-                        <View style={styles.bcBlock}>
+
+                  <FlatList
+                    data={AnnoncesList}
+                    renderItem={({ item }) => (
+                      <>
+                        <TouchableOpacity
+                          key={item.ID_ance}
+                          onPress={() => {
+                            ShowDetailAnnonce(
+                              item.ID_ance,
+                              navigation
+                            );
+                          }}
+                          style={styles.post}>
+                          <View style={styles.bcBlock}>
 
 
 
-                          <GetProfile key={value.ID_ance} user_id={value.user_id} navigation={navigation} img_prof={value.img_prof} />
+                            <GetProfile key={item.ID_ance} user_id={item.user_id} navigation={navigation} img_prof={item.img_prof} />
 
-                          <View style={styles.bcDetaille}>
-                            <Text style={styles.postLabel}>{value.nom}</Text>
-                            <RatingScreen user_id1={value.user_id} user_id2={0} key={value.ID_ance} />
-                            <Text style={styles.postLabel}>
-                              {value.titre}
-                            </Text>
-                            <Text style={styles.postLabel2}>
-                              Description:
-                            </Text>
-                            <Text style={styles.bcText}>
-                              {value.court_description}
-                            </Text>
+                            <View style={styles.bcDetaille}>
+                              <Text style={styles.postLabel}>{item.nom}</Text>
+                              <RatingScreen user_id1={item.user_id} user_id2={0} key={item.ID_ance} />
+                              <Text style={styles.postLabel}>
+                                {item.titre}
+                              </Text>
+                              <Text style={styles.postLabel2}>
+                                Description:
+                              </Text>
+                              <Text style={styles.bcText}>
+                                {item.court_description}
+                              </Text>
+                            </View>
                           </View>
+
+
+                          {item.Adresse_ance.length != 0 && (
+                            <View style={styles.bcBlock2}>
+                              <Text style={styles.bcText2}>
+                                <Entypo name="location-pin" size={20} color="grey" />
+
+                                {item.Adresse_ance}
+                              </Text>
+                            </View>
+                          )}
+                          <View style={styles.bcBlock}>
+                            <View style={styles.btCateg}>
+                              <GetCategorie key={item.ID_ance} id_annonce={item.categorie} />
+                            </View>
+                            <View style={styles.btType}>
+                              <GetType key={item.ID_ance} id_annonce={item.type} />
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                        <View>
+                          {isdivisibleNine(item.ID_ance) && (
+                            <View style={styles.post}>
+
+                              <PublicitesSlideshow key={item.ID_ance} navigation={navigation} rang={item.ID_ance} />
+
+                            </View>
+                          )}
                         </View>
+                      </>
+                    )}
 
-
-                        {value.Adresse_ance.length != 0 && (
-                          <View style={styles.bcBlock2}>
-                            <Text style={styles.bcText2}>
-                              <Entypo name="location-pin" size={20} color="grey" />
-
-                              {value.Adresse_ance}
-                            </Text>
-                          </View>
-                        )}
-                        <View style={styles.bcBlock}>
-                          <View style={styles.btCateg}>
-                            <GetCategorie key={value.ID_ance} id_annonce={value.categorie} />
-                          </View>
-                          <View style={styles.btType}>
-                            <GetType key={value.ID_ance} id_annonce={value.type} />
-                          </View>
-                        </View>
-                      </TouchableOpacity>
-                      <View>
-                        {isdivisibleNine(key) && (
-                          <View style={styles.post}>
-
-                            <PublicitesSlideshow key={key} navigation={navigation} rang={key} />
-
-                          </View>
-                        )}
-                      </View>
-                    </>
-                  ))
+                    keyExtractor={item => item.ID_ance}
+                  />
                 ) : (
 
                   <View style={{ width: '100%' }}>

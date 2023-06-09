@@ -147,7 +147,7 @@ const MembresScreen = ({ navigation }) => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <View style={{ position: 'absolute', top: 0, right: 0, width: '100%', zIndex: 100 }}>
+          <View style={{ position: 'absolute', top: 0, right: 0, height: 70, width: '100%', zIndex: 100 }}>
 
             <FilterMembreForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
           </View>
@@ -180,61 +180,67 @@ const MembresScreen = ({ navigation }) => {
             <View style={styles.row}>
 
 
-              {MembresList.map((value) => (
-                <>
 
-                  {value.id != global.User_connecte && (
-                    <TouchableOpacity
-                      key={value.id}
-                      style={[{ zIndex: key-- }, styles.post]}
-                      onPress={() => { ViewProfile(value.id, navigation); }}>
-                      <View style={[{ zIndex: key-- }, styles.bcBlock]}>
+              <FlatList
+                data={MembresList}
+                renderItem={({ item }) => (
+                  <>
+
+                    {item.id != global.User_connecte && (
+                      <TouchableOpacity
+                        key={item.id}
+                        style={[{ zIndex: key-- }, styles.post]}
+                        onPress={() => { ViewProfile(item.id, navigation); }}>
+                        <View style={[{ zIndex: key-- }, styles.bcBlock]}>
 
 
 
-                        <GetProfile user_id={value.id} navigation={navigation} img_prof={value.img_prof} />
+                          <GetProfile user_id={item.id} navigation={navigation} img_prof={item.img_prof} />
 
 
-                        <View style={[{ zIndex: key-- }, styles.bcDetaille]}>
-                          <Text style={styles.postLabel}>{value.nom}</Text>
-                          <RatingScreen user_id1={value.user_id} user_id2={0} />
-                          {value.cache == 1 &&
-                            <Text style={styles.postLabel2}>
-                              {value.email}
-                            </Text>
-                          }
-                          {value.Transporteur == 1 &&
-                            <Text style={styles.postLabel2}>
-                              Transporteur
-                            </Text>
-                          }
-                          {value.PointDolmen == 1 &&
-                            <Text style={styles.postLabel2}>
-                              Dolmen
-                            </Text>
-                          }
+                          <View style={[{ zIndex: key-- }, styles.bcDetaille]}>
+                            <Text style={styles.postLabel}>{item.nom}</Text>
+                            <RatingScreen user_id1={item.user_id} user_id2={0} />
+                            {item.cache == 1 &&
+                              <Text style={styles.postLabel2}>
+                                {item.email}
+                              </Text>
+                            }
+                            {item.Transporteur == 1 &&
+                              <Text style={styles.postLabel2}>
+                                Transporteur
+                              </Text>
+                            }
+                            {item.PointDolmen == 1 &&
+                              <Text style={styles.postLabel2}>
+                                Dolmen
+                              </Text>
+                            }
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'flex-end',
+                              position: 'absolute',
+                              right: 5,
+                              zIndex: 50,
+                              top: -5,
+                            }}>
+
+                            {global.User_connecte != undefined && global.User_connecte != null &&
+                              <EstAmis id_user1={global.User_connecte} navigation={navigation} id_user2={item.id} />
+                            }
+                          </View>
                         </View>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'flex-end',
-                            position: 'absolute',
-                            right: 5,
-                            zIndex: 50,
-                            top: -5,
-                          }}>
 
-                          {global.User_connecte != undefined && global.User_connecte != null &&
-                            <EstAmis id_user1={global.User_connecte} navigation={navigation} id_user2={value.id} />
-                          }
-                        </View>
-                      </View>
+                      </TouchableOpacity>
+                    )}
+                  </>
+                )}
 
-                    </TouchableOpacity>
-                  )}
-                </>
-              ))
-              }
+                keyExtractor={item => item.id}
+              />
+
             </View>
           </Animated.View>
         </ScrollView>
