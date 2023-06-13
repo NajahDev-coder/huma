@@ -77,27 +77,28 @@ const SousCateg = ({ navigation, OnFilter, CategId, refresh }) => {
     return path;
   };
   return (
+    <ScrollView horizontal={true} style={{ width: '100%' }}>
+      <FlatList
+        data={SsCateg}
+        renderItem={({ item }) => (
+          <View style={styles.viewThumbnail}>
+            <TouchableOpacity onPress={() => getSScateg(item.id)}>
+              <ImageBackground
+                style={styles.imageThumbnail}
+                imageStyle={{ borderRadius: 3 }}
+                defaultSource={defaultImage}
+                source={getBeerImage(CategId, item.slug)}>
+                <Text style={styles.txtThumb}>{item.titre}</Text>
+              </ImageBackground>
+            </TouchableOpacity>
+          </View>
+        )}
+        //Setting the number of column
+        numColumns={3}
 
-    <FlatList
-      data={SsCateg}
-      renderItem={({ item }) => (
-        <View style={styles.viewThumbnail}>
-          <TouchableOpacity onPress={() => getSScateg(item.id)}>
-            <ImageBackground
-              style={styles.imageThumbnail}
-              imageStyle={{ borderRadius: 3 }}
-              defaultSource={defaultImage}
-              source={getBeerImage(CategId, item.slug)}>
-              <Text style={styles.txtThumb}>{item.titre}</Text>
-            </ImageBackground>
-          </TouchableOpacity>
-        </View>
-      )}
-      //Setting the number of column
-      numColumns={3}
-      keyExtractor={(item, index) => index}
-    />
-
+        keyExtractor={(item, index) => index}
+      />
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({

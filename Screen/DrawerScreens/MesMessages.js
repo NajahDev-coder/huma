@@ -16,7 +16,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
-  DeviceEventEmitter
+  // DeviceEventEmitter
 } from 'react-native';
 import {
   FontAwesome,
@@ -41,7 +41,7 @@ const MesMessages = ({ navigation }) => {
   const [messagesList, setMessagesList] = useState([]);
   const [UserId, setUserId] = useState(0);
 
-  const [result, setResultat] = useState('Loading ....');
+  const [result, setResultat] = useState(<Loader loading={true} />);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = React.useCallback(() => {
@@ -52,58 +52,60 @@ const MesMessages = ({ navigation }) => {
     }, 1000);
   }, []);
   //get msg non lu count
-  const getnbreMsg = async (UserId, id_user2) => {
-    const fetchUrl = `isLuMessage/${UserId}/${id_user2}`;
+  const getnbreMsg = async (id_user2) => {
+    const fetchUrl = `isLuMessage/${global.User_connecte}/${id_user2}`;
     const response = await RequestOptionsGet(fetchUrl);
     return response.data[0].nbrNonLu
   }
-  useLayoutEffect(() => {
+  const fetchData = async () => {
+
+    const fetchUrl = `mesmessages/${global.User_connecte}`;
+    const json = await RequestOptionsGet(fetchUrl);
+    if (json.length > 0) {
+
+
+      var data = []
+      json.map((value) => {
+        getnbreMsg(value.amis.id).then((val) => {
+          // DeviceEventEmitter.addListener('sendNewMsg', sendNewMsg, null)
+          /*if(data && data.islu==true && data.id_user==value.amis.id)
+          {
+             Object.assign(value, {nbrNonLu: val});
+          }
+          else*/
+          Object.assign(value, { nbrNonLu: val });
+
+          data.push(value);
+          if (data.length == json.length)
+            setMessagesList(data)
+
+
+
+        });
+      })
+
+    }
+    else
+      setResultat('Pas des messages trouvées! ')
+  };
+
+  useEffect(() => {
     //setLoading(true)
     let isSubscribed = true;
 
-    (async () => {
-      /* id de user connecté*/
-      const id_user = await AsyncStorage.getItem('user_id');
-      setUserId(id_user);
-    })();
 
     ////console.log('id_user MessagesList', UserId);
-    const fetchData = async () => {
 
-      const fetchUrl = `mesmessages/${UserId}`;
-      const json = await RequestOptionsGet(fetchUrl);
-      if (json.length > 0) {
-
-
-        var data = []
-        json.map((value) => {
-          getnbreMsg(UserId, value.amis.id).then((val) => {
-            DeviceEventEmitter.addListener('sendNewMsg', sendNewMsg, null)
-            /*if(data && data.islu==true && data.id_user==value.amis.id)
-            {
-               Object.assign(value, {nbrNonLu: val});
-            }
-            else*/
-            Object.assign(value, { nbrNonLu: val });
-
-            data.push(value);
-            if (data.length == json.length)
-              setMessagesList(data)
-
-
-
-          });
-        })
-
-      }
-      else
-        setResultat('Pas des messages trouvées! ')
-    };
-    if (isSubscribed) {
+    // if (isSubscribed) {
+    setResultat(<Loader loading={true} />)
+    fetchData();
+    const intervalIdMsg = setInterval(() => {
       fetchData();
-    }
-    return () => (isSubscribed = false);
-  }, [UserId]);
+    }, 1000 * 5) // in milliseconds
+    return () => clearInterval(intervalIdMsg)
+    //}
+    //return () => (isSubscribed = false);
+  }, []);
   const sendNewMsg = (data) => {
     /*(data && data.id_user) ? alert(data.id_user) : alert(user_id)
     (data && data.islu) ? alert(data.islu) : alert('nn lu')*/
@@ -146,7 +148,7 @@ const MesMessages = ({ navigation }) => {
                           navigation.navigate({
                             name: 'GetMessages',
                             params: {
-                              id_user1: UserId,
+                              id_user1: global.User_connecte,
                               id_user2: item.amis.id,
                             },
                           });
@@ -175,6 +177,7 @@ const MesMessages = ({ navigation }) => {
 
                   keyExtractor={(item) => item.amis.id}
                 />
+
               ) : (
                 <View style={{ width: '100%' }}>
                   <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: '50%', padding: '25%' }}>

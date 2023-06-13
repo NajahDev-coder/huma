@@ -122,34 +122,39 @@ const CategScreen = ({ navigation }) => {
           </View>
 
           <SafeAreaView>
-            <FlatList
-              data={SousCateg}
-              renderItem={({ item }) => (
-                <View style={styles.viewThumbnail}>
-                  <LinearGradient
-                    colors={['#f3f3f3', '#ffffff', '#f9f9f9']}
-                    start={{
-                      x: 0,
-                      y: 0,
-                    }}
-                    end={{
-                      x: 1,
-                      y: 1,
-                    }}
-                    style={styles.bgThumb}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        displaySCateg(item.id);
-                      }}>
-                      <Text style={styles.txtThumb}>{item.title}</Text>
-                    </TouchableOpacity>
-                  </LinearGradient>
-                </View>
-              )}
-              //Setting the number of column
-              numColumns={3}
-              keyExtractor={(item, index) => index}
-            />
+            <ScrollView
+              horizontal={true}
+              style={{ width: '100%' }}
+            >
+              <FlatList
+                data={SousCateg}
+                renderItem={({ item }) => (
+                  <View style={styles.viewThumbnail}>
+                    <LinearGradient
+                      colors={['#f3f3f3', '#ffffff', '#f9f9f9']}
+                      start={{
+                        x: 0,
+                        y: 0,
+                      }}
+                      end={{
+                        x: 1,
+                        y: 1,
+                      }}
+                      style={styles.bgThumb}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          displaySCateg(item.id);
+                        }}>
+                        <Text style={styles.txtThumb}>{item.title}</Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
+                  </View>
+                )}
+                //Setting the number of column
+                numColumns={3}
+                keyExtractor={(item, index) => index}
+              />
+            </ScrollView>
           </SafeAreaView>
         </ScrollView>
       </ImageBackground>

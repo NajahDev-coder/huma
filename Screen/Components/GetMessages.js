@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
-  DeviceEventEmitter,
+  // DeviceEventEmitter,
   RefreshControl
 } from 'react-native';
 
@@ -43,12 +43,13 @@ const GetMessages = ({ navigation, route }) => {
   const [OffFocus, setOffFocus] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [MyUser, setMyUser] = useState(0);
+  const [isSent, setIsSent] = useState(false)
 
   const [Vu, setVu] = useState('');
-  const id_user1 = route.params?.id_user1;
+  const [refreshing, setRefreshing] = useState(false);
+  const id_user1 = global.User_connecte;
 
   const id_user2 = route.params?.id_user2;
-  const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -59,16 +60,16 @@ const GetMessages = ({ navigation, route }) => {
 
 
 
-  DeviceEventEmitter.addListener(
+  /*DeviceEventEmitter.addListener(
     'sendNewMsg', (data) => {
 
-    });
+    });*/
 
 
 
   //sent message
   const handleSubmitPress = async () => {
-    setErrortext('');
+
 
     if (!UserMessage) {
       const msg = "Veuillez saisir votre Message!";
@@ -79,52 +80,94 @@ const GetMessages = ({ navigation, route }) => {
     //  const UserId = await AsyncStorage.getItem('user_id');
     // setLoading(true);
     let dataToSend = {
-      id_user1: id_user1,
+      id_user1: global.User_connecte,
       id_user2: id_user2,
       message: UserMessage,
     };
 
-    const fetchUrl = 'sent_messages';
 
-    const responseJson = await RequestOptionsPost(dataToSend, fetchUrl);
-    // console.log('sent_messages',responseJson)
-    if (responseJson.status) {
-      setVu('');
-      setUserMessage('');
-      setOffFocus(false);
-      setRefreshKey((oldKey) => oldKey + 1);
-      // alert(refreshKey);
-      //console.log('Message envoyé avec success!');
-    } else {
-      setErrortext('Erreur inatendu! Essayer plus tard!');
-      //console.log('Erreur inatendu! Essayer plus tard!');
+    var formBody = [];
+
+    for (var key in dataToSend) {
+      var encodedKey = encodeURIComponent(key);
+      var encodedValue = encodeURIComponent(dataToSend[key]);
+      formBody.push(encodedKey + '=' + encodedValue);
     }
+    formBody = formBody.join('&');
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: formBody,
+    }
+    const UrlFetch = `${Base_url}api/api/sent_messages`;
+
+    // console.log('UrlFetch post reqst:', UrlFetch)
+
+    fetch(UrlFetch, options).then((data) => data.json()).then((responseJson) => {
+      //console.log('resolve post reqst:', responseJson)
+      setOffFocus(false);
+      setVu(' ');
+      setUserMessage(' ');
+      setIsSent(true);
+      setRefreshKey((oldKey) => oldKey + 1);
+    }).catch((error) => {
+      // Handle any errors that occur
+      console.error(error);
+    });
+
+
+
+
+
+    /* 
+    const fetchUrl = 'sent_messages';
+    //alert(refreshKey);
+    await RequestOptionsPost(dataToSend, fetchUrl);
+    RequestOptionsPost(dataToSend, fetchUrl).then((response, error) => {
+ 
+     if (response.status == 'add amis success') {
+       // console.log('sent_messages',responseJson)
+       setOffFocus(false);
+       setVu(' ');
+       setUserMessage(' ');
+       setRefreshKey((oldKey) => oldKey + 1);
+       // 
+       //console.log('Message envoyé avec success!');
+     } else {
+       setErrortext('Erreur inatendu! Essayer plus tard!');
+       //console.log('Erreur inatendu! Essayer plus tard!');
+     }
+  })*/
 
   };
   const fetchData = async () => {
-    const fetchUrl = `messages/${id_user1}/${id_user2}`;
-    const json = await RequestOptionsGet(fetchUrl)
+    const fetchUrl = `messages/${global.User_connecte}/${id_user2}`;
+    //const json = await RequestOptionsGet(fetchUrl)
 
     // convert data to json
+    RequestOptionsGet(fetchUrl).then((response, error) => {
+      if (response.data.length > 0) {
+        setMessages(response.data);
+        //setRefreshKey((oldKey) => oldKey + 1);
+      }
+    });
 
 
-    const id_user = await AsyncStorage.getItem('user_id');
-    setMyUser(id_user);
-    setMessages(json.data);
-    setRefreshKey((oldKey) => oldKey + 1);
   }
 
   const marquerlu = async () => {
-    const fetchUrl = `marquerLuMessage/${id_user1}/${id_user2}`;
+    const fetchUrl = `marquerLuMessage/${global.User_connecte}/${id_user2}`;
     const response = await RequestOptionsPut(fetchUrl);
     //console.log('msg lu?', response); 
     if (response.data.length > 0) {
       setVu('Vu');
-      DeviceEventEmitter.emit("sendNewMsg", { islu: true, id_user: id_user2 });
+      //DeviceEventEmitter.emit("sendNewMsg", { islu: true, id_user: id_user2 });
     }
   }
   const islu = async () => {
-    const fetchUrl = `isLuMessage/${id_user1}/${id_user2}`;
+    const fetchUrl = `isLuMessage/${id_user2}/${global.User_connecte}`;
     const response = await RequestOptionsGet(fetchUrl);
     //console.log('is lu?', response.data[0].nbrNonLu);
     if (response.data[0].nbrNonLu == 0) {
@@ -138,11 +181,13 @@ const GetMessages = ({ navigation, route }) => {
     if (isSubscribed) {
       fetchData();
       // setUserMessage('');
-      marquerlu();
-      islu();
+      if (!isSent) {
+        marquerlu();
+        islu();
+      }
     }
     return () => (isSubscribed = false);
-  }, [refreshKey, Vu]);
+  }, [refreshKey]);
 
 
   return (
@@ -162,44 +207,41 @@ const GetMessages = ({ navigation, route }) => {
           <View style={{ padding: 10, flex: 1, width: '100%' }}>
 
             <View style={styles.row}>
+              {Messages.map((item) => (
 
-              <FlatList
-                data={Messages}
-                renderItem={({ item }) => (
-                  <View style={{ flex: 1, width: '100%' }} key={item.id}>
+                <View style={{ flex: 1, width: '100%' }} key={item.id}>
 
-                    <TouchableOpacity
-                      key={item.id}
-                      style={
-                        MyUser != item.id_user1 ? styles.post : styles.post2
-                      }>
-                      {MyUser != item.id_user1 ? (
-                        <View style={styles.leftpost}><Text></Text></View>
-                      ) : (
-                        <View style={styles.rightpost}><Text></Text></View>
-                      )
-                      }
-                      <View style={styles.bcBlock}>
+                  <TouchableOpacity
+
+                    style={
+                      global.User_connecte != item.id_user1 ? styles.post : styles.post2
+                    }>
+                    {global.User_connecte != item.id_user1 ? (
+                      <View style={styles.leftpost}><Text></Text></View>
+                    ) : (
+                      <View style={styles.rightpost}><Text></Text></View>
+                    )
+                    }
+                    <View style={styles.bcBlock}>
 
 
 
-                        <GetProfile user_id={item.id_user1} navigation={navigation} img_prof={item.img_prof} />
+                      <GetProfile user_id={item.id_user1} navigation={navigation} img_prof={item.img_prof} />
 
 
-                        <View style={styles.bcDetaille}>
-                          <GetUser id_user={item.id_user1} />
+                      <View style={styles.bcDetaille}>
+                        <GetUser id_user={item.id_user1} />
 
-                          <Text style={styles.postLabel2}>{item.message}</Text>
-                        </View>
+                        <Text style={styles.postLabel2}>{item.message}</Text>
                       </View>
-                    </TouchableOpacity>
+                    </View>
+                  </TouchableOpacity>
 
-                  </View>
+                </View>
 
-                )}
+              ))
+              }
 
-                keyExtractor={item => item.id}
-              />
             </View>
 
             <View style={{ alignSelf: 'flex-end', padding: 15 }}>
@@ -323,6 +365,10 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     fontSize: 14,
+    padding: 10,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'red'
   },
   rightpost: {
     width: '5%',

@@ -52,6 +52,17 @@ export const GetName = async (idActivite, type_activite) => {
   }
 
 };
+export const NavigNotif = async (choix, navigation) => {
+  const fetchUrl = `getNotification/${choix}`;
+
+  const responseJson = await RequestOptionsGet(fetchUrl)
+
+  if (responseJson.data.length > 0) {
+    responseJson.data.map((item) => {
+      NaVIG(item.id_activite, item.type_activite, navigation)
+    })
+  }
+}
 export const NaVIG = (idNotif, type_activite, navigation) => {
   //console.log(idNotif);
 

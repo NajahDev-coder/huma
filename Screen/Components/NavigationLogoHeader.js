@@ -3,13 +3,15 @@
 
 // Import React and Component
 import React, { useEffect, useState } from 'react';
-import { View, Image, TouchableOpacity, Platform, StyleSheet } from 'react-native';
+import { View, Image, TouchableOpacity, Platform, StyleSheet, Dimensions } from 'react-native';
 import Notifications from './Notifications';
 import { Base_url } from '../utils/utils';
 
 //import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
+const Marge = parseInt(Dimensions.get('screen').width / 4) + 28;
 
 const NavigationLogoHeader = ({ navigationProps }) => {
   const [UserId, setUserId] = useState(null);
@@ -26,11 +28,16 @@ const NavigationLogoHeader = ({ navigationProps }) => {
     return (isMounted) => (isMounted = false);
   }, [UserId]);
   const toggleDrawer = () => {
-    navigationProps.navigate('MenuScreen');
+    navigationProps.navigate('Accueil');
   };
   return (
-    <View style={{ flexDirection: 'row', paddingTop: 5 }}>
-      <TouchableOpacity onPress={toggleDrawer} style={styles.logo}>
+    <View style={{ flexDirection: 'row', marginTop: -40 }}>
+
+      <TouchableOpacity onPress={toggleDrawer} style={{
+        position: 'absolute',
+        right: Platform.OS === 'web' ? (global.User_connecte != null ? 100 : 10) : (global.User_connecte != null ? Marge : 10),
+        height: 50
+      }}>
         <Image
           source={{
             uri: Base_url + 'images/logo.png',
@@ -38,22 +45,29 @@ const NavigationLogoHeader = ({ navigationProps }) => {
           style={styles.imglogo}
         />
       </TouchableOpacity>
+
       {UserId != null && (
-        <View style={{ width: 120, flexDirection: 'row' }}>
-          <Notifications navigation={navigationProps} id_user={UserId} widthIcone={Platform.OS == 'web' ? '100%' : '100%'} />
+        <View style={{ position: 'absolute', right: 0 }}>
+          <Notifications navigation={navigationProps} widthIcone={Platform.OS == 'web' ? '100%' : '100%'} />
         </View>
       )}
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   logo: {
-    width: Platform.OS == 'web' ? (global.User_connecte != null ? 120 : 140) : 160,
+    // width: Platform.OS == 'web' ? (global.User_connecte != null ? 120 : 140) : 160,
+    position: 'absolute',
+    right: Platform.OS === 'web' ? (global.User_connecte != null ? 100 : 10) : (global.User_connecte != null ? Marge : 10),
+    //top: -20,
     height: 50,
   },
+
   imglogo: {
     width: Platform.OS == 'web' ? 130 : 150,
     height: 40,
+
   }
 })
 export default NavigationLogoHeader;

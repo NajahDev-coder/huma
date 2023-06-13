@@ -87,6 +87,9 @@ const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user }) => {
         setOffFocus(false);
         setRefreshKey((oldKey) => oldKey + 1);
         //console.log('Offre publié avec success!');
+      } else {
+        setErrortext('Erreur inatendu! Essayer plus tard!');
+        //console.log('Erreur inatendu! Essayer plus tard!');
       }
     })
   };
@@ -148,26 +151,26 @@ const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user }) => {
           <View style={{ width: '100%' }}>
             <KeyboardAvoidingView enabled>
               {Offres.map((value) => (
-                <>
+                <View key={value.ID_offre}>
                   {value.etat_acc != 4 &&
-                    <TouchableOpacity key={value.id} style={styles.post}>
+                    <TouchableOpacity key={value.ID_offre} style={styles.post}>
                       <View style={styles.bcBlock}>
 
-                        <GetProfile user_id={value.id} img_prof={value.img_prof} navigation={navigation} />
+                        <GetProfile key={value.ID_offre} user_id={value.id} img_prof={value.img_prof} navigation={navigation} />
 
                         <View style={styles.bcDetaille}>
                           <View style={{ zIndex: 20, position: 'absolute', top: 0, right: 0, padding: 0, width: 100 }}>
 
-                            <FavorisOffre id_annonce={id_annonce} id_offre={value.ID_offre} id_user_offre={value.id} id_user={id_user} id_auteur_annonce={id_auteur_annonce} favoris={value.favoris} />
+                            <FavorisOffre key={value.ID_offre} id_annonce={id_annonce} id_offre={value.ID_offre} id_user_offre={value.id} id_user={id_user} id_auteur_annonce={id_auteur_annonce} favoris={value.favoris} />
 
-                            <ActionOffre navigation={navigation} id_annonce={id_annonce} id_offre={value.ID_offre} id_user_offre={value.id} id_user={id_user} id_auteur_annonce={id_auteur_annonce} etat={value.etat_acc} situation={traitementAnnonce} onValider={() => { UpValider(!value.etat_acc) }} onModifier={() => { UpModifier(value.ID_offre) }} onUpdate={() => { setRefreshKey((oldKey) => oldKey + 1); }} />
+                            <ActionOffre key={value.ID_offre} navigation={navigation} id_annonce={id_annonce} id_offre={value.ID_offre} id_user_offre={value.id} id_user={id_user} id_auteur_annonce={id_auteur_annonce} etat={value.etat_acc} situation={traitementAnnonce} onValider={() => { UpValider(!value.etat_acc) }} onModifier={() => { UpModifier(value.ID_offre) }} onUpdate={() => { setRefreshKey((oldKey) => oldKey + 1); }} />
                           </View>
                           <View style={{ zIndex: 1 }}>
                             <Text style={styles.postLabel}>{value.nom}</Text>
-                            <RatingScreen user_id1={value.id} user_id2={0} />
+                            <RatingScreen key={value.ID_offre} user_id1={value.id} user_id2={0} />
 
                             {(id_auteur_annonce == id_user || value.id_user == id_user) ?
-                              <DetailleOffre id_offre={value.ID_offre} offre={value.detaille} etat={etatDetailsOffre} />
+                              <DetailleOffre key={value.ID_offre} id_offre={value.ID_offre} offre={value.detaille} etat={etatDetailsOffre} />
                               : (
                                 <Text style={styles.bcText}>A proposé une offre.</Text>
                               )}
@@ -182,7 +185,7 @@ const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user }) => {
                       </View>
                     </TouchableOpacity>
                   }
-                </>
+                </View>
               ))}
             </KeyboardAvoidingView>
           </View>
@@ -292,6 +295,10 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     fontSize: 14,
+    padding: 10,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'red'
   },
   activityIndicator: {
     alignItems: 'center',

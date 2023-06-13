@@ -276,10 +276,12 @@ const AccueilScreen = ({ navigation }) => {
                   width: '100%',
                   position: 'relative',
                   opacity: fadeAnimation,
+                  paddingBottom: 100
                 }}>
                 <SousCateg CategId={selectedValue} refresh={onRefresh} OnFilter={GetFilter} navigation={navigation} />
               </Animated.View>
             </SafeAreaView>
+
 
             {/** pop up*/}
             {(global.User_connecte != null && global.User_VIP != null) && (
@@ -297,6 +299,7 @@ const AccueilScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
+    zIndex: 3,
     justifyContent: 'center',
     alignContent: 'center',
   },

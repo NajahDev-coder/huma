@@ -100,6 +100,7 @@ const HistoriqueScreen = ({ navigation }) => {
 
                                 keyExtractor={item => item.id}
                             />
+
                         </View>
                     </View>
                 </ScrollView>

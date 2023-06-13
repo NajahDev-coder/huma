@@ -56,47 +56,48 @@ const MesAnnonces = ({ navigation, route }) => {
   const msgAlerte = 'Êtes-vous sûr de vouloir supprimer cette annonce!';
   const [result, setResultat] = useState('');
   const id_user = route.params.id_user;
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-      // GetFilter();
-      //fetchData(filter);
+      GetFilter();
+      fetchData();
     }, 1000);
   }, []);
 
+  const GetFilter = async () => {
+    await AsyncStorage.getItem('add_filter').then((value) => {
 
+      if (value != null && !Object.is(filter, value)) {
+        setFilter(value);
+      }
 
+    });
+  };
 
+  const fetchData = async () => {
+    const detailFilter = encodeURIComponent(filter);
+    console.log(detailFilter)
+    const fetchUrl = `mesannonces/${id_user}/${detailFilter}`;
+    const json = await RequestOptionsGet(fetchUrl);
+    ////console.log('json mesannonces', json)
+    if (json.length > 0) {
+      setAnnoncesList(json)
+      setResultat('')
+    }
+    else {
+
+      setAnnoncesList([])
+      setResultat('Pas des annonces trouvées! ')
+    }
+  };
   useEffect(() => {
     setLoading(true)
     let isSubscribed = true;
-    const GetFilter = async () => {
-      await AsyncStorage.getItem('add_filter').then((value) => {
 
-        if (value != null && !Object.is(filter, value)) {
-          setFilter(value);
-        }
 
-      });
-    };
 
-    const fetchData = async (filter) => {
-      const detailFilter = encodeURIComponent(filter);
-
-      const fetchUrl = `mesannonces/${id_user}/${detailFilter}`;
-      const json = await RequestOptionsGet(fetchUrl);
-      ////console.log('json mesannonces', json)
-      if (json.length > 0) {
-        setAnnoncesList(json)
-        setResultat('')
-      }
-      else {
-
-        setAnnoncesList([])
-        setResultat('Pas des annonces trouvées! ')
-      }
-    };
     if (isSubscribed) {
       setTimeout(() => {
         GetFilter();
@@ -105,7 +106,7 @@ const MesAnnonces = ({ navigation, route }) => {
         setAnnoncesList([])
         setResultat(<Loader loading={true} />);
         setLoading(false);
-        fetchData(filter);
+        fetchData();
         //}
       }, 100)
     }
@@ -139,6 +140,7 @@ const MesAnnonces = ({ navigation, route }) => {
               {loading ? <Loader loading={loading} /> :
 
                 (AnnoncesList.length > 0 ? (
+
                   <FlatList
                     data={AnnoncesList}
                     renderItem={({ item }) => (
@@ -192,6 +194,7 @@ const MesAnnonces = ({ navigation, route }) => {
                     keyExtractor={item => item.ID_ance}
                     style={{ minHeight: 600 }}
                   />
+
                 ) : (
                   <View style={{ width: '100%' }}>
                     <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: '50%', padding: '25%' }}>
@@ -207,7 +210,7 @@ const MesAnnonces = ({ navigation, route }) => {
           </View>
         </ScrollView>
       </ImageBackground>
-    </View>
+    </View >
   );
 };
 let category = '';

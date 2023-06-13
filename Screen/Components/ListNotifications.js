@@ -92,6 +92,7 @@ const ListNotifications = ({ navigation }) => {
 
                                 keyExtractor={item => item.id}
                             />
+
                         </View>
                     </View>
                 </ScrollView>

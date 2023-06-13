@@ -45,7 +45,7 @@ const AnnoncesScreen = ({ navigation }) => {
     setTimeout(() => {
       setRefreshing(false);
       GetFilter();
-      fetchData(filter);
+      fetchData();
     }, 1000);
   }, []);
   const GetFilter = async () => {
@@ -59,7 +59,8 @@ const AnnoncesScreen = ({ navigation }) => {
     });
   }
 
-  const fetchData = async (filter) => {
+
+  const fetchData = async () => {
     // if (Object.keys(filter).length > 0) {
 
     const Detfilter = encodeURIComponent(filter);
@@ -77,26 +78,30 @@ const AnnoncesScreen = ({ navigation }) => {
     }
     //if (json == null) setAnnoncesList({});
   };
+
   useEffect(() => {
     setLoading(true)
     let isSubscribed = true;
 
 
-
-
-    if (isSubscribed) {
-      setTimeout(() => {
-        GetFilter();
-        // alert(filter)
-        //if (Object.keys(filter).length > 0) {
-        setAnnoncesList([])
-        setResultat(<Loader loading={true} />);
-        setLoading(false);
-        fetchData(filter);
-        //}
-      }, 100)
-    }
-    return () => { isSubscribed = false }
+    //if (isSubscribed) {
+    setTimeout(() => {
+      GetFilter();
+      // alert(filter)
+      //if (Object.keys(filter).length > 0) {
+      // setAnnoncesList([])
+      setResultat(<Loader loading={true} />);
+      setLoading(false);
+      fetchData();
+      //}
+    }, 100)
+    const intervalId = setInterval(() => {
+      // alert('rr');
+      fetchData();
+    }, 1000 * 2)
+    return () => clearInterval(intervalId)
+    //}
+    //return () => { isSubscribed = false }
   }, [filter])
 
 
@@ -134,7 +139,6 @@ const AnnoncesScreen = ({ navigation }) => {
             <View style={styles.row}>
               {loading ? <Loader loading={loading} /> :
                 (AnnoncesList.length > 0 ? (
-
                   <FlatList
                     data={AnnoncesList}
                     renderItem={({ item }) => (
@@ -227,6 +231,7 @@ let category = '';
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
+    zIndex: 3,
     justifyContent: 'center',
     alignContent: 'center',
   },

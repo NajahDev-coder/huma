@@ -104,6 +104,7 @@ const MesFavAnnonces = ({ navigation, route }) => {
             <View style={styles.row}>
               {loading ? <Loader loading={loading} /> :
                 (AnnoncesList.length > 0 ? (
+
                   <FlatList
                     data={AnnoncesList}
                     renderItem={({ item }) => (
@@ -164,6 +165,7 @@ const MesFavAnnonces = ({ navigation, route }) => {
 
                     keyExtractor={item => item.ID_ance}
                   />
+
                 ) : (
                   <View style={{ width: '100%' }}>
                     <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: '50%', padding: '25%' }}>

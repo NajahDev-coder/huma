@@ -18,15 +18,16 @@ import { Base_url, RequestOptionsGet } from '../utils/utils';
 const GetType = ({ id_annonce }) => {
 
 
-  const [Type, setType] = useState('');
+  const [TypeAnnce, setTypeAnnce] = useState('');
 
 
   const fetchData = async () => {
 
     const fetchUrl = `type/${id_annonce}`;
     const json = await RequestOptionsGet(fetchUrl)
-
-    setType(json.data[0].type);
+    if (json.data.length > 0) {
+      setTypeAnnce(json.data[0].type);
+    }
 
   };
 
@@ -48,7 +49,7 @@ const GetType = ({ id_annonce }) => {
         textAlign: 'center',
         justifyContent: 'center',
       }}>
-      {Type}
+      {TypeAnnce}
     </Text>
   );
 };

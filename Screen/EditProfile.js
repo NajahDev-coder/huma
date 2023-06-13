@@ -74,7 +74,8 @@ const EditProfile = ({ route }) => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000);
+      getProfile
+    }, 1000);
   }, []);
 
   const DefaultimageCouvProfile = { uri: Base_url + 'images/no-couverture.png' };

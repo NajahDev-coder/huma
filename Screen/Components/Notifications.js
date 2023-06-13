@@ -1,5 +1,5 @@
 import React, { useState, createRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Animated, Dimensions, Platform, TouchableOpacity, ScrollView } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,13 +12,14 @@ import { NaVIG, Base_url, RequestOptionsGet, ShowDetailAnnonce, ViewProfile } fr
 import { dateDiff } from '../includes/functions';
 
 
-const Notifications = ({ navigation, id_user, widthIcone }) => {
+const Notifications = ({ navigation, widthIcone }) => {
 
   const [refreshKey, setRefreshKey] = useState(0);
   const [NbreNotif, setNbreNotif] = useState(0);
   const [NotifList, setNotifList] = useState([]);
   const [Enable, setEnable] = useState(0);
-  const [fadeAnimation, setFadeAnimation] = useState(new Animated.Value(0));
+  const [fadeAnimation] = useState(new Animated.Value(0));
+  const [hideAnimation] = useState(new Animated.Value(1));
   const [selected, setSelected] = useState("");
   const WidthIcone = widthIcone ? widthIcone : '88%';
   const minDate = new Date(2022, 8, 30);
@@ -26,127 +27,131 @@ const Notifications = ({ navigation, id_user, widthIcone }) => {
 
 
 
+  const showListNotif = () => {
 
-  const clickNotif = async () => {
-    //
-    //NaVIG(value.id_activite, value.type_activite, navigation)
-    if (selected == 0) {
-      navigation.navigate({ name: 'ListNotifications' })
-    }
-    else {
-      // alert(selected)
-      //
+    setEnable(!Enable);
+    Animated.timing(fadeAnimation, {
+      toValue: 1,
+      duration: 500,
+      nativeEvent: { contentOffset: { y: fadeAnimation } },
+      useNativeDriver: true,
+    }).start();
 
-      const fetchUrl = `getNotification/${selected}`;
+  };
+  const hideListNotif = () => {
 
-      const responseJson = await RequestOptionsGet(fetchUrl)
-      if (responseJson.data.length > 0) {
-        responseJson.data.map((item) => {
-          NaVIG(item.id_activite, item.type_activite, navigation)
-        })
-      }
-      //NaVIG(selected, navigation)
+    setEnable(!Enable);
+    Animated.timing(hideAnimation, {
+      toValue: 0,
+      duration: 500,
+      nativeEvent: { contentOffset: { y: hideAnimation } },
+      useNativeDriver: true,
+    }).start();
+
+  };
+
+
+
+  const getDate = (date) => {
+    const dateA = new Date(date);
+    return (
+      <Text style={styles.bcSmText}>{dateDiff(dateA, today)}  </Text>
+    )
+  }
+  const getNotification = async () => {
+    //alert(id_user)
+    const fetchUrl = `getNotif/${global.User_connecte}`;
+
+    const responseJson = await RequestOptionsGet(fetchUrl)
+    if (responseJson.data.length > 0) {
+      // console.log('notif', responseJson.data)
+      setNbreNotif(responseJson.data.length);
+
+      setNotifList(responseJson.data)
     }
   }
-
-
+  const MaxHeight = Dimensions.get('window').height - 100
+  const today = new Date();
   useEffect(() => {
-    const today = new Date();
 
     let isSubscribed = true;
 
-    const displayNotif = (value) => {
-      const date = new Date(value.date);
-      return (
 
-
-        <View style={styles.bcBlock} key={value.key} >
-          <GetProfile user_id={value.id_user1} navigation={navigation} img_prof={value.img_prof} />
-
-          <View style={styles.bcDetaille}>
-            <Text style={styles.postLabel}>{value.nom} </Text>
-            <Text style={styles.bcText}>{value.notification}</Text>
-
-            <View
-              style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-              <Text style={styles.bcSmText}>{dateDiff(date, today)}  </Text>
-            </View>
-          </View>
-        </View>
-
-      )
-
-    };
-
-    const getNotification = async (id_user) => {
-      //alert(id_user)
-      const fetchUrl = `getNotif/${id_user}`;
-
-      const responseJson = await RequestOptionsGet(fetchUrl)
-      if (responseJson.data.length > 0) {
-        //console.log('notif', responseJson.data.length)
-        setNbreNotif(responseJson.data.length);
-        const valnotif = () => {
-          return (
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Notifications - </Text>
-
-              <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Voir tout</Text>
-
-            </View>
-          )
-        }
-        let newArray = [{ key: '0', value: valnotif() }];
-        responseJson.data.map((item) => {
-          // console.log(item)
-          newArray.push({ key: item.ID_notif, value: displayNotif(item) })
-          //newArray.push({ key: item.id, activite: item.id_activite, value: (<displayNotif value={item}/> ffff</Text>) })
-        })
-        setNotifList(newArray);
-      }
-      else {
-
-        const valnotif = () => {
-          return (
-            <View style={{ width: '100%', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 16, textAlign: 'center', fontWeight: 'bold' }}>Pas de Notifications</Text>
-            </View>
-          )
-        }
-        let newArray = [{ key: '0', value: valnotif() }];
-
-        setNotifList(newArray);
-      }
-
-
-    }
+    /*const intervalId = setInterval(() => {
+      getNotification()
+    }, 1000 * 5) // in milliseconds
+    return () => clearInterval(intervalId)*/
 
     if (isSubscribed) {
-      getNotification(id_user);
+      getNotification();
     }
     return () => (isSubscribed = false);
-  }, [refreshKey]);
+  }, [Enable]);
 
   return (
     <View style={styles.bc_notif}>
+      {Enable ? (
 
-      <Animated.View style={styles.shownotif}>
+        <View style={{ position: 'absolute', top: 10, right: 20, zIndex: 2 }}>
+          <TouchableOpacity onPress={() => hideListNotif()}>
+            {NbreNotif > 0 && (<Text style={styles.isnotif}></Text>)}
+            <Text><Ionicons name="md-notifications" size={20} color="black" /></Text>
 
-        <SelectList
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={{ position: 'absolute', top: 10, right: 20, zIndex: 2 }}>
+          <TouchableOpacity onPress={() => showListNotif()}>
+            {NbreNotif > 0 && (<Text style={styles.isnotif}></Text>)}
+            <Text><Ionicons name="md-notifications" size={20} color="black" /></Text>
 
-          setSelected={setSelected}
-          data={NotifList}
-          onSelect={() => { clickNotif(selected) }}
-          search={false}
-          arrowicon={<Ionicons name="md-notifications" size={20} color="black" />}
-          boxStyles={{ borderRadius: 0, borderWidth: 0, width: WidthIcone }}
-          inputStyles={{ opacity: 0, fontSize: 0 }}
-          dropdownStyles={[styles.lisnotif, { maxHeight: Dimensions.get('window').height - 50 }]}
-          dropdownItemStyles={{ borderRadius: 0 }}
-        // defaultOption={{ key: '1', value: ' ' }}  
-        // save={activite}
-        />
-        {NbreNotif > 0 && (<Text style={styles.isnotif}></Text>)}
+          </TouchableOpacity>
+        </View>
+
+      )}
+
+      <Animated.View style={[styles.shownotif, { opacity: !Enable ? fadeAnimation : hideAnimation, maxHeight: !Enable ? 20 : MaxHeight }]}>
+        {NbreNotif > 0 ? (
+          <ScrollView
+            keyboardShouldPersistTaps="handled">
+            <View style={[styles.lisnotif, { justifyContent: 'center', alignItems: 'center' }]}>
+              <Text style={{ fontSize: 16, fontWeight: 'bold', padding: 5 }}>Notifications - </Text>
+              <TouchableOpacity onPress={() => { hideListNotif(); navigation.navigate({ name: 'ListNotifications' }) }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', padding: 5 }}>Voir tout</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View>
+              {NotifList.map((value, key) => (
+                <View key={key} style={styles.lisnotif}>
+                  <TouchableOpacity key={key} onPress={() => { hideListNotif(0); NaVIG(value.id_activite, value.type_activite, navigation) }} >
+
+                    <View style={styles.bcBlock} key={value.key} >
+                      <GetProfile user_id={value.id_user1} navigation={navigation} img_prof={value.img_prof} />
+
+                      <View style={styles.bcDetaille}>
+                        <Text style={styles.postLabel}>{value.nom} </Text>
+                        <Text style={styles.bcText}>{value.notification}</Text>
+
+                        <View
+                          style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 25 }}>
+                          {getDate(value.date)}
+                          {/*<Text style={styles.bcSmText}>{dateDiff(getDate(value.date), today)}  </Text>*/}
+                        </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+        ) : (
+          <View style={[styles.lisnotif, { maxHeight: !Enable ? 20 : 200, justifyContent: 'center' }]}>
+            <Text style={{ fontSize: 16, textAlign: 'center', fontWeight: 'bold' }}>Pas de Notifications</Text>
+          </View>
+        )
+        }
+
 
       </Animated.View>
     </View>
@@ -158,7 +163,7 @@ const styles = StyleSheet.create({
   bc_notif: {
     flexDirection: 'row',
     padding: 0,
-    position: 'relative'
+    //position: 'relative'
   },
   isnotif: {
     backgroundColor: 'rgb(140, 153, 44)',
@@ -166,8 +171,8 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 10,
     position: 'absolute',
-    top: 15,
-    right: 20,
+    top: 0,
+    right: 0,
     zIndex: 20,
     shadowColor: '#000',
     shadowOffset: {
@@ -178,18 +183,21 @@ const styles = StyleSheet.create({
     shadowRadius: 5.46,
     elevation: 9,
   },
-  shownotif: {
-    //flexDirection: 'column',
-    //flexWrap: 'wrap',
-    width: Platform.OS == 'web' ? '90%' : '100%',
-    padding: 0,
-    //position:'relative',
-    top: 0,
-    zIndex: 0,
-    backgroundColor: 'transparent',
-    right: 0
+  hideNotif: {
+    right: -200,
   },
-  lisnotif: {
+  shownotif: {
+    //flexDirection: 'row',
+    //flexWrap: 'wrap',
+    //width: Platform.OS == 'web' ? 250 : 200,
+    width: 250,
+    padding: 5,
+    position: 'relative',
+    top: 35,
+    zIndex: 0,
+    backgroundColor: 'white',
+    right: 20,
+    borderRadius: 6,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -198,18 +206,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.32,
     shadowRadius: 5.46,
     elevation: 9,
+
+  },
+  lisnotif: {
+    flexDirection: 'row',
+
     backgroundColor: '#ffffff',
-    padding: 5,
-    paddingRight: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 4,
+    // paddingRight: 10,
     zIndex: 20,
     borderRadius: 10,
     borderWidth: 0,
-    position: 'absolute',
+    /*position: 'absolute',
     right: 20,
-    top: 40,
+    top: 40,*/
     marginTop: 0,
-    width: 250,
-    minHeight: 300,
+    width: '100%',
+    // minHeight: 300,
   },
   bcBlock: {
     flexDirection: 'row',
@@ -226,13 +240,10 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   bcText: {
-    width: '95%',
-    paddingRight: 5,
+    width: '100%',
   },
   bcSmText: {
     fontSize: 11,
-    // width: '95%',
-    paddingRight: 5,
   },
 });
 export default Notifications;
