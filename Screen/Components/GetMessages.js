@@ -77,6 +77,8 @@ const GetMessages = ({ navigation, route }) => {
       setIsAlert(true);
       return;
     }
+
+
     //  const UserId = await AsyncStorage.getItem('user_id');
     // setLoading(true);
     let dataToSend = {
@@ -84,65 +86,29 @@ const GetMessages = ({ navigation, route }) => {
       id_user2: id_user2,
       message: UserMessage,
     };
+    setUserMessage(' ');
+    setOffFocus(false);
+    setVu(' ');
 
 
-    var formBody = [];
-
-    for (var key in dataToSend) {
-      var encodedKey = encodeURIComponent(key);
-      var encodedValue = encodeURIComponent(dataToSend[key]);
-      formBody.push(encodedKey + '=' + encodedValue);
-    }
-    formBody = formBody.join('&');
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: formBody,
-    }
-    const UrlFetch = `${Base_url}api/api/sent_messages`;
-
-    // console.log('UrlFetch post reqst:', UrlFetch)
-
-    fetch(UrlFetch, options).then((data) => data.json()).then((responseJson) => {
-      //console.log('resolve post reqst:', responseJson)
-      setOffFocus(false);
-      setVu(' ');
-      setUserMessage(' ');
-      setIsSent(true);
-      setRefreshKey((oldKey) => oldKey + 1);
-    }).catch((error) => {
-      // Handle any errors that occur
-      console.error(error);
-    });
-
-
-
-
-
-    /* 
     const fetchUrl = 'sent_messages';
     //alert(refreshKey);
-    await RequestOptionsPost(dataToSend, fetchUrl);
     RequestOptionsPost(dataToSend, fetchUrl).then((response, error) => {
- 
-     if (response.status == 'add amis success') {
-       // console.log('sent_messages',responseJson)
-       setOffFocus(false);
-       setVu(' ');
-       setUserMessage(' ');
-       setRefreshKey((oldKey) => oldKey + 1);
-       // 
-       //console.log('Message envoyé avec success!');
-     } else {
-       setErrortext('Erreur inatendu! Essayer plus tard!');
-       //console.log('Erreur inatendu! Essayer plus tard!');
-     }
-  })*/
+
+      if (response.status == 'success') {
+        // console.log('sent_messages',responseJson)
+
+        setRefreshKey((oldKey) => oldKey + 1);
+        // 
+        //console.log('Message envoyé avec success!');
+      } else {
+        setErrortext('Erreur inatendu! Essayer plus tard!');
+        //console.log('Erreur inatendu! Essayer plus tard!');
+      }
+    })
 
   };
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const fetchUrl = `messages/${global.User_connecte}/${id_user2}`;
     //const json = await RequestOptionsGet(fetchUrl)
 
@@ -154,24 +120,29 @@ const GetMessages = ({ navigation, route }) => {
       }
     });
 
-
-  }
+  }, [id_user2]);
 
   const marquerlu = async () => {
-    const fetchUrl = `marquerLuMessage/${global.User_connecte}/${id_user2}`;
-    const response = await RequestOptionsPut(fetchUrl);
-    //console.log('msg lu?', response); 
+    const fetchUrl = `marquerLuMessage/${global.User_connecte}`;
+    const dataToSend = {
+      id_user2: id_user2
+    };
+    const response = await RequestOptionsPut(dataToSend, fetchUrl);
+    console.log('msg lu?', response);
     if (response.data.length > 0) {
-      setVu('Vu');
+      //setVu('Vu');
       //DeviceEventEmitter.emit("sendNewMsg", { islu: true, id_user: id_user2 });
     }
   }
-  const islu = async () => {
-    const fetchUrl = `isLuMessage/${id_user2}/${global.User_connecte}`;
+  const isVU = async () => {
+    const fetchUrl = `isVuMessage/${global.User_connecte}/${id_user2}`;
     const response = await RequestOptionsGet(fetchUrl);
     //console.log('is lu?', response.data[0].nbrNonLu);
-    if (response.data[0].nbrNonLu == 0) {
+    if (response.data[0].length == 0) {
       setVu('Vu');
+    }
+    else {
+      setVu(' ')
     }
   }
 
@@ -179,15 +150,16 @@ const GetMessages = ({ navigation, route }) => {
     let isSubscribed = true;
 
     if (isSubscribed) {
-      fetchData();
+
       // setUserMessage('');
-      if (!isSent) {
-        marquerlu();
-        islu();
-      }
+
+      marquerlu();
+      isVU();
+      fetchData();
+
     }
     return () => (isSubscribed = false);
-  }, [refreshKey]);
+  }, [refreshKey], fetchData);
 
 
   return (
@@ -212,7 +184,7 @@ const GetMessages = ({ navigation, route }) => {
                 <View style={{ flex: 1, width: '100%' }} key={item.id}>
 
                   <TouchableOpacity
-
+                    key={item.id}
                     style={
                       global.User_connecte != item.id_user1 ? styles.post : styles.post2
                     }>
@@ -256,6 +228,7 @@ const GetMessages = ({ navigation, route }) => {
                 onKeyPress={(e) => {
                   !UserMessage ? setOffFocus(false) : setOffFocus(true);
                 }}
+                value={UserMessage}
                 placeholder="Ecrire votre message..."
                 placeholderTextColor="#8b9cb5"
                 numberOfLines={4}
@@ -371,7 +344,7 @@ const styles = StyleSheet.create({
     borderColor: 'red'
   },
   rightpost: {
-    width: '5%',
+    width: '6%',
     position: 'absolute',
     borderLeftColor: '#ffffff',
     borderLeftWidth: 20,
@@ -385,7 +358,7 @@ const styles = StyleSheet.create({
     top: 5,
   },
   leftpost: {
-    width: '5%',
+    width: '6%',
     position: 'absolute',
     borderLeftColor: 'transparent',
     borderLeftWidth: 20,

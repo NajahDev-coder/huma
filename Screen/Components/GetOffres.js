@@ -75,7 +75,8 @@ const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user }) => {
       id_annonce: id_annonce,
       detaille: UserOffre,
     };
-
+    setUserOffre(' ');
+    setOffFocus(false);
     const fetchUrl = 'offre/create';
 
     RequestOptionsPost(dataToSend, fetchUrl).then((response, error) => {
@@ -83,8 +84,7 @@ const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user }) => {
       if (response.status == 'success') {
         Add_historique(global.User_connecte, `Vous avez proposé une offre pour la demande ${id_annonce}`, id_annonce);
 
-        setUserOffre(' ');
-        setOffFocus(false);
+
         setRefreshKey((oldKey) => oldKey + 1);
         //console.log('Offre publié avec success!');
       } else {
@@ -202,6 +202,7 @@ const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user }) => {
             onKeyPress={(e) => {
               UserOffre === '' ? setOffFocus(false) : setOffFocus(true);
             }}
+            value={UserOffre}
             placeholder="Donner votre offre..."
             placeholderTextColor="#8b9cb5"
             numberOfLines={4}

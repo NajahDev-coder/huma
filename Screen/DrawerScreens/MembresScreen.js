@@ -69,7 +69,7 @@ const MembresScreen = ({ navigation }) => {
     setRefreshing(true);
     setTimeout(() => {
       GetFilter();
-      fetchData(filter);
+      fetchData();
       fadeIn();
       setRefreshing(false);
     }, 2000);
@@ -94,14 +94,14 @@ const MembresScreen = ({ navigation }) => {
     }).start();
   }, [fadeAnimation]);
 
-  const fetchData = async (filter) => {
+  const fetchData = async () => {
     //const fetchUrl =  `membres/${nom}/${adresse}/${type}`;
-    if (Object.keys(filter).length > 0) {
-      filter = encodeURIComponent(filter);
+    // if (Object.keys(filter).length > 0) {
+    const detFilter = encodeURIComponent(filter);
 
-    }
+    //}
     //console.log('filter mmbre', filter)
-    const fetchUrl = `membres/${filter}`;
+    const fetchUrl = `membres/${detFilter}`;
 
     //console.log('param membres :', fetchUrl)
     const response = await RequestOptionsGet(fetchUrl);
@@ -122,12 +122,12 @@ const MembresScreen = ({ navigation }) => {
 
     if (isSubscribed) {
       GetFilter();
-      fetchData(filter);
+      fetchData();
       fadeIn();
 
     }
     return () => (isSubscribed = false);
-  }, [filter, fadeIn, GetFilter]);
+  }, [filter]);
 
 
 

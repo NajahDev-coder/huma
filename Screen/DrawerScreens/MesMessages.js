@@ -51,9 +51,9 @@ const MesMessages = ({ navigation }) => {
       fetchData();
     }, 1000);
   }, []);
-  //get msg non lu count
+  //get msg non lu count BY id_user2
   const getnbreMsg = async (id_user2) => {
-    const fetchUrl = `isLuMessage/${global.User_connecte}/${id_user2}`;
+    const fetchUrl = `isLuMessage/${id_user2}/${global.User_connecte}`;
     const response = await RequestOptionsGet(fetchUrl);
     return response.data[0].nbrNonLu
   }
@@ -96,15 +96,12 @@ const MesMessages = ({ navigation }) => {
 
     ////console.log('id_user MessagesList', UserId);
 
-    // if (isSubscribed) {
-    setResultat(<Loader loading={true} />)
-    fetchData();
-    const intervalIdMsg = setInterval(() => {
+    if (isSubscribed) {
+      setResultat(<Loader loading={true} />)
       fetchData();
-    }, 1000 * 5) // in milliseconds
-    return () => clearInterval(intervalIdMsg)
-    //}
-    //return () => (isSubscribed = false);
+
+    }
+    return () => (isSubscribed = false);
   }, []);
   const sendNewMsg = (data) => {
     /*(data && data.id_user) ? alert(data.id_user) : alert(user_id)
@@ -152,26 +149,26 @@ const MesMessages = ({ navigation }) => {
                               id_user2: item.amis.id,
                             },
                           });
-                        }}
-                        style={styles.post}>
-                        <View style={styles.bcBlock}>
+                        }}>
+                        <View style={styles.post}>
+                          <View style={styles.bcBlock}>
 
 
 
-                          <GetProfile user_id={item.amis.id} navigation={navigation} mg_prof={item.amis.img_prof} />
+                            <GetProfile user_id={item.amis.id} navigation={navigation} mg_prof={item.amis.img_prof} />
 
-                          <View style={styles.bcDetaille}>
-                            <View style={styles.bc_notifmsg}>
-                              <Text style={styles.postLabel}>{item.amis.nom} </Text>
-                              {item.nbrNonLu > 0 && <Text style={styles.notf}>{item.nbrNonLu}</Text>}
+                            <View style={styles.bcDetaille}>
+                              <View style={styles.bc_notifmsg}>
+                                <Text style={styles.postLabel}>{item.amis.nom} </Text>
+                                {item.nbrNonLu > 0 && <Text style={styles.notf}>{item.nbrNonLu}</Text>}
+                              </View>
+                              <Text style={[styles.bcText, item.lu === 1 && styles.bcMsgNoLu]}>{item.message}</Text>
+                              <Text style={styles.postDateLabel}>envoyé le  {moment(item.date).format('MM-DD-YYYY')}</Text>
                             </View>
-                            <Text style={[styles.bcText, item.lu === 1 && styles.bcMsgNoLu]}>{item.message}</Text>
-                            <Text style={styles.postDateLabel}>envoyé le  {moment(item.date).format('MM-DD-YYYY')}</Text>
                           </View>
                         </View>
+                        <View style={styles.rightpost}><Text></Text></View>
                       </TouchableOpacity>
-
-                      <View style={styles.rightpost}><Text></Text></View>
                     </View>
                   )}
 
@@ -224,7 +221,7 @@ const styles = StyleSheet.create({
     //alignSelf: 'flex-start',
     marginHorizontal: '2%',
     marginBottom: 15,
-    minWidth: '95%',
+    width: '94%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -236,7 +233,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   rightpost: {
-    width: '5%',
+    width: '6%',
     position: 'absolute',
     borderLeftColor: 'white',
     borderLeftWidth: 20,
@@ -263,19 +260,19 @@ const styles = StyleSheet.create({
   bcBlock: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+
     //justifyContent: 'end',
   },
   bcDetaille: {
     //alignSelf: 'flex-start',
     margin: 7,
-    width: '75%',
+    width: '80%',
   },
   bcText: {
-    maxWidth: 90,
+    //maxWidth: 90,
     color: '#6d6d6d',
   },
-  bcMsgNoLu:
-  {
+  bcMsgNoLu: {
     fontWeight: '500',
     color: "black"
   },
