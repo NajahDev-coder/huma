@@ -12,22 +12,19 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { set } from 'react-native-reanimated';
-
+import GetProfile from './GetProfile';
 
 export default function CustomSidebarMenu(props) {
 
-
+    const imageProfile = 'logoProfil2.jpeg';
 
 
     ////console.log("UserName", UserName)
     return (
         <View style={stylesSidebar.sideMenuContainer}>
             <View style={stylesSidebar.profileHeader}>
-                <View style={stylesSidebar.profileHeaderPicCircle}>
-                    <Text style={{ fontSize: 25, color: '#c4d63c' }}>
-                        {'HüMA'.charAt(0)}
-                    </Text>
-                </View>
+                <GetProfile user_id='0' navigation={props.navigation} img_prof={imageProfile} StyleDimens='large' />
+
                 <Text style={stylesSidebar.profileHeaderText}>
                     HüMA
                 </Text>

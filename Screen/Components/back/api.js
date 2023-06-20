@@ -1383,13 +1383,13 @@ router.post("/upload", function (req, res, next) {
             fs.writeFile(`${dirIMages}/${imgName}`, req.body.imgsource, 'base64', (err) => {
                 //fs.rename(req.file.path, `${dirIMages}/${imgName}.jpg`, (err)=>{
                 if (err)
-                    res.send({ status: err, msg: "error to upload Image profile!" })//throw err
+                    res.send({ status: err, msg: "error to upload Image profil!" })//throw err
                 users_file.query("update users set img_prof='" + imgName + "' where id=" + req.body.user_id, (rows, fields, err) => {
                     if (err)
                         res.send({ status: 'failed', msg: "No file upload!" })//throw err
-                    console.log('Upload Image Profile OK!!');
+                    console.log('Upload Image Profil OK!!');
 
-                    res.send({ status: 'success', msg: "Upload Image Profile OK!!!!" })
+                    res.send({ status: 'success', msg: "Upload Image Profil OK!!!!" })
 
                 })
             })

@@ -20,13 +20,13 @@ import Constants from 'expo-constants';
 // Import Navigators from React Navigation 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
 // Import Screens
 import SplashScreen from './Screen/SplashScreen';
 
 import DrawerNavigationRoutes from './Screen/DrawerNavigationRoutes';
 import DrawerNavigationAuthRoutes from './Screen/DrawerNavigationAuthRoutes';
-import NavigationBottomTabsAuth from './Screen/Components/NavigationDrawerFooterAuth'
+import NavigationBottomTabsAuth from './Screen/Components/NavigationDrawerFooterAuth';
+import { getTotalMsgNnLu } from './Screen/utils/utils';
 import { LogBox } from 'react-native';
 
 // Ignore log notification by message:
@@ -39,35 +39,37 @@ LogBox.ignoreAllLogs();
 const Stack = createStackNavigator();
 
 import * as Notifications from 'expo-notifications';
-/*async function registerForPushNotificationsAsync() {
-    let token;
+async function registerForPushNotificationsAsync() {
+  let token;
 
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
 
-    if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
-        //console.log('Failed to get push token for push notification!');
-        return;
-    }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    //console.log(token);
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+  if (finalStatus !== 'granted') {
+    alert('Failed to get push token for push notification!');
+    //console.log('Failed to get push token for push notification!');
+    return;
+  }
+  token = (await Notifications.getExpoPushTokenAsync()).data;
+  //console.log(token);
 
-    return token;
+  return token;
 }
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true
   }),
-});*/
+});
 const Auth = () => {
   useEffect(() => {
-    //registerForPushNotificationsAsync();
-  })
+    registerForPushNotificationsAsync();
+
+    getTotalMsgNnLu();
+  }, [])
   // Stack Navigator for Login and Sign up Screen
   return (
     <Stack.Navigator initialRouteName="DrawerNavigationAuthRoutes">

@@ -4,6 +4,8 @@ import { Alert, TouchableOpacity, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export const Base_url = 'https://huma.bzh/';
 export const API_URL = "https://expo-stripe-server-example.glitch.me"
+
+import { durationInMonths } from '@progress/kendo-date-math';
 export const GOOGLE_PLACES_API_KEY = 'AIzaSyAVWheD_CJmbOlCCKBTRKRRkeFJy_Mxzbg'; // never save your real api key in a snack!
 //export const Google_Geocoding_API_KEY='AIzaSyB6XPphkYxCN7xgeTj2f6_jllc0T_MXt6o';     
 export const PublishableKeyStripe = 'pk_test_51MUWURCarNgzrgxJ4kpO0UjVcuWnig3mqitwea2SOQBKUlF4fPh9COYOsxz0O64Cwmu6lqTlqmAzrAINkdFWdgMN00xWufC1KN';
@@ -215,7 +217,76 @@ export const RequestOptionsPost = async (dataToSend, Api) => {
 
   return promise;
 }
+export const getTotalMsgNnLu = async () => {
 
+  const fetchUrl = `getNotifMsg/${global.User_connecte}`;
+
+  const responseJson = await RequestOptionsGet(fetchUrl);
+
+  if (responseJson.data.length > 0) {
+
+    global.TotalMsgNonLU = responseJson.data[0].TotalMsgNonLU
+  }
+  else global.TotalMsgNonLU = 0;
+  //console.log(global.TotalMsgNonLU)
+  //setRefreshKey((oldKey) => oldKey + 1);
+};
+export const isVIP = async () => {
+
+  const fetchUrl = `user/${global.User_connecte}`;
+  const response = await RequestOptionsGet(fetchUrl)
+  //console.log('isvip?', response)
+  if (response.data.length > 0) {
+    const MmebreisVIP = response.data[0].VIP;
+    const Date_abonnement = new Date(response.data[0].date_abonnement)
+    const ToDay = new Date();
+    const duration = durationInMonths(Date_abonnement, ToDay);
+    //console.log('MmebreisVIP:', MmebreisVIP)
+    if ((MmebreisVIP == 1 && duration < 1) || (MmebreisVIP == 2 && duration < 2) || (MmebreisVIP == 3 && duration < 3)) {
+      UpdatePremium(global.User_connecte, 0);
+      global.User_VIP = null
+    }
+    else global.User_VIP = MmebreisVIP
+  }
+  else
+    global.User_VIP = null
+
+}
+export const clearAllData = () => {
+  AsyncStorage.getAllKeys()
+    .then(keys => AsyncStorage.multiRemove(keys));
+}
+export const getSession = async (id_user) => {
+  const fetchURL = `session/${id_user}`;
+
+  const response = await RequestOptionsGet(fetchURL);
+
+
+};
+export const Access = async (navigation) => {
+
+  try {
+    await AsyncStorage.getItem('user_id').then((value) => {
+      if (value !== null) {
+        // alert('g')
+        global.User_connecte = value;
+        isVIP();
+        //console.log('gggg')
+        navigation.replace('Auth')
+      }
+      else {
+        global.User_connecte = null
+        clearAllData(); navigation.replace('DrawerNavigationRoutes');
+      }
+    });
+
+  } catch (e) {
+
+    clearAllData();
+    navigation.replace('DrawerNavigationRoutes');
+  }
+
+};
 export const SaveImage = async (dataToSend) => {
   //alert(UserID);
   // console.log('SaveImage', dataToSend)

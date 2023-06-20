@@ -193,7 +193,6 @@ const MembresScreen = ({ navigation }) => {
                         <View style={[{ zIndex: key-- }, styles.bcBlock]}>
 
 
-
                           <GetProfile user_id={item.id} navigation={navigation} img_prof={item.img_prof} />
 
 

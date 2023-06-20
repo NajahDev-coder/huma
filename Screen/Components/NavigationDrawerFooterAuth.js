@@ -5,45 +5,45 @@ import { StyleSheet, Text, View } from 'react-native';
 // npm i @react-navigation/bottom-tabs react-native-elements
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome5, AntDesign } from '@expo/vector-icons';
 
 import AnnoncesScreen from '../DrawerScreens/AnnoncesScreen';
 import AccueilScreen from '../AccueilScreen';
 import CompteScreen from '../CompteScreen';
-
+import { getTotalMsgNnLu } from '../utils/utils';
 import MesMessages from '../DrawerScreens/MesMessages';
 
-import NotifMessages from './NotifMessages';
+//import NotifMessages from './NotifMessages';
 import TypeScreen from '../TypeScreen';
-import DrawerNavigatorAuthRoutes from '../DrawerNavigationAuthRoutes'
+//import DrawerNavigatorAuthRoutes from '../DrawerNavigationAuthRoutes'
 const Tab = createBottomTabNavigator();
 
 export default function NavigationBottomTabsAuth(props) {
-  const [UserId, setUserId] = useState(null);
-
-  const getUserIdConnecte = async () => {
-    const Iduser = await AsyncStorage.getItem('user_id');
-    setUserId(Iduser);
-  };
-
+  const IconeMsg = ({ color }) => {
+    return (
+      <View style={styles.bc_notifmsg}>
+        {(global.TotalMsgNonLU > 0) &&
+          <Text style={styles.isnotif}>{global.TotalMsgNonLU}</Text>
+        }
+        <AntDesign name="message1" size={24} color={color} style={{ marginTop: 3 }} />
+      </View>
+    )
+  }
   useEffect(() => {
-    let isMounted = true;
-
-    if (isMounted) {
-      getUserIdConnecte();
-    }
-    return () => (isMounted = false);
-  }, [UserId]);
+    const intervalId = setInterval(() => {
+      // alert('rr');
+      getTotalMsgNnLu();
+    }, 1000 * 5)
+  }, [global.TotalMsgNonLU])
 
   return (
     <Tab.Navigator initialRouteName="AccueilScreen"
       tabBarOptions={{
-
         activeTintColor: '#a7b730',
         inactiveTintColor: '#49382f'
       }}>
       <Tab.Screen
-        name="AccueilB"
+        name="Accueil"
         component={AccueilScreen}
         options={{
           headerShown: false,
@@ -61,7 +61,7 @@ export default function NavigationBottomTabsAuth(props) {
         }}
       />
       <Tab.Screen
-        name="AnnoncesB"
+        name="Annonces"
         component={AnnoncesScreen}
         options={{
           headerShown: false,
@@ -81,7 +81,7 @@ export default function NavigationBottomTabsAuth(props) {
         }}
       />
       <Tab.Screen
-        name="Ajout AnnonceB"
+        name="Ajout_Annonce"
         component={TypeScreen}
         options={{
           headerShown: false,
@@ -102,13 +102,18 @@ export default function NavigationBottomTabsAuth(props) {
 
       <Tab.Screen
         //name={UserId}
-        name="MessagesB"
+        name="Messages"
         component={MesMessages}
         options={{
           headerShown: false,
           tabBarLabel: 'Chat',
           tabBarIcon: ({ color, size }) => (
-            <NotifMessages id_user={UserId} color={color} />
+            <View style={styles.bc_notifmsg}>
+              {(global.TotalMsgNonLU > 0) &&
+                <Text style={styles.isnotif}>{global.TotalMsgNonLU}</Text>
+              }
+              <AntDesign name="message1" size={24} color={color} style={{ marginTop: 3 }} />
+            </View>
           ),
           tabBarActiveTintColor: '#a7b730',
           tabBarStyle: [
@@ -125,7 +130,7 @@ export default function NavigationBottomTabsAuth(props) {
         component={CompteScreen}
         options={{
           headerShown: false,
-          tabBarLabel: 'Profile',
+          tabBarLabel: 'Profil',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" color={color} size={30} />
           ),
@@ -140,4 +145,33 @@ export default function NavigationBottomTabsAuth(props) {
       />
     </Tab.Navigator>
   );
+
+
 }
+const styles = StyleSheet.create({
+  bc_notifmsg: {
+    flexDirection: 'row',
+    //padding: 10, 
+    position: 'relative'
+  },
+  isnotif: {
+    backgroundColor: 'rgb(140, 153, 44)',
+    width: 22,
+    height: 22,
+    borderRadius: 22,
+    position: 'absolute',
+    top: 5,
+    right: -15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.32,
+    shadowRadius: 5.46,
+    elevation: 9,
+    color: '#fff',
+    textAlign: 'center',
+    zIndex: 20
+  },
+});

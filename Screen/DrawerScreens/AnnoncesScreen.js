@@ -98,7 +98,7 @@ const AnnoncesScreen = ({ navigation }) => {
     const intervalId = setInterval(() => {
       // alert('rr');
       fetchData();
-    }, 1000 * 2)
+    }, 1000 * 5)
     return () => clearInterval(intervalId)
     //}
     //return () => { isSubscribed = false }
@@ -185,10 +185,17 @@ const AnnoncesScreen = ({ navigation }) => {
                           )}
                           <View style={styles.bcBlock}>
                             <View style={styles.btCateg}>
+                              <View style={styles.blocDeco}></View>
                               <GetCategorie id_annonce={item.categorie} />
+
+                              <View style={styles.blocDeco2}></View>
                             </View>
                             <View style={styles.btType}>
+
+                              <View style={styles.blocDeco}></View>
                               <GetType id_annonce={item.type} />
+
+                              <View style={styles.blocDeco2}></View>
                             </View>
                           </View>
                         </TouchableOpacity>
@@ -305,6 +312,23 @@ const styles = StyleSheet.create({
     //maxWidth: '100%',
     fontSize: 9,
   },
+  blocDeco: {
+    width: '20%',
+    marginLeft: '10%',
+    borderRadius: 6,
+    backgroundColor: 'white',
+    padding: 4,
+    marginBottom: 7,
+  },
+  blocDeco2: {
+    width: '80%',
+    marginLeft: '10%',
+    borderRadius: 6,
+
+    backgroundColor: 'white',
+    padding: 1,
+    marginTop: 10,
+  },
   btType: {
     alignSelf: 'flex-start',
     backgroundColor: '#7c4c32',
@@ -316,7 +340,7 @@ const styles = StyleSheet.create({
     width: '40%',
     textAlign: 'center',
     justifyContent: 'center',
-    maxWidth: 130,
+    height: 95
   },
   btCateg: {
     alignSelf: 'flex-start',
@@ -325,10 +349,11 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 5,
     borderRadius: 6,
-    width: '40%',
+    width: '50%',
     textAlign: 'center',
     justifyContent: 'center',
-    maxWidth: 130,
+    height: 95,
+    // maxWidth: 130,
   },
 
   bcPublicite: {

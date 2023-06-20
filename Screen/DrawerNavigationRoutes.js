@@ -21,9 +21,9 @@ import CustomSidebarMenu from './Components/CustomSidebarMenu';
 import NavigationDrawerHeader from './Components/NavigationDrawerHeader';
 import NavigationLogoHeader from './Components/NavigationLogoHeader';
 import NavigationBottomTabs from './Components/NavigationDrawerFooter';
-
+import MembresScreen from './DrawerScreens/MembresScreen';
 const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
+const RightDrawer = createDrawerNavigator();
 
 const AnnonceScreenStack = ({ navigation }) => {
     return (
@@ -168,7 +168,7 @@ const HomeScreenStack = ({ navigation }) => {
 
 const DrawerNavigatorRoutes = (props) => {
     return (
-        <Drawer.Navigator
+        <RightDrawer.Navigator
             screenOptions={{
 
                 itemStyle: { marginVertical: 5, color: 'white' },
@@ -183,7 +183,8 @@ const DrawerNavigatorRoutes = (props) => {
             }}
 
             drawerContent={(props) => <CustomSidebarMenu {...props} />}>
-            <Drawer.Screen
+
+            <RightDrawer.Screen
                 name="HomeScreenStack"
                 options={{
                     drawerLabel: 'Accueil',
@@ -195,7 +196,7 @@ const DrawerNavigatorRoutes = (props) => {
             />
 
 
-            <Drawer.Screen
+            <RightDrawer.Screen
                 name="AnnonceScreenStack"
                 options={{
                     drawerLabel: 'Annonces',
@@ -206,8 +207,17 @@ const DrawerNavigatorRoutes = (props) => {
                 component={AnnonceScreenStack}
 
             />
-
-            <Drawer.Screen
+            <RightDrawer.Screen
+                name='Membres'
+                options={{
+                    drawerlabel: 'Membres',
+                    drawerIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons name="account-multiple" size={30} color={color} />
+                    ),
+                }}
+                component={MembresScreen}
+            />
+            <RightDrawer.Screen
                 name="Login"
                 options={{
                     drawerLabel: 'Login',
@@ -217,7 +227,7 @@ const DrawerNavigatorRoutes = (props) => {
                 }}
                 component={LoginScreen}
             />
-            <Drawer.Screen
+            <RightDrawer.Screen
                 name="Register"
                 options={{
                     drawerLabel: 'Inscription',
@@ -228,7 +238,7 @@ const DrawerNavigatorRoutes = (props) => {
                 component={RegisterScreen}
             />
 
-        </Drawer.Navigator>
+        </RightDrawer.Navigator>
 
     );
 };

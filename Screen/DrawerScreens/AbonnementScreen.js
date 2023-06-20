@@ -101,7 +101,7 @@ const AbonnementScreen = ({ navigation }) => {
     initialisePaymentSheet();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [UserVIP]);
+  }, [UserVIP, global.User_VIP]);
 
   return (
     <>
@@ -122,20 +122,20 @@ const AbonnementScreen = ({ navigation }) => {
               <View>
                 <KeyboardAvoidingView enabled>
                   <View style={{ alignItems: 'center', marginTop: 20, width: '100%' }}>
-                    {UserVIP > 0 && (
-                      <ModalScreenIsVIP navigation={navigation} choix={UserVIP} />
+                    {global.User_VIP > 0 && (
+                      <ModalScreenIsVIP navigation={navigation} choix={global.User_VIP} />
                     )}
                     <View style={styles.threeBloc}>
 
                       <View style={styles.blocAbnmt}>
 
-                        <Text style={styles.titleModal}>Devnir Membre VIP!</Text>
+                        <Text style={styles.titleModal}>Devenir Membre VIP!</Text>
 
                         <Text style={styles.titleModal}>1 Mois/ 10€</Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des annonces. </Text>
                         <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" />Ajouter des publicités.</Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" />Vos Publicités Produits.</Text>
                         <View style={{ flexDirection: 'row' }}>
 
                           <Pressable
@@ -148,13 +148,13 @@ const AbonnementScreen = ({ navigation }) => {
 
                       <View style={styles.blocAbnmt}>
 
-                        <Text style={styles.titleModal}>Devnir Membre VIP!</Text>
+                        <Text style={styles.titleModal}>Devenir Membre VIP!</Text>
 
                         <Text style={styles.titleModal}>3 Mois/ 25€</Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des annonces. </Text>
                         <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" />Ajouter des publicités.</Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" />Vos Publicités Produits.</Text>
                         <View style={{ flexDirection: 'row' }}>
 
                           <Pressable
@@ -167,13 +167,13 @@ const AbonnementScreen = ({ navigation }) => {
 
                       <View style={styles.blocAbnmt}>
 
-                        <Text style={styles.titleModal}>Devnir Membre VIP!</Text>
+                        <Text style={styles.titleModal}>Devenir Membre VIP!</Text>
 
                         <Text style={styles.titleModal}>6 Mois/ 45€</Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des annonces. </Text>
                         <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" />Ajouter des publicités.</Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" />Vos Publicités Produits.</Text>
                         <View style={{ flexDirection: 'row' }}>
 
                           <Pressable

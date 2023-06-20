@@ -1,52 +1,29 @@
-import React, { useState, createRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getTotalMsgNnLu } from '../utils/utils';
 import { AntDesign } from '@expo/vector-icons';
-import { Base_url, RequestOptionsGet } from '../utils/utils'
-const NotifMessages = ({ id_user, color }) => {
+const NotifMessages = ({ color }) => {
 
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [NbreNotifMsg, setNbreNotifMsg] = useState(0);
 
   useEffect(() => {
-    let isSubscribed = true;
+    getTotalMsgNnLu();
+    const intervalId = setInterval(() => {
+      // alert('rr');
+      getTotalMsgNnLu();
+    }, 1000 * 5)
+  }, [global.TotalMsgNonLU])
 
-    const getNotificationMsg = async (id_user) => {
-      //alert(id_user)
-
-      const fetchUrl = `getNotifMsg/${id_user}`;
-
-      const responseJson = await RequestOptionsGet(fetchUrl);
-      ////console.log('notifmsg',responseJson)
-      if (responseJson.data) {
-
-        setNbreNotifMsg(responseJson.data.length);
-      }
-      //setRefreshKey((oldKey) => oldKey + 1);
-
-    };
-
-    if (isSubscribed) {
-      getNotificationMsg(id_user);
-    }
-    return () => (isSubscribed = false);
-  }, [id_user]);
-
-  if (NbreNotifMsg > 0) {
-    return (
-      <View style={styles.bc_notifmsg}>
-        <AntDesign name="message1" size={24} color={color} style={{ marginTop: 3, marginRight: -8 }} />
-        <Text style={styles.isnotif}>{NbreNotifMsg}</Text>
-      </View>
-    );
-  }
   return (
     <View style={styles.bc_notifmsg}>
+      {global.TotalMsgNonLU &&
+        (
+          <Text style={styles.isnotif}>{global.TotalMsgNonLU}</Text>
+        )}
       <AntDesign name="message1" size={24} color={color} style={{ marginTop: 3 }} />
-
     </View>
   );
+
+
 };
 
 const styles = StyleSheet.create({
@@ -60,9 +37,9 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 22,
-
-    top: 8,
-    right: 40,
+    position: 'absolute',
+    top: 5,
+    right: -15,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

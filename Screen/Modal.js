@@ -17,11 +17,11 @@ const ModalScreenVIP = ({ navigation }) => {
         <View style={styles.centeredView}>
 
           <View style={styles.modalView}>
-            <Text style={styles.titleModal}>Membre Simple!</Text>
-            <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
-            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-            <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
-            <Text><Ionicons name="lock-closed" size={24} color="grey" />Ajouter des publicités <Text style={styles.viptxt}>(VIP)</Text> </Text>
+            <Text style={styles.titleModal}>Membre Premium!</Text>
+            <Text><Feather name="check" size={24} color="#c4d63c" /> Publier  des annonces. </Text>
+            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres. </Text>
+            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+            <Text><Ionicons name="lock-closed" size={24} color="grey" />Vos Publicités Produits. <Text style={styles.viptxt}>(VIP)</Text> </Text>
             <View style={{ flexDirection: 'row' }}>
               <Pressable
                 style={styles.butt}

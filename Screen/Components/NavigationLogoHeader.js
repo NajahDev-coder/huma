@@ -14,31 +14,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Marge = parseInt(Dimensions.get('screen').width / 4) + 28;
 
 const NavigationLogoHeader = ({ navigationProps }) => {
-  const [UserId, setUserId] = useState(null);
-  const getUserIdConnecte = async () => {
-    const Iduser = await AsyncStorage.getItem('user_id');
-    setUserId(Iduser);
-  };
-  useEffect(() => {
-    let isMounted = true;
 
-    if (isMounted) {
-      getUserIdConnecte();
-    }
-    return (isMounted) => (isMounted = false);
-  }, [UserId]);
-  const toggleDrawer = () => {
-    navigationProps.navigate('Accueil');
-  };
+
+
   return (
     <View style={{ flexDirection: 'row', marginTop: -40 }}>
 
-      <TouchableOpacity onPress={toggleDrawer} style={{
-        position: 'absolute',
+      <TouchableOpacity onPress={() => navigationProps.navigate('Accueil')} style={{
+        position: 'absolute', height: 50,
         right: Platform.OS === 'web' ? (global.User_connecte != null ? 100 : 10) : (global.User_connecte != null ? Marge : 10),
-        height: 50
       }}>
         <Image
+
           source={{
             uri: Base_url + 'images/logo.png',
           }}
@@ -46,7 +33,7 @@ const NavigationLogoHeader = ({ navigationProps }) => {
         />
       </TouchableOpacity>
 
-      {UserId != null && (
+      {global.User_connecte != null && (
         <View style={{ position: 'absolute', right: 0 }}>
           <Notifications navigation={navigationProps} widthIcone={Platform.OS == 'web' ? '100%' : '100%'} />
         </View>
@@ -59,7 +46,7 @@ const styles = StyleSheet.create({
   logo: {
     // width: Platform.OS == 'web' ? (global.User_connecte != null ? 120 : 140) : 160,
     position: 'absolute',
-    right: Platform.OS === 'web' ? (global.User_connecte != null ? 100 : 10) : (global.User_connecte != null ? Marge : 10),
+    //right: Platform.OS === 'web' ? (global.User_connecte != null ? 100 : 10) : (global.User_connecte != null ? Marge : 10),
     //top: -20,
     height: 50,
   },

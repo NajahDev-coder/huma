@@ -21,10 +21,10 @@ const ModalScreeniSVIP = ({ navigation, choix }) => {
                     <View style={styles.modalView}>
                         <Text style={styles.titleModal}>Félicitations, vous  êtes un membre VIP!</Text>
                         <Text style={styles.titleModal}>Pofitez {choix} mois pour :</Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" /> Créer des annonces. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des annonces. </Text>
                         <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" /> Donner votre Avis. </Text>
-                        <Text><Feather name="check" size={24} color="#c4d63c" />Ajouter des publicités.</Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" />Vos Publicités Produits.</Text>
                         <View style={{ flexDirection: 'row' }}>
 
                             <Pressable

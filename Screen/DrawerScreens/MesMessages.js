@@ -86,7 +86,7 @@ const MesMessages = ({ navigation }) => {
 
     }
     else
-      setResultat('Pas des messages trouvées! ')
+      setResultat('Pas de Messages trouvés! ')
   };
 
   useEffect(() => {

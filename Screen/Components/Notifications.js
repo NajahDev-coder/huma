@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from 'react';
+import React, { useState, createRef, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Dimensions, Platform, TouchableOpacity, ScrollView } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -26,27 +26,27 @@ const Notifications = ({ navigation, widthIcone }) => {
 
 
 
-
   const showListNotif = () => {
 
     setEnable(!Enable);
-    Animated.timing(fadeAnimation, {
+    // alert(Enable);
+    /*Animated.timing(fadeAnimation, {
       toValue: 1,
       duration: 500,
       nativeEvent: { contentOffset: { y: fadeAnimation } },
       useNativeDriver: true,
-    }).start();
+    }).start();*/
 
   };
   const hideListNotif = () => {
 
     setEnable(!Enable);
-    Animated.timing(hideAnimation, {
+    /*Animated.timing(hideAnimation, {
       toValue: 0,
       duration: 500,
       nativeEvent: { contentOffset: { y: hideAnimation } },
       useNativeDriver: true,
-    }).start();
+    }).start();*/
 
   };
 
@@ -70,6 +70,7 @@ const Notifications = ({ navigation, widthIcone }) => {
       setNotifList(responseJson.data)
     }
   }
+
   const MaxHeight = Dimensions.get('window').height - 100
   const today = new Date();
   useEffect(() => {
@@ -83,10 +84,13 @@ const Notifications = ({ navigation, widthIcone }) => {
     return () => clearInterval(intervalId)*/
 
     if (isSubscribed) {
+
       getNotification();
     }
+
     return () => (isSubscribed = false);
   }, [Enable]);
+
 
   return (
     <View style={styles.bc_notif}>
@@ -101,14 +105,15 @@ const Notifications = ({ navigation, widthIcone }) => {
         </View>
       ) : (
         <View style={{ position: 'absolute', top: 10, right: 20, zIndex: 2 }}>
-          <TouchableOpacity onPress={() => showListNotif()}>
+          <TouchableOpacity onPress={() => { showListNotif() }}>
             {NbreNotif > 0 && (<Text style={styles.isnotif}></Text>)}
             <Text><Ionicons name="md-notifications" size={20} color="black" /></Text>
 
           </TouchableOpacity>
         </View>
 
-      )}
+      )
+      }
 
       <Animated.View style={[styles.shownotif, { opacity: !Enable ? fadeAnimation : hideAnimation, maxHeight: !Enable ? 20 : MaxHeight }]}>
         {NbreNotif > 0 ? (

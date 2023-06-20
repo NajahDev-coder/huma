@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from 'react';
+import React, { useState, useRef, createRef, useEffect } from 'react';
 //import Category from 'react-native-category';
 //import MapScreen from './MapScreen';
 //import MapGeoScreen from './MapGeoScreen'
@@ -26,7 +26,8 @@ import {
   FlatList,
   Button,
   Modal,
-  ALERT
+  Alert,
+  useWindowDimensions,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Carousel from 'react-native-anchor-carousel';
@@ -61,7 +62,9 @@ const AccueilScreen = ({ navigation }) => {
     uri: `${Base_url}images/bg_screen.png`,
   };
 
+  const scrollX = useRef(new Animated.Value(0)).current;
 
+  const { width: windowWidth } = useWindowDimensions();
   const [CategroiesList, setCategroiesList] = useState([]);
   const [CategSelected, setCategSelected] = useState(1);
   const [zIndexF, setZindexF] = useState(1);
@@ -104,37 +107,7 @@ const AccueilScreen = ({ navigation }) => {
 
 
   }
-  /*const getDirections = async (startLoc, destinationLoc) => {
-    try {
-      const KEY = GOOGLE_API_KEY; //put your API key here.
-      //otherwise, you'll have an 'unauthorized' error.
-      let resp = await fetch(
-        `maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}&key=${KEY}`,
-        {
-          mode: 'cors',
-          header: {
-            'Access-Control-Allow-Origin': '*',
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Credentials': 'true',
-          },
-        }
-      );
-      console.log(resp);
-      let respJson = await resp.json();
-      let points = decode(respJson.routes[0].overview_polyline.points);
-      console.log('test points map', points);
-      let coords = points.map((point, index) => {
-        return {
-          latitude: point[0],
-          longitude: point[1],
-        };
-      });
-      return coords;
-    } catch (error) {
-      return error;
-    }
-  };*/
+
 
   const fadeIn = () => {
     Animated.timing(fadeAnimation, {
@@ -158,13 +131,7 @@ const AccueilScreen = ({ navigation }) => {
 
   useEffect(() => {
     let isSubscribed = true;
-    /*getDirections('52.5200066,13.404954', '50.1109221,8.6821267')
-      .then((coords) => {
-        setCoords(coords);
-        console.log('coords:', coords); 
-      })
-      .catch((err) => console.log('Something went wrong'));
-*/
+
     if (isSubscribed) {
       fetchData();
 
@@ -181,8 +148,13 @@ const AccueilScreen = ({ navigation }) => {
     navigation.navigate('Annonces');
   };
   const defaultImage = { uri: Base_url + 'images/logo.png' };
-  const getBeerImage = (slugimg) => {
-    let path = { uri: Base_url + 'images/icones_categ/' + slugimg + '.png' };
+  const getBeerImage = (idImgCateg) => {
+    //let path = { uri: Base_url + 'images/icones_categories/' + slugimg + '.png' };
+    let path;
+    if (idImgCateg == 1 || idImgCateg == 3 || idImgCateg == 5)
+      path = { uri: Base_url + 'images/icones_categories/icone_activeCateg.png' };
+    else
+      path = { uri: Base_url + 'images/icones_categories/icone_IN_activeCateg.png' };
     return path;
   };
   //console.log('userLocation',UserLocation)  ;
@@ -208,6 +180,7 @@ const AccueilScreen = ({ navigation }) => {
               flex: 1,
               width: '100%',
               //minHeight: 200,
+
               position: 'relative',
               top: 70,
               zIndex: 1,
@@ -215,37 +188,54 @@ const AccueilScreen = ({ navigation }) => {
             <View style={styles.row}>
 
 
-              {CategroiesList.map((value) => (
-                <TouchableOpacity
-                  key={value.id}
-                  onPress={() => {
-                    setSelectedValue(value.id);
-                  }}
-                  style={[
-                    styles.button,
-                    selectedValue == value.id && styles.selected,
-                  ]}>
+              <ScrollView
+                horizontal={true}
 
-                  <ImageBackground source={getBeerImage(value.slug)} resizeMode="cover" style={{ width: sizeIcone, height: sizeIcone, resizeMode: 'contain' }}>
-                    <Text
-                      style={{ position: 'absolute', bottom: 15 }}>
-                      {/* <Image
-                      defaultSource={defaultImage}
-                      source={getBeerImage(value.slug)}
-                      style={{ width: sizeIcone, height: sizeIcone, resizeMode: 'contain' }}
-                    />*/}
-                    </Text>
+                showsHorizontalScrollIndicator={false}
+                onScroll={Animated.event([
+                  {
+                    nativeEvent: {
+                      contentOffset: {
+                        x: scrollX,
+                      },
+                    },
+                  },
+                ],
+                  { useNativeDriver: false }
+                )}>
+                <FlatList
+                  data={CategroiesList}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      onPress={() => {
+                        setSelectedValue(item.id);
+                      }}
+                      style={[
+                        styles.button,
+                        //selectedValue == item.id && styles.selected,
+                        (item.id == 1 || item.id == 3 | item.id == 5) && styles.selected,
+                      ]}>
 
-                  </ImageBackground>
-                  <Text
-                    style={[
-                      styles.buttonLabel,
-                      selectedValue == value.id && styles.selectedLabel,
-                    ]}>
-                    {value.titre}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                      <ImageBackground source={getBeerImage(item.id)} resizeMode="cover" style={{ height: 200, width: 160 }} >
+
+                        <Text
+                          style={[
+                            styles.buttonLabel,
+                            selectedValue == item.id && styles.selectedLabel,
+                          ]}>
+                          {item.titre}
+                        </Text>
+
+                      </ImageBackground>
+
+                    </TouchableOpacity>
+                  )}
+
+                  horizontal={true}
+                  keyExtractor={(item, index) => index}
+                />
+              </ScrollView>
             </View>
 
             {Platform.OS != 'web' && UserLocation !== null && (
@@ -284,7 +274,7 @@ const AccueilScreen = ({ navigation }) => {
 
 
             {/** pop up*/}
-            {(global.User_connecte != null && global.User_VIP != null) && (
+            {(global.User_connecte != null && global.User_VIP == null) && (
               <ModalScreenVIP navigation={navigation} />
             )}
           </View>
@@ -324,32 +314,38 @@ const styles = StyleSheet.create({
 
   },
   button: {
-    //backgroundColor: '#8c992c',
-    backgroundColor: 'rgba(140, 153, 44 , 0.80)',
+    backgroundColor: '#bed61e',
+    //backgroundColor: 'rgba(140, 153, 44 , 0.80)',
     alignItems: 'center',
-    marginHorizontal: '1%',
-    marginBottom: 6,
-    borderRadius: sizeButtonIcone,
-    height: sizeButtonIcone,
-    width: '35%',
+    // justifyContent: 'center',
+    marginHorizontal: 5,
+    marginVertical: 6,
+    borderRadius: 30,
+    height: 200,
+    width: 160,
 
-    paddingTop: 4,
-    paddingLeft: 4,
+    //padding: 10
     //justifyContent: 'center',
     // textAlignVertical:'center'   
     //textAlign: 'center',
   },
   selected: {
-    backgroundColor: 'rgba(115, 126, 29, 0.88)',
+    //backgroundColor: 'rgba(115, 126, 29, 0.88)',
+    backgroundColor: '#4c362b',
     borderWidth: 0,
   },
   buttonLabel: {
-    bottom: Platform.OS != 'web' ? 10 : 8,
-    position: 'absolute',
-    fontSize: 13,
+    //bottom: Platform.OS != 'web' ? 10 : 8,
+    //position: 'absolute',
+    fontSize: 18,
     color: '#ffffff',
+    padding: 20,
+    paddingTop: 60,
+    height: 170,
+    width: 160,
     fontWeight: 'bold',
     textAlign: 'center',
+    justifyContent: 'center'
   },
   selectedLabel: {
     color: '#ffffff',

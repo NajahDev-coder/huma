@@ -212,7 +212,7 @@ const EditProfile = ({ route }) => {
       //console.log(responseJson.status);
       // If server response message same as Data Matched
       if (responseJson.status === 'success') {
-        const activite = "Vous avez modifié votre profile!"
+        const activite = "Vous avez modifié votre profil!"
         Add_historique(global.User_connecte, activite, global.User_connecte);
 
         if (ImageProfile && ImageProfile.canceled == false) {
@@ -246,9 +246,9 @@ const EditProfile = ({ route }) => {
         }
         // console.log('Edit profile réussi!.');
 
-        setSuccesstext('Edit profile réussi!');
+        setSuccesstext('Edit profil réussi!');
       } else {
-        setErrortext('Edit profile échouée!');
+        setErrortext('Edit profil échouée!');
       }
     }
   }
@@ -348,9 +348,9 @@ const EditProfile = ({ route }) => {
               style={styles.inputStyle}
               onChangeText={(userName) => setUserName(userName)}
               value={userName}
-              underlineColorAndroid="#f000"
+              //underlineColorAndroid="#D6ECF0"
               placeholder="Pseudo"
-              placeholderTextColor="#8b9cb5"
+              placeholderTextColor="#6cc5d5"
               autoCapitalize="sentences"
             />
           </View>
@@ -359,9 +359,9 @@ const EditProfile = ({ route }) => {
               style={styles.inputStyle}
               onChangeText={(userEmail) => setUserEmail(userEmail)}
               value={userEmail}
-              underlineColorAndroid="#f000"
+              //underlineColorAndroid="#D6ECF0"
               placeholder="Email"
-              placeholderTextColor="#8b9cb5"
+              placeholderTextColor="#6cc5d5"
               keyboardType="email-address"
             />
           </View>
@@ -370,9 +370,9 @@ const EditProfile = ({ route }) => {
               style={styles.inputStyle}
               onChangeText={(userAge) => setUserAge(userAge)}
               value={userAge.toString()}
-              underlineColorAndroid="#f000"
+              //underlineColorAndroid="#D6ECF0"
               placeholder="Age"
-              placeholderTextColor="#8b9cb5"
+              placeholderTextColor="#6cc5d5"
               keyboardType="numeric"
             />
           </View>
@@ -382,9 +382,9 @@ const EditProfile = ({ route }) => {
               keyboardType='numeric'
               onChangeText={(userTel) => setUserTel(userTel)}
               value={userTel.toString()}
-              underlineColorAndroid="#f000"
+              //underlineColorAndroid="#D6ECF0"
               placeholder="Tel"
-              placeholderTextColor="#8b9cb5"
+              placeholderTextColor="#6cc5d5"
             // autoCapitalize="sentences"
             />
           </View>
@@ -409,21 +409,21 @@ const EditProfile = ({ route }) => {
                 textInputContainer: {
                   background: 'transparent',
                   position: 'relative',
-                  color: '#8b9cb5',
+                  color: '#D6ECF0',
                 },
                 textInput: {
-                  color: '#8b9cb5',
+                  color: '#D6ECF0',
                   paddingLeft: 15,
                   paddingRight: 15,
                   borderWidth: 1,
                   borderRadius: 30,
-                  borderColor: '#dddddd',
-                  background: 'transparent',
+                  borderColor: '#D6ECF0',
+                  backgroundColor: '#e7f9fc',
                   width: '75%',
                   height: 35,
                 },
                 predefinedPlacesDescription: {
-                  color: '#1faadb',
+                  color: '#6cc5d5',
                 },
               }}
               predefinedPlaces={[currentPlace]}
@@ -432,9 +432,9 @@ const EditProfile = ({ route }) => {
           <View style={styles.SectionStyle}>
             <Text style={styles.labelStyle}>Transporteur </Text>
             <Switch
-              trackColor={{ false: '#767577', true: '#c4d63c' }}
-              thumbColor={userTransporteur ? '#c4d63c' : '#f4f3f4'}
-              ios_backgroundColor="#3e3e3e"
+              trackColor={{ false: '#D6ECF0', true: '#6cc5d5' }}
+              thumbColor={userTransporteur ? '#6cc5d5' : '#f4f3f4'}
+              ios_backgroundColor="#6cc5d5"
               onValueChange={() =>
                 setUserTransporteur((userTransporteur) => !userTransporteur)
               }
@@ -445,9 +445,9 @@ const EditProfile = ({ route }) => {
           <View style={styles.SectionStyle}>
             <Text style={styles.labelStyle}>Point Dolmen </Text>
             <Switch
-              trackColor={{ false: '#767577', true: '#c4d63c' }}
-              thumbColor={userPointDolmen ? '#c4d63c' : '#f4f3f4'}
-              ios_backgroundColor="#c4d63c"
+              trackColor={{ false: '#D6ECF0', true: '#6cc5d5' }}
+              thumbColor={userPointDolmen ? '#6cc5d5' : '#f4f3f4'}
+              ios_backgroundColor="#6cc5d5"
               onValueChange={() =>
                 setUserPointDolmen((userPointDolmen) => !userPointDolmen)
               }
@@ -458,9 +458,9 @@ const EditProfile = ({ route }) => {
           <View style={styles.SectionStyle}>
             <Text style={styles.labelStyle}>Cacher vos données</Text>
             <Switch
-              trackColor={{ false: '#767577', true: '#c4d63c' }}
-              thumbColor={userCache ? '#c4d63c' : '#f4f3f4'}
-              ios_backgroundColor="#c4d63c"
+              trackColor={{ false: '#D6ECF0', true: '#6cc5d5' }}
+              thumbColor={userCache ? '#6cc5d5' : '#f4f3f4'}
+              ios_backgroundColor="#6cc5d5"
               onValueChange={() => setUserCache((userCache) => !userCache)}
               value={userCache}
             />
@@ -582,11 +582,10 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     marginLeft: 10,
-    color: '#8b9cb5',
+    color: '#6cc5d5',
     width: '80%',
   },
-  bcBlockpf1:
-  {
+  bcBlockpf1: {
     flexDirection: 'row',
     borderRadius: 110,
     width: 110,
@@ -656,12 +655,13 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     flex: 1,
-    color: '#8b9cb5',
+    color: '#6cc5d5',
+    backgroundColor: '#e7f9fc',
     paddingLeft: 15,
     paddingRight: 15,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: '#dadae8',
+    borderColor: '#D6ECF0',
   },
   successTextStyle: {
     color: '#c4d63c',

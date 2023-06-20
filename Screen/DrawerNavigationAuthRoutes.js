@@ -28,13 +28,17 @@ import NavigationBottomTabsAuth from './Components/NavigationDrawerFooterAuth';
 import CreatePubliciteScreen from './CreatePubliciteScreen'
 import MembresScreen from './DrawerScreens/MembresScreen';
 import GetMessages from './Components/GetMessages';
+import MonAbonnementScreen from './DrawerScreens/MonAbonnementScreen';
+
+
 var AbonnementScreen;
 
 if (Platform.OS != 'web') {
   AbonnementScreen = require('./DrawerScreens/AbonnementScreen').default;
 }
 const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
+//const Drawer = createDrawerNavigator();
+const LeftDrawer = createDrawerNavigator();
 const styleTitleLabel = {
   headerTintColor: '#c4d63c', //Set Header text color
   headerTitleStyle: {
@@ -79,6 +83,13 @@ const AnnonceScreenStack = ({ navigation }) => {
         name="Compte"
         component={CompteScreen}
         options={{
+          title: 'Compte', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
+      <Stack.Screen
+        name='MonAbonnement'
+        component={MonAbonnementScreen} options={{
           title: 'Compte', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
@@ -141,7 +152,7 @@ const HomeScreenStack = ({ navigation }) => {
         name="Historique"
         component={HistoriqueScreen}
         options={{
-          title: 'Historiques', headerTintColor: '#97ab00',
+          title: 'Historique', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
@@ -157,7 +168,7 @@ const HomeScreenStack = ({ navigation }) => {
         name="EditProfile"
         component={EditProfile}
         options={{
-          title: 'Modifier Profile', headerTintColor: '#97ab00',
+          title: 'Modifier Profil', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
@@ -227,6 +238,13 @@ const HomeScreenStack = ({ navigation }) => {
         component={EditAnnonceScreen}
         options={{
           title: 'Modifier Annonce', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
+      <Stack.Screen
+        name='MonAbonnement'
+        component={MonAbonnementScreen} options={{
+          title: 'Compte', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
@@ -328,7 +346,14 @@ const MembresScreenStack = ({ navigation }) => {
         name="Historique"
         component={HistoriqueScreen}
         options={{
-          title: 'Historiques', headerTintColor: '#97ab00',
+          title: 'Historique', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
+      <Stack.Screen
+        name='MonAbonnement'
+        component={MonAbonnementScreen} options={{
+          title: 'Compte', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
@@ -401,6 +426,13 @@ const MonCompteScreenStack = ({ navigation }) => {
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
+      <Stack.Screen
+        name='MonAbonnement'
+        component={MonAbonnementScreen} options={{
+          title: 'Compte', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -445,7 +477,7 @@ const CreatePubliciteScreenStack = ({ navigation }) => {
 };
 const DrawerNavigatorAuthRoutes = (props) => {
   return (
-    <Drawer.Navigator
+    <LeftDrawer.Navigator
       screenOptions={{
         itemStyle: { marginVertical: 5, color: 'white' },
         headerShown: false,
@@ -454,7 +486,8 @@ const DrawerNavigatorAuthRoutes = (props) => {
       }}
       drawerContent={(props) => <CustomSidebarAuthMenu {...props} />}>
 
-      <Drawer.Screen
+
+      <LeftDrawer.Screen
         name="HomeScreenStack"
         options={{
           drawerLabel: 'Accueil',
@@ -465,7 +498,7 @@ const DrawerNavigatorAuthRoutes = (props) => {
         component={HomeScreenStack}
       />
 
-      <Drawer.Screen
+      <LeftDrawer.Screen
         name="AnnonceScreenStack"
         options={{
           drawerLabel: 'Annonces',
@@ -475,7 +508,7 @@ const DrawerNavigatorAuthRoutes = (props) => {
         }}
         component={AnnonceScreenStack}
       />
-      <Drawer.Screen
+      <LeftDrawer.Screen
         name="Type"
         options={{
           drawerLabel: 'Ajout annonce',
@@ -485,8 +518,8 @@ const DrawerNavigatorAuthRoutes = (props) => {
         }}
         component={CreateAnnonceScreenStack}
       />
-      {global.User_VIP == 1 && (
-        <Drawer.Screen
+      {(global.User_VIP != null && global.User_VIP) > 0 && (
+        <LeftDrawer.Screen
           name="CreatePubliciteScreenStack"
           options={{
             drawerLabel: 'Ajout Publicité',
@@ -498,7 +531,7 @@ const DrawerNavigatorAuthRoutes = (props) => {
         />
       )}
 
-      <Drawer.Screen
+      <LeftDrawer.Screen
         name="Membres"
 
         options={{
@@ -510,7 +543,7 @@ const DrawerNavigatorAuthRoutes = (props) => {
         component={MembresScreenStack}
       />
 
-      <Drawer.Screen
+      <LeftDrawer.Screen
         name="MonCompteScreenStack"
 
         options={{
@@ -522,7 +555,7 @@ const DrawerNavigatorAuthRoutes = (props) => {
         component={MonCompteScreenStack}
       />
 
-    </Drawer.Navigator>
+    </LeftDrawer.Navigator>
   );
 };
 

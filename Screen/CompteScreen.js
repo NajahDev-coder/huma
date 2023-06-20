@@ -215,7 +215,7 @@ const CompteScreen = ({ navigation, route }) => {
                     position: 'relative',
                   }}>
                   <View>
-                    <Text style={styles.titreOff}>Profile </Text>
+                    <Text style={styles.titreOff}>Profil </Text>
                     <View style={{ marginLeft: 10, width: '100%' }}>
                       <RatingScreen user_id1={UserId} user_id2={MyUserId} />
                     </View>
@@ -250,7 +250,7 @@ const CompteScreen = ({ navigation, route }) => {
                             },
                           });
                         }}
-                      />Modifier Profile</Text>
+                      />Modifier Profil</Text>
                     </Pressable>
                     )}
                     {global.User_connecte != null && MyUserId != UserId && (
@@ -263,25 +263,42 @@ const CompteScreen = ({ navigation, route }) => {
                       justifyContent: 'flex-end',
                       position: 'absolute',
                       right: 10,
-                      top: 5,
+                      top: 0,
+                      width: 120,
                     }}>
-                    <AntDesign name="eyeo" size={24} color="black" />
+                    <AntDesign name="eyeo" size={24} color="#6cc5d5" style={{ marginRight: 3, marginTop: 2 }} />
 
-                    <Text style={{ marginTop: 3 }}>{NbreVisiteProfile}</Text>
+                    <Text style={{ marginTop: 3, color: '#6cc5d5' }}>{NbreVisiteProfile}</Text>
                   </View>
                   <View style={styles.hrbc}>
                     <Text>&nbsp;</Text>
                   </View>
-                  <Text style={styles.txtdtl}><MaterialIcons name="alternate-email" size={24} color="#49382f" style={{ paddingRight: 5 }} /> Email : {EmailProfile}</Text>
-                  <Text style={styles.txtdtl}><MaterialIcons name="phone" size={24} color="#49382f" style={{ paddingRight: 5 }} /> Tèl : {TelProfile}</Text>
-
-                  <Text style={styles.txtdtl}><MaterialIcons name="perm-contact-calendar" size={24} color="#49382f" style={{ paddingRight: 5 }} /> Age : {AgeProfile}</Text>
-                  <Text style={styles.txtdtl}> <FontAwesome name="map-marker" size={24} color="#49382f" style={{ paddingRight: 10 }} /> Adresse : {AdresseProfile}
-                  </Text>
-                  <Text style={styles.txtdtl}><MaterialIcons name="emoji-transportation" size={24} color="#49382f" style={{ paddingRight: 5 }} /> Transporteur : {TransporteurProfile === 0 ? 'Non' : 'Oui'}
-                  </Text>
-                  <Text style={styles.txtdtl}><FontAwesome5 name="map-marked-alt" size={24} color="#49382f" style={{ paddingRight: 5 }} /> Dolmen : {DolmenProfile === 0 ? 'Non' : 'Oui'}
-                  </Text>
+                  <View style={CacheValue === 1 && styles.cache}>
+                    <MaterialIcons name="alternate-email" size={24} color="#823a14" style={styles.icone1} />
+                    <Text style={styles.txtdtl}> Email : {EmailProfile}</Text>
+                  </View>
+                  <View style={CacheValue === 1 && styles.cache}>
+                    <MaterialIcons name="phone" size={24} color="#c4d63c" style={styles.icone1} />
+                    <Text style={styles.txtdtl}> Tèl : {TelProfile}</Text>
+                  </View>
+                  <View>
+                    <MaterialIcons name="perm-contact-calendar" size={24} color="#823a14" style={styles.icone} />
+                    <Text style={styles.txtdtl}> Age : {AgeProfile}</Text>
+                  </View>
+                  <View>
+                    <FontAwesome name="map-marker" size={24} color="#970000" style={styles.icone} />
+                    <Text style={styles.txtdtl}>  Adresse : {AdresseProfile}</Text>
+                  </View>
+                  <View>
+                    <MaterialIcons name="emoji-transportation" size={24} color="#823a14" style={styles.icone1} />
+                    <Text style={styles.txtdtl}>
+                      Transporteur : {TransporteurProfile === 0 ? 'Non' : 'Oui'}
+                    </Text>
+                  </View>
+                  <View>
+                    <FontAwesome5 name="map-marked-alt" size={24} color="#823a14" style={styles.icone1} />
+                    <Text style={styles.txtdtl}> Dolmen : {DolmenProfile === 0 ? 'Non' : 'Oui'}</Text>
+                  </View>
                 </Animated.View>
               </TouchableOpacity>
 
@@ -298,30 +315,40 @@ const CompteScreen = ({ navigation, route }) => {
                   <View style={styles.hrbc}>
                     <Text>&nbsp;</Text>
                   </View>
-                  <Text
-                    style={styles.linkdtl}
-                    onPress={() => navigation.navigate('MesAnnonces', { id_user: UserId })}>
-                    <MaterialIcons name="article" size={24} color="#49382f" style={{ paddingRight: 5 }} /> {Mes}Annonces
-                  </Text>
-                  {MyUserId === UserId && (
+                  <View>
+                    <MaterialIcons name="article" size={24} color="#823a14" style={styles.icone} />
                     <Text
                       style={styles.linkdtl}
-                      onPress={() => navigation.navigate('MesFavAnnonces', { id_user: UserId })}>
-                      <MaterialIcons name="favorite" size={24} color="#49382f" style={{ paddingRight: 5 }} /> {Mes}Favoris
+                      onPress={() => navigation.navigate('MesAnnonces', { id_user: UserId })}> {Mes}Annonces
                     </Text>
-                  )}
+                  </View>
+
                   {MyUserId === UserId && (
+                    <View>
+                      <MaterialIcons name="favorite" size={24} color="#c4d63c" style={styles.icone} />
+                      <Text
+                        style={styles.linkdtl}
+                        onPress={() => navigation.navigate('MesFavAnnonces', { id_user: UserId })}>
+                        {Mes}Favoris
+                      </Text>
+                    </View>
+
+                  )}
+                  {/*MyUserId === UserId && (
                     <Text
                       style={styles.linkdtl}
                       onPress={() => navigation.replace('OffresMemebreScreen')}>
-                      <MaterialIcons name="format-list-bulleted" size={24} color="#49382f" style={{ paddingRight: 5 }} /> {Mes}Offres
+                      <MaterialIcons name="format-list-bulleted" size={24} color="#823a14" style={{ paddingRight: 5 }} /> {Mes}Offres
                     </Text>
-                  )}
-                  <Text
-                    style={styles.linkdtl}
-                    onPress={() => navigation.replace('CompteScreen')}>
-                    <MaterialIcons name="star-rate" size={24} color="#49382f" style={{ paddingRight: 5 }} /> {Mes}Évaluations
-                  </Text>
+                  )*/}
+                  <View>
+                    <MaterialIcons name="star-rate" size={24} color="#c4d63c" style={styles.icone} />
+                    <Text
+                      style={styles.linkdtl}
+                      onPress={() => navigation.replace('CompteScreen')}> {Mes}Évaluations
+                    </Text>
+                  </View>
+
                 </Animated.View>
               </TouchableOpacity>
               {MyUserId === UserId && (
@@ -333,27 +360,34 @@ const CompteScreen = ({ navigation, route }) => {
                       paddingBottom: 20,
                     }}>
                     <View>
-                      <Text style={styles.titreOff}> Paramètres </Text>
+                      <Text style={styles.titreOff2}> Paramètres </Text>
                     </View>
                     <View style={styles.hrbc}>
                       <Text>&nbsp;</Text>
                     </View>
-                    <Text
-                      style={styles.linkdtl}
-                      onPress={() => navigation.navigate('Historique')}>
-                      <MaterialIcons name="history-edu" size={24} color="black" /> Mon Historique
-                    </Text>
-                    <Text
-                      style={styles.linkdtl}
-                      onPress={() => navigation.navigate('Compte', { id_user: MyUserId })}>
-                      <MaterialIcons name="payments" size={24} color="black" /> Mon Abonnement
-                    </Text>
-
-                    <Text
-                      style={[styles.linkdtl, { color: '#a6420e' }]}
-                      onPress={() => DeleteSession(navigation)}>
-                      <AntDesign name="login" size={20} color="#a6420e" /> Se Déconnecter
-                    </Text>
+                    <View>
+                      <MaterialIcons name="history-edu" size={24} color="#823a14" style={styles.icone} />
+                      <Text
+                        style={styles.linkdtl}
+                        onPress={() => navigation.navigate('Historique')}>
+                        Mon Historique
+                      </Text>
+                    </View>
+                    <View>
+                      <MaterialIcons name="payments" size={24} color="#823a14" style={styles.icone} />
+                      <Text
+                        style={styles.linkdtl}
+                        onPress={() => { (global.User_VIP != null && global.User_VIP > 0) ? navigation.navigate('MonAbonnement', { id_user: MyUserId }) : navigation.navigate('Abonnement') }}>
+                        Mon Abonnement
+                      </Text>
+                    </View>
+                    <View>
+                      <AntDesign name="login" size={20} color="#c4d63c" style={styles.icone} />
+                      <Text
+                        style={[styles.linkdtl, { color: '#c4d63c' }]}
+                        onPress={() => DeleteSession(navigation)}> Se Déconnecter
+                      </Text>
+                    </View>
                   </Animated.View>
                 </TouchableOpacity>
               )}
@@ -371,7 +405,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center',
-    color: '#49382f'
+    color: '#823a14'
   },
   post: {
     paddingVertical: 8,
@@ -414,7 +448,7 @@ const styles = StyleSheet.create({
     //alignContent: 'flex-center',
     width: '100%',
     justifyContent: 'center',
-    color: '49382f',
+    color: '823a14',
     fontWeight: 'bold',
     padding: 10,
     paddingTop: 35,
@@ -426,7 +460,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     textAlign: 'center',
-    color: '#49382f'
+    color: '#823a14'
   },
   emailAuteurProfile: {
     paddingLeft: 13,
@@ -444,7 +478,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     padding: 10,
     paddingLeft: 15,
-    color: '#49382f',
+    color: '#823a14',
+  },
+  titreOff2: {
+    fontSize: 18,
+    padding: 10,
+    paddingLeft: 15,
+    color: '#c4d63c'
   },
   hrbc: {
     borderBottomColor: '#C4D63C',
@@ -457,19 +497,25 @@ const styles = StyleSheet.create({
   },
   txtdtl: {
     paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderBottomColor: '#49382f',
+    paddingHorizontal: 28,
+    marginLeft: 15,
+    marginRight: 15,
+    borderBottomColor: '#823a14',
     borderBottomWidth: 1,
-    color: '#49382f',
+    color: '#823a14',
   },
   linkdtl: {
     paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderBottomColor: '#49382f',
+    paddingHorizontal: 28,
+    //paddingLeft: 30,
+    marginLeft: 15,
+    marginRight: 15,
+    borderBottomColor: '#823a14',
     borderBottomWidth: 1,
-    color: '#49382f',
+    color: '#823a14',
     fontSize: 16,
     fontWeight: '500',
+
   },
   txtbutt:
   {
@@ -482,5 +528,10 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     marginRight: -5
   },
-
+  icone1: {
+    position: 'absolute', top: 0, left: 12
+  },
+  icone: {
+    position: 'absolute', top: 5, left: 12
+  }
 });
