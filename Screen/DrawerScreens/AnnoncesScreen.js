@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: 'white',
     padding: 4,
-    marginBottom: 7,
+    marginBottom: 3,
   },
   blocDeco2: {
     width: '80%',
@@ -327,32 +327,34 @@ const styles = StyleSheet.create({
 
     backgroundColor: 'white',
     padding: 1,
-    marginTop: 10,
+    marginTop: 6,
   },
   btType: {
     alignSelf: 'flex-start',
     backgroundColor: '#7c4c32',
     color: '#ffffff',
-    padding: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 2,
     margin: 5,
     marginLeft: 10,
     borderRadius: 6,
     width: '40%',
     textAlign: 'center',
     justifyContent: 'center',
-    height: 95
+    height: 65
   },
   btCateg: {
     alignSelf: 'flex-start',
     backgroundColor: '#c4d63c',
     color: '#ffffff',
-    padding: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 2,
     margin: 5,
     borderRadius: 6,
     width: '50%',
     textAlign: 'center',
     justifyContent: 'center',
-    height: 95,
+    height: 65,
     // maxWidth: 130,
   },
 

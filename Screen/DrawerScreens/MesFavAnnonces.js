@@ -45,34 +45,46 @@ const MesFavAnnonces = ({ navigation, route }) => {
 
   const [result, setResultat] = useState('Loading ....');
   const id_user = route.params.id_user;
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
 
+      fetchData();
+    }, 1000);
+  }, []);
+
+
+  const DeFavorisAnnonce = (id_annce) => {
+
+    const baseUrl = `${Base_url}api/api/delfavannonces/${id_user}/${id_annce}`;
+    fetch(baseUrl).then((response) => response.json())
+      .then((responseJson) => {
+        //console.log('delete favoris avec success!');
+        setRefreshKey((oldKey) => oldKey + 1)
+      }
+      );
+  }
+
+
+  const fetchData = async () => {
+
+    const fetchUrl = `mesfavannonces/${id_user}/`;
+
+    //console.log('favoris', fetchUrl)
+    const json = await RequestOptionsGet(fetchUrl);
+    //console.log('favoris', json)
+    if (json.length > 0)
+      setAnnoncesList(json)
+    else
+      setResultat(<Text style={{ color: '#93a600' }}>Pas de Coups de Cœur ! <MaterialIcons name="favorite" size={24} color="#93a600" /></Text>)
+  }
 
   useEffect(() => {
     //setLoading(true)
     let isSubscribed = true;
-    const DeFavorisAnnonce = (id_annce) => {
 
-      const baseUrl = `${Base_url}api/api/delfavannonces/${id_user}/${id_annce}`;
-      fetch(baseUrl).then((response) => response.json())
-        .then((responseJson) => {
-          //console.log('delete favoris avec success!');
-          setRefreshKey((oldKey) => oldKey + 1)
-        }
-        );
-    }
 
-    const fetchData = async () => {
-
-      const fetchUrl = `mesfavannonces/${id_user}/`;
-
-      //console.log('favoris', fetchUrl)
-      const json = await RequestOptionsGet(fetchUrl);
-      //console.log('favoris', json)
-      if (json.length > 0)
-        setAnnoncesList(json)
-      else
-        setResultat('Pas des annonces favoris trouvées! ')
-    }
 
 
     if (isSubscribed) {
@@ -138,7 +150,7 @@ const MesFavAnnonces = ({ navigation, route }) => {
 
 
                               <MaterialIcons
-                                name="favorite-border"
+                                name="favorite"
                                 size={24}
 
                                 color="#c4d63c"
@@ -154,10 +166,14 @@ const MesFavAnnonces = ({ navigation, route }) => {
                         </View>
                         <View style={styles.bcBlock}>
                           <View style={styles.btCateg}>
+                            <View style={styles.blocDeco}></View>
                             <GetCategorie id_annonce={item.categorie} />
+                            <View style={styles.blocDeco2}></View>
                           </View>
                           <View style={styles.btType}>
+                            <View style={styles.blocDeco}></View>
                             <GetType id_annonce={item.type} />
+                            <View style={styles.blocDeco2}></View>
                           </View>
                         </View>
                       </TouchableOpacity>
@@ -269,30 +285,50 @@ const styles = StyleSheet.create({
     //maxWidth: 90,
     color: '#6d6d6d',
   },
+  blocDeco: {
+    width: '20%',
+    marginLeft: '10%',
+    borderRadius: 6,
+    backgroundColor: 'white',
+    padding: 4,
+    marginBottom: 3,
+  },
+  blocDeco2: {
+    width: '80%',
+    marginLeft: '10%',
+    borderRadius: 6,
+
+    backgroundColor: 'white',
+    padding: 1,
+    marginTop: 6,
+  },
   btType: {
     alignSelf: 'flex-start',
     backgroundColor: '#7c4c32',
     color: '#ffffff',
-    padding: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 2,
     margin: 5,
     marginLeft: 10,
     borderRadius: 6,
     width: '40%',
     textAlign: 'center',
     justifyContent: 'center',
-    maxWidth: 130,
+    height: 65
   },
   btCateg: {
     alignSelf: 'flex-start',
     backgroundColor: '#c4d63c',
     color: '#ffffff',
-    padding: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 2,
     margin: 5,
     borderRadius: 6,
-    width: '40%',
+    width: '50%',
     textAlign: 'center',
     justifyContent: 'center',
-    maxWidth: 130,
+    height: 65,
+    // maxWidth: 130,
   },
   bcnoreslt: {
     textAlign: 'center',

@@ -405,14 +405,17 @@ const EditProfile = ({ route }) => {
                 useOnPlatform: 'web',
               }}
               // getDefaultValue={() => userAddress}
+              textInputProps={{
+                placeholderTextColor: '#6cc5d5',
+              }}
               styles={{
                 textInputContainer: {
                   background: 'transparent',
                   position: 'relative',
-                  color: '#D6ECF0',
+                  color: '#6cc5d5',
                 },
                 textInput: {
-                  color: '#D6ECF0',
+                  color: '#6cc5d5',
                   paddingLeft: 15,
                   paddingRight: 15,
                   borderWidth: 1,
@@ -420,7 +423,7 @@ const EditProfile = ({ route }) => {
                   borderColor: '#D6ECF0',
                   backgroundColor: '#e7f9fc',
                   width: '75%',
-                  height: 35,
+                  height: 40,
                 },
                 predefinedPlacesDescription: {
                   color: '#6cc5d5',
@@ -432,8 +435,8 @@ const EditProfile = ({ route }) => {
           <View style={styles.SectionStyle}>
             <Text style={styles.labelStyle}>Transporteur </Text>
             <Switch
-              trackColor={{ false: '#D6ECF0', true: '#6cc5d5' }}
-              thumbColor={userTransporteur ? '#6cc5d5' : '#f4f3f4'}
+              trackColor={{ false: '#6cc5d5', true: '#6cc5d5' }}
+              thumbColor={userTransporteur ? '#6cc5d5' : '#D6ECF0'}
               ios_backgroundColor="#6cc5d5"
               onValueChange={() =>
                 setUserTransporteur((userTransporteur) => !userTransporteur)
@@ -445,8 +448,8 @@ const EditProfile = ({ route }) => {
           <View style={styles.SectionStyle}>
             <Text style={styles.labelStyle}>Point Dolmen </Text>
             <Switch
-              trackColor={{ false: '#D6ECF0', true: '#6cc5d5' }}
-              thumbColor={userPointDolmen ? '#6cc5d5' : '#f4f3f4'}
+              trackColor={{ false: '#6cc5d5', true: '#6cc5d5' }}
+              thumbColor={userPointDolmen ? '#6cc5d5' : '#D6ECF0'}
               ios_backgroundColor="#6cc5d5"
               onValueChange={() =>
                 setUserPointDolmen((userPointDolmen) => !userPointDolmen)
@@ -458,8 +461,8 @@ const EditProfile = ({ route }) => {
           <View style={styles.SectionStyle}>
             <Text style={styles.labelStyle}>Cacher vos données</Text>
             <Switch
-              trackColor={{ false: '#D6ECF0', true: '#6cc5d5' }}
-              thumbColor={userCache ? '#6cc5d5' : '#f4f3f4'}
+              trackColor={{ false: '#6cc5d5', true: '#6cc5d5' }}
+              thumbColor={userCache ? '#6cc5d5' : '#D6ECF0'}
               ios_backgroundColor="#6cc5d5"
               onValueChange={() => setUserCache((userCache) => !userCache)}
               value={userCache}
@@ -548,13 +551,16 @@ const styles = StyleSheet.create({
   },
   SectionStyle: {
     flexDirection: 'row',
-    height: 30,
-    margin: 10,
+    height: 40,
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
   SectionStyle2: {
     // marginLeft: 35,
     //ssmarginRight: 35,
-    margin: 10,
+
+    marginHorizontal: 10,
+    marginVertical: 5,
     flexDirection: 'row',
     position: 'relative',
     zIndex: 10

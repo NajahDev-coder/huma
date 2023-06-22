@@ -7,17 +7,17 @@ import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-lis
 
 import moment from 'moment';
 
-import GetProfile from '../Components/GetProfile';
+import GetProfile from './GetProfile';
 import { Base_url, RequestOptionsGet, ShowDetailAnnonce } from '../utils/utils'
 import { dateDiff } from '../includes/functions';
 //import { ScrollView } from 'react-native-gesture-handler';
 
 
-const ListNotifications = ({ navigation }) => {
+const ListEvaluations = ({ navigation, route }) => {
 
     const [refreshKey, setRefreshKey] = useState(0);
     const [NbreNotif, setNbreNotif] = useState(0);
-    const [NotifList, setNotifList] = useState([]);
+    const [EvaluationsList, setEvaluationsList] = useState([]);
     const [Enable, setEnable] = useState(0);
     const [fadeAnimation] = useState(new Animated.Value(0));
     const [selected, setSelected] = useState("");
@@ -34,23 +34,24 @@ const ListNotifications = ({ navigation }) => {
     }
     const today = new Date();
     useEffect(() => {
-
+        // const user_id= route.params.user_id
+        const id_user = route.params?.id_user;
         let isSubscribed = true;
-        const getNotification = async () => {
+        const getEvaluations = async () => {
             //alert(id_user)
-            const fetchUrl = `getAllNotif/${global.User_connecte}`;
+            const fetchUrl = `user_evaluation/${id_user}`;
 
             const responseJson = await RequestOptionsGet(fetchUrl)
             if (responseJson.data) {
 
-                setNotifList(responseJson.data);
+                setEvaluationsList(responseJson.data);
             }
             //setRefreshKey((oldKey) => oldKey + 1); 
 
         }
 
         if (isSubscribed) {
-            getNotification();
+            getEvaluations();
         }
         return () => (isSubscribed = false);
     }, []);
@@ -71,7 +72,7 @@ const ListNotifications = ({ navigation }) => {
                         <View style={styles.row}>
 
                             <FlatList
-                                data={NotifList}
+                                data={EvaluationsList}
                                 renderItem={({ item }) => (
                                     <View style={styles.lisnotif}>
                                         <TouchableOpacity key={item.id} onPress={() => NaVIG(item.id_activite)} style={styles.bcBlock}>
@@ -79,7 +80,7 @@ const ListNotifications = ({ navigation }) => {
 
                                             <View style={styles.bcDetaille}>
                                                 <Text style={styles.postLabel}>{item.nom} </Text>
-                                                <Text style={styles.bcText}>{item.notification}</Text>
+                                                <Text style={styles.bcText}>{item.avis}</Text>
 
                                                 <View
                                                     style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
@@ -165,8 +166,7 @@ const styles = StyleSheet.create({
         borderWidth: 0,
 
         marginTop: 8,
-        width: '95%',
-        marginLeft: '3%'
+        width: '100%'
 
     },
     bcBlock: {
@@ -188,7 +188,6 @@ const styles = StyleSheet.create({
     },
     bcSmText: {
         fontSize: 11,
-        color: '#6cc5d5'
     },
 });
-export default ListNotifications;
+export default ListEvaluations;

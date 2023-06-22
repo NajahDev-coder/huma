@@ -31,7 +31,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Carousel from 'react-native-anchor-carousel';
-import { Base_url, RequestOptionsGet } from './utils/utils';
+import { Base_url, RequestOptionsGet, isVIP } from './utils/utils';
 import ModalScreenVIP from './Modal'
 //import Loader from './Components/Loader';
 //import MapView, { Polyline, Marker } from 'react-native-maps';
@@ -133,12 +133,13 @@ const AccueilScreen = ({ navigation }) => {
     let isSubscribed = true;
 
     if (isSubscribed) {
+      isVIP();
       fetchData();
 
       fadeIn();
     }
     return () => (isSubscribed = false);
-  }, [selectedValue, refreshing]);
+  }, [selectedValue, refreshing, global.User_VIP]);
 
   const GetFilter = () => {
 
@@ -274,7 +275,7 @@ const AccueilScreen = ({ navigation }) => {
 
 
             {/** pop up*/}
-            {(global.User_connecte != null && global.User_VIP == null) && (
+            {(global.User_connecte != null && global.User_VIP == 0) && (
               <ModalScreenVIP navigation={navigation} />
             )}
           </View>

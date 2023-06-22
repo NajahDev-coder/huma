@@ -236,7 +236,7 @@ const CompteScreen = ({ navigation, route }) => {
                           id_user: MyUserId,
                         },
                       });
-                    }}>
+                    }} >
                       <Text style={styles.txtbutt} > <AntDesign
                         name="edit"
                         size={22}
@@ -274,30 +274,29 @@ const CompteScreen = ({ navigation, route }) => {
                     <Text>&nbsp;</Text>
                   </View>
                   <View style={CacheValue === 1 && styles.cache}>
-                    <MaterialIcons name="alternate-email" size={24} color="#823a14" style={styles.icone1} />
-                    <Text style={styles.txtdtl}> Email : {EmailProfile}</Text>
+                    <MaterialIcons name="alternate-email" size={22} color="#823a14" style={styles.icone} />
+                    <Text style={styles.txtdtl}>Email : {EmailProfile}</Text>
                   </View>
                   <View style={CacheValue === 1 && styles.cache}>
                     <MaterialIcons name="phone" size={24} color="#c4d63c" style={styles.icone1} />
-                    <Text style={styles.txtdtl}> Tèl : {TelProfile}</Text>
+                    <Text style={styles.txtdtl}>Tèl : {TelProfile}</Text>
                   </View>
                   <View>
                     <MaterialIcons name="perm-contact-calendar" size={24} color="#823a14" style={styles.icone} />
-                    <Text style={styles.txtdtl}> Age : {AgeProfile}</Text>
+                    <Text style={styles.txtdtl}>Age : {AgeProfile}</Text>
                   </View>
                   <View>
-                    <FontAwesome name="map-marker" size={24} color="#970000" style={styles.icone} />
-                    <Text style={styles.txtdtl}>  Adresse : {AdresseProfile}</Text>
+                    <FontAwesome name="map-marker" size={26} color="#970000" style={styles.icone2} />
+                    <Text style={styles.txtdtl}>Adresse : {AdresseProfile}</Text>
                   </View>
                   <View>
                     <MaterialIcons name="emoji-transportation" size={24} color="#823a14" style={styles.icone1} />
-                    <Text style={styles.txtdtl}>
-                      Transporteur : {TransporteurProfile === 0 ? 'Non' : 'Oui'}
+                    <Text style={styles.txtdtl}>Transporteur : {TransporteurProfile === 0 ? 'Non' : 'Oui'}
                     </Text>
                   </View>
                   <View>
                     <FontAwesome5 name="map-marked-alt" size={24} color="#823a14" style={styles.icone1} />
-                    <Text style={styles.txtdtl}> Dolmen : {DolmenProfile === 0 ? 'Non' : 'Oui'}</Text>
+                    <Text style={styles.txtdtl}>Dolmen : {DolmenProfile === 0 ? 'Non' : 'Oui'}</Text>
                   </View>
                 </Animated.View>
               </TouchableOpacity>
@@ -319,7 +318,7 @@ const CompteScreen = ({ navigation, route }) => {
                     <MaterialIcons name="article" size={24} color="#823a14" style={styles.icone} />
                     <Text
                       style={styles.linkdtl}
-                      onPress={() => navigation.navigate('MesAnnonces', { id_user: UserId })}> {Mes}Annonces
+                      onPress={() => navigation.navigate('MesAnnonces', { id_user: UserId })}>{Mes}Annonces
                     </Text>
                   </View>
 
@@ -328,8 +327,7 @@ const CompteScreen = ({ navigation, route }) => {
                       <MaterialIcons name="favorite" size={24} color="#c4d63c" style={styles.icone} />
                       <Text
                         style={styles.linkdtl}
-                        onPress={() => navigation.navigate('MesFavAnnonces', { id_user: UserId })}>
-                        {Mes}Favoris
+                        onPress={() => navigation.navigate('MesFavAnnonces', { id_user: UserId })}>{Mes}Favoris
                       </Text>
                     </View>
 
@@ -345,7 +343,14 @@ const CompteScreen = ({ navigation, route }) => {
                     <MaterialIcons name="star-rate" size={24} color="#c4d63c" style={styles.icone} />
                     <Text
                       style={styles.linkdtl}
-                      onPress={() => navigation.replace('CompteScreen')}> {Mes}Évaluations
+                      onPress={() => {
+                        navigation.navigate({
+                          name: 'Evaluations',
+                          params: {
+                            id_user: UserId,
+                          },
+                        });
+                      }}>{Mes}Évaluations
                     </Text>
                   </View>
 
@@ -369,16 +374,14 @@ const CompteScreen = ({ navigation, route }) => {
                       <MaterialIcons name="history-edu" size={24} color="#823a14" style={styles.icone} />
                       <Text
                         style={styles.linkdtl}
-                        onPress={() => navigation.navigate('Historique')}>
-                        Mon Historique
+                        onPress={() => navigation.navigate('Historique')}>Mon Historique
                       </Text>
                     </View>
                     <View>
                       <MaterialIcons name="payments" size={24} color="#823a14" style={styles.icone} />
                       <Text
                         style={styles.linkdtl}
-                        onPress={() => { (global.User_VIP != null && global.User_VIP > 0) ? navigation.navigate('MonAbonnement', { id_user: MyUserId }) : navigation.navigate('Abonnement') }}>
-                        Mon Abonnement
+                        onPress={() => { (global.User_VIP != null && global.User_VIP > 0) ? navigation.navigate('MonAbonnement', { id_user: MyUserId }) : navigation.navigate('Abonnement') }}>Mon Abonnement
                       </Text>
                     </View>
                     <View>
@@ -533,5 +536,8 @@ const styles = StyleSheet.create({
   },
   icone: {
     position: 'absolute', top: 5, left: 12
+  },
+  icone2: {
+    position: 'absolute', top: 2, left: 17
   }
 });

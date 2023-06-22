@@ -213,9 +213,9 @@ export default function CreatePubliciteScreen(props) {
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(titre) => setTitre(titre)}
-                underlineColorAndroid="#f000"
+                // underlineColorAndroid="#f000"
                 placeholder="Entrez Le Titre  "
-                placeholderTextColor="#222222"
+                placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
 
               />
@@ -224,9 +224,9 @@ export default function CreatePubliciteScreen(props) {
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={(val) => setLinkPublicite(val)}
-                underlineColorAndroid="#f000"
+                // underlineColorAndroid="#f000"
                 placeholder="Entrez le Lien sans http(s):// "
-                placeholderTextColor="#222222"
+                placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
                 multiline={true}
               />
@@ -277,11 +277,10 @@ const styles = StyleSheet.create({
   sectionStyle: {
     flexDirection: 'row',
     height: 40,
-    marginTop: 20,
-    marginLeft: 25,
-    marginRight: 25,
-    margin: 10,
+    marginHorizontal: 20,
+    marginVertical: 5
   },
+
 
   image: {
     //flex: 1,
@@ -309,12 +308,13 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     flex: 1,
-    color: '#5a5959',
+    color: '#6cc5d5',
+    backgroundColor: '#e7f9fc',
     paddingLeft: 15,
     paddingRight: 15,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: '#646363',
+    borderColor: '#D6ECF0',
   },
   errorTextStyle: {
     color: 'red',

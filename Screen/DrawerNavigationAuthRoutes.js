@@ -29,7 +29,7 @@ import CreatePubliciteScreen from './CreatePubliciteScreen'
 import MembresScreen from './DrawerScreens/MembresScreen';
 import GetMessages from './Components/GetMessages';
 import MonAbonnementScreen from './DrawerScreens/MonAbonnementScreen';
-
+import ListEvaluations from './Components/ListEvaluations';
 
 var AbonnementScreen;
 
@@ -89,8 +89,18 @@ const AnnonceScreenStack = ({ navigation }) => {
       />
       <Stack.Screen
         name='MonAbonnement'
-        component={MonAbonnementScreen} options={{
-          title: 'Compte', headerTintColor: '#97ab00',
+        component={MonAbonnementScreen}
+        options={{
+          title: 'Abonnement', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
+
+      <Stack.Screen
+        name="Evaluations"
+        component={ListEvaluations}
+        options={{
+          title: 'Avis & Commentaires', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
@@ -229,7 +239,7 @@ const HomeScreenStack = ({ navigation }) => {
         name="MesFavAnnonces"
         component={MesFavAnnonces}
         options={{
-          title: 'Mes Annonces Favoris', headerTintColor: '#97ab00',
+          title: 'Mes Favoris', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
@@ -243,8 +253,17 @@ const HomeScreenStack = ({ navigation }) => {
       />
       <Stack.Screen
         name='MonAbonnement'
-        component={MonAbonnementScreen} options={{
-          title: 'Compte', headerTintColor: '#97ab00',
+        component={MonAbonnementScreen}
+        options={{
+          title: 'Abonnement', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
+      <Stack.Screen
+        name="Evaluations"
+        component={ListEvaluations}
+        options={{
+          title: 'Avis & Commentaires', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
@@ -357,6 +376,15 @@ const MembresScreenStack = ({ navigation }) => {
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
+
+      <Stack.Screen
+        name="Evaluations"
+        component={ListEvaluations}
+        options={{
+          title: 'Avis & Commentaires', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -414,7 +442,7 @@ const MonCompteScreenStack = ({ navigation }) => {
         name="MesFavAnnonces"
         component={MesFavAnnonces}
         options={{
-          title: 'Mes Annonces Favoris', headerTintColor: '#97ab00',
+          title: 'Mes Favoris', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
@@ -430,6 +458,15 @@ const MonCompteScreenStack = ({ navigation }) => {
         name='MonAbonnement'
         component={MonAbonnementScreen} options={{
           title: 'Compte', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
+
+      <Stack.Screen
+        name="Evaluations"
+        component={ListEvaluations}
+        options={{
+          title: 'Avis & Commentaires', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' }
         }}
       />
@@ -518,7 +555,7 @@ const DrawerNavigatorAuthRoutes = (props) => {
         }}
         component={CreateAnnonceScreenStack}
       />
-      {(global.User_VIP != null && global.User_VIP) > 0 && (
+      {(global.User_VIP > 0) && (
         <LeftDrawer.Screen
           name="CreatePubliciteScreenStack"
           options={{

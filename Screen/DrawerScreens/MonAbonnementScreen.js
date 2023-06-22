@@ -17,25 +17,50 @@ import {
 
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
 
-//import { API_URL } from '../Config';
+import { RequestOptionsGet } from '../utils/utils';
 
 import { RequestOptionsPost, Base_url, API_URL, PublishableKeyStripe, UpdatePremium } from '../utils/utils';
 
 
+import { durationInMonths, addMonths } from '@progress/kendo-date-math';
+
+import moment from 'moment';
 const MonAbonnementScreen = ({ navigation }) => {
 
   const [loading, setLoading] = useState(false);
-
+  const [RestAbnmt, setRestAbnmt] = useState(0);
 
 
 
   useEffect(() => {
     // In your app’s checkout, make a network request to the backend and initialize PaymentSheet.
     // To reduce loading time, make this request before the Checkout button is tapped, e.g. when the screen is loaded.
-    initialisePaymentSheet();
+    //   initialisePaymentSheet();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [UserVIP]);
+    const getDayAbnmt = async () => {
+      const fetchUrl = `user/${global.User_connecte}`;
+      const response = await RequestOptionsGet(fetchUrl)
+      //console.log('isvip?', response)
+      if (response.data.length > 0) {
+        const MmebreisVIP = response.data[0].VIP;
+        console.log('jjj : ', response.data[0].date_abonnement)
+        let Date_abonnement = new Date(response.data[0].date_abonnement)
+        Date_abonnement = moment(Date_abonnement, 'DD-MM-YYYY')
+        // const ToDay = new Date();
+        console.log(Date_abonnement)
+        const endDateAbnmt = moment(Date_abonnement).add(global.User_VIP, 'M');
+        console.log(endDateAbnmt)
+        const restDay = endDateAbnmt.diff(Date_abonnement, 'days');
+        //const diffDuration = moment.duration(diff);
+        //const duration = durationInMonths(Date_abonnement, ToDay);
+        // const restDay = diffDuration.days()
+
+        setRestAbnmt(restDay)
+      }
+    }
+    getDayAbnmt();
+  }, []);
 
   return (
 
@@ -61,9 +86,10 @@ const MonAbonnementScreen = ({ navigation }) => {
 
                   <View style={styles.blocAbnmt}>
 
-                    <Text style={styles.titleModal}>Membre VIP!</Text>
-
-                    <Text style={styles.titleModal}>{global.User_VIP} Mois/ parseInt((parseInt(global.User_VIP) * 10)€</Text>
+                    <Text style={styles.titleModal}>Vous êtes Membre VIP!</Text>
+                    <Text style={styles.titleModal2} > Votre abonnement est actif</Text>
+                    <Text style={styles.titleModal}>Forfait VIP Plan  {global.User_VIP} Mois</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 10, marginBottom: 25 }}>Vous reste encore {RestAbnmt} Jour(s)</Text>
                     <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des annonces. </Text>
                     <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
                     <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
@@ -84,7 +110,7 @@ const MonAbonnementScreen = ({ navigation }) => {
           </View>
         </ScrollView>
       </ImageBackground>
-    </View>
+    </View >
 
   )
 }
@@ -99,7 +125,7 @@ const styles = StyleSheet.create({
   threeBloc: {
     // flexDirection:'column',
     //flex:1,
-    width: '80%'
+    width: '90%'
   },
   blocAbnmt: {
     // width:'30%',
@@ -139,6 +165,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'rgba(140, 153, 44 , 0.80)',
     borderBottomColor: '#c4d63c',
+    borderBottomWidth: 5,
+    paddingBottom: 20,
+    marginBottom: 10
+  },
+
+  titleModal2:
+  {
+    fontSize: 15,
+    color: '#823a14',
+    borderBottomColor: '#823a14',
     borderBottomWidth: 5,
     paddingBottom: 20,
     marginBottom: 10

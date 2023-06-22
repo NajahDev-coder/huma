@@ -342,12 +342,17 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
                       </Text>
                     </View>
 
+
                     <View style={styles.bcBlock}>
                       <View style={styles.btCateg}>
+                        <View style={styles.blocDeco}></View>
                         <GetCategorie id_annonce={AnnonceCateg} />
+                        <View style={styles.blocDeco2}></View>
                       </View>
                       <View style={styles.btType}>
+                        <View style={styles.blocDeco}></View>
                         <GetType id_annonce={AnnonceType} />
+                        <View style={styles.blocDeco2}></View>
                       </View>
                     </View>
 
@@ -486,32 +491,51 @@ const styles = StyleSheet.create({
     //maxWidth: '100%',
     fontSize: 9,
   },
+  blocDeco: {
+    width: '20%',
+    marginLeft: '10%',
+    borderRadius: 6,
+    backgroundColor: 'white',
+    padding: 4,
+    marginBottom: 3,
+  },
+  blocDeco2: {
+    width: '80%',
+    marginLeft: '10%',
+    borderRadius: 6,
+
+    backgroundColor: 'white',
+    padding: 1,
+    marginTop: 6,
+  },
   btType: {
     alignSelf: 'flex-start',
     backgroundColor: '#7c4c32',
     color: '#ffffff',
-    padding: 5,
+
+    paddingVertical: 5,
+    paddingHorizontal: 2,
     margin: 5,
     marginLeft: 10,
     borderRadius: 6,
     width: '40%',
     textAlign: 'center',
     justifyContent: 'center',
-    maxWidth: 130,
-    fontSize: 11,
+    height: 65
   },
   btCateg: {
     alignSelf: 'flex-start',
     backgroundColor: '#c4d63c',
     color: '#ffffff',
-    padding: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 2,
     margin: 5,
     borderRadius: 6,
-    width: '40%',
+    width: '50%',
     textAlign: 'center',
     justifyContent: 'center',
-    maxWidth: 130,
-    fontSize: 11,
+    height: 65,
+    // maxWidth: 130,
   },
 
 });

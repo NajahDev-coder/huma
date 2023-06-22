@@ -249,6 +249,7 @@ const styles = StyleSheet.create({
   },
   bcSmText: {
     fontSize: 11,
+    color: '#6cc5d5'
   },
 });
 export default Notifications;

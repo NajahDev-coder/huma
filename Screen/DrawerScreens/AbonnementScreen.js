@@ -22,7 +22,7 @@ import PaymentScreen from '../Components/PaymentScreen';
 import ModalScreenIsVIP from '../ModalIsVIP';
 //import { API_URL } from '../Config';
 
-import { RequestOptionsPost, Base_url, API_URL, PublishableKeyStripe, UpdatePremium } from '../utils/utils';
+import { RequestOptionsPost, Base_url, API_URL, PublishableKeyStripe, UpdatePremium, isVIP } from '../utils/utils';
 import { set } from 'react-native-reanimated';
 
 const AbonnementScreen = ({ navigation }) => {
@@ -99,7 +99,7 @@ const AbonnementScreen = ({ navigation }) => {
     // In your app’s checkout, make a network request to the backend and initialize PaymentSheet.
     // To reduce loading time, make this request before the Checkout button is tapped, e.g. when the screen is loaded.
     initialisePaymentSheet();
-
+    isVIP();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [UserVIP, global.User_VIP]);
 

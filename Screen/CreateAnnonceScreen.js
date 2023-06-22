@@ -294,9 +294,9 @@ export default function CreateAnnonceScreen(props) {
             <View style={styles.sectionStyleSwitch}>
               <Text style={styles.labelStyle}>Livraison </Text>
               <Switch
-                trackColor={{ false: '#767577', true: '#c4d63c' }}
-                thumbColor={proposLivraison ? '#c4d63c' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
+                trackColor={{ true: '#6cc5d5', false: '#6cc5d5' }}
+                thumbColor={proposLivraison ? '#6cc5d5' : '#D6ECF0'}
+                ios_backgroundColor="#6cc5d5"
                 onValueChange={() =>
                   setProposLivraison((proposLivraison) => !proposLivraison)
                 }
@@ -308,7 +308,7 @@ export default function CreateAnnonceScreen(props) {
                 onChangeText={(titre) => setTitre(titre)}
                 underlineColorAndroid="#f000"
                 placeholder="Entrez Le Titre  "
-                placeholderTextColor="#222222"
+                placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
 
               />
@@ -320,7 +320,7 @@ export default function CreateAnnonceScreen(props) {
                 keyboardType='url'
                 underlineColorAndroid="#f000"
                 placeholder="Entrez le Lien vidéo sans http(s):// "
-                placeholderTextColor="#222222"
+                placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
                 multiline={true}
               />
@@ -333,7 +333,7 @@ export default function CreateAnnonceScreen(props) {
                 }
                 underlineColorAndroid="#f000"
                 placeholder="Entrez votre courte description"
-                placeholderTextColor="#222222"
+                placeholderTextColor="#6cc5d5"
                 keyboardType="email-address"
 
               />
@@ -349,7 +349,7 @@ export default function CreateAnnonceScreen(props) {
                 androidHardwareAccelerationDisabled={true}
                 style={styles.richTextEditorStyle}
                 initialHeight={250}
-
+                editorStyle={{ color: '#6cc5d5' }}
               />
               <RichToolbar
                 editor={descriptionInputRef}
@@ -383,21 +383,24 @@ export default function CreateAnnonceScreen(props) {
                   url: 'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api',
                   useOnPlatform: 'web',
                 }}
+                textInputProps={{
+                  placeholderTextColor: '#6cc5d5',
+                }}
                 styles={{
                   textInputContainer: {
                     backgroundColor: 'transparent',
                   },
                   textInput: {
-                    color: '#5a5959',
+                    color: '#6cc5d5',
                     paddingLeft: 15,
                     paddingRight: 15,
                     borderWidth: 1,
                     borderRadius: 30,
-                    borderColor: '#646363',
-                    backgroundColor: 'transparent',
+                    borderColor: '#D6ECF0',
+                    backgroundColor: '#e7f9fc',
                   },
                   predefinedPlacesDescription: {
-                    color: '#1faadb',
+                    color: '#6cc5d5',
                   },
                 }}
                 ref={adresseInputRef}
@@ -411,7 +414,7 @@ export default function CreateAnnonceScreen(props) {
                 value={qty.toString()}
                 underlineColorAndroid="#f000"
                 placeholder="quantité "
-                placeholderTextColor="#222222"
+                placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
                 multiline={false}
               />
@@ -447,7 +450,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 150,
     maxHeight: 150,
-    width: '85%',
+    width: '90%',
     marginTop: 20,
     marginLeft: 25,
     marginRight: 25,
@@ -471,18 +474,15 @@ const styles = StyleSheet.create({
   sectionStyle: {
     flexDirection: 'row',
     height: 40,
-    marginTop: 20,
-    marginLeft: 25,
-    marginRight: 25,
-    margin: 10,
+    marginHorizontal: 20,
+    marginVertical: 5
   },
   sectionStyle2: {
     flex: 1,
     // height: 350,
-    marginTop: 20,
-    marginLeft: 25,
-    marginRight: 25,
-    margin: 10,
+
+    marginHorizontal: 20,
+    marginVertical: 5
   },
   image: {
     //flex: 1,
@@ -510,12 +510,13 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     flex: 1,
-    color: '#5a5959',
+    color: '#6cc5d5',
+    backgroundColor: '#e7f9fc',
     paddingLeft: 15,
     paddingRight: 15,
     borderWidth: 1,
     borderRadius: 30,
-    borderColor: '#646363',
+    borderColor: '#D6ECF0',
   },
   errorTextStyle: {
     color: 'red',
@@ -531,7 +532,7 @@ const styles = StyleSheet.create({
   richTextContainer: {
     display: 'flex',
     flexDirection: 'column-reverse',
-    width: '85%',
+    width: '90%',
     marginLeft: 25,
     margin: 10,
   },
@@ -559,8 +560,8 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     borderWidth: 1,
-    borderColor: '#646363',
-    shadowColor: '#000',
+    borderColor: '#D6ECF0',
+    shadowColor: '#4b7279',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -569,16 +570,17 @@ const styles = StyleSheet.create({
     shadowRadius: 2.62,
     elevation: 4,
     fontSize: 20,
-    backgroundColor: 'transparent',
+    background: '#e7f9fc',
+    color: '#6cc5d5'
   },
 
   richTextToolbarStyle: {
-    backgroundColor: 'transparent',
-    borderColor: '#646363',
+    backgroundColor: '#e7f9fc',
+    borderColor: '#D6ECF0',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderWidth: 1,
-    // width:'95%'
+    borderBottomWidth: 0,
   },
   sectionStyleSwitch: {
     //flexDirection: 'row',
@@ -589,7 +591,7 @@ const styles = StyleSheet.create({
   labelStyle: {
     marginLeft: 10,
     marginBottom: -35,
-    color: '#555555',
+    color: '#6cc5d5',
     fontWeight: 'bold'
     //width: '80%',
   },

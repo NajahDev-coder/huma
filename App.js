@@ -20,13 +20,13 @@ import Constants from 'expo-constants';
 // Import Navigators from React Navigation 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-// Import Screens
+// Import Screens   
 import SplashScreen from './Screen/SplashScreen';
 
 import DrawerNavigationRoutes from './Screen/DrawerNavigationRoutes';
 import DrawerNavigationAuthRoutes from './Screen/DrawerNavigationAuthRoutes';
 import NavigationBottomTabsAuth from './Screen/Components/NavigationDrawerFooterAuth';
-import { getTotalMsgNnLu } from './Screen/utils/utils';
+import { getTotalMsgNnLu, isVIP } from './Screen/utils/utils';
 import { LogBox } from 'react-native';
 
 // Ignore log notification by message:
@@ -67,6 +67,7 @@ Notifications.setNotificationHandler({
 const Auth = () => {
   useEffect(() => {
     registerForPushNotificationsAsync();
+    isVIP()
 
     getTotalMsgNnLu();
   }, [])

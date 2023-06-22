@@ -242,14 +242,16 @@ export const isVIP = async () => {
     const ToDay = new Date();
     const duration = durationInMonths(Date_abonnement, ToDay);
     //console.log('MmebreisVIP:', MmebreisVIP)
-    if ((MmebreisVIP == 1 && duration < 1) || (MmebreisVIP == 2 && duration < 2) || (MmebreisVIP == 3 && duration < 3)) {
+    // alert('mm' + MmebreisVIP)
+    //alert('dd' + global.User_connecte)
+    if ((MmebreisVIP == 1 && duration > 1) || (MmebreisVIP == 2 && duration > 2) || (MmebreisVIP == 3 && duration > 3)) {
       UpdatePremium(global.User_connecte, 0);
-      global.User_VIP = null
+      global.User_VIP = 0
     }
     else global.User_VIP = MmebreisVIP
   }
   else
-    global.User_VIP = null
+    global.User_VIP = 0
 
 }
 export const clearAllData = () => {

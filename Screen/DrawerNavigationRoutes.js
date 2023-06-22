@@ -162,6 +162,15 @@ const HomeScreenStack = ({ navigation }) => {
                     headerTitleStyle: { color: '#97ab00' }
                 }}
             />
+
+            <Stack.Screen
+                name="Evaluations"
+                component={ListEvaluations}
+                options={{
+                    title: 'Avis & Commentaires', headerTintColor: '#97ab00',
+                    headerTitleStyle: { color: '#97ab00' }
+                }}
+            />
         </Stack.Navigator>
     );
 };

@@ -52,7 +52,15 @@ const TypeScreen = ({ navigation }) => {
 
     return () => (isSubscribed = false);
   }, []);
-
+  const getBeerImage = (idImgCateg) => {
+    //let path = { uri: Base_url + 'images/icones_categories/' + slugimg + '.png' };
+    let path;
+    if (idImgCateg == 1 || idImgCateg == 4 || idImgCateg == 5)
+      path = { uri: Base_url + 'images/icones_categories/icone_activeCateg.png' };
+    else
+      path = { uri: Base_url + 'images/icones_categories/icone_IN_activeCateg.png' };
+    return path;
+  };
 
   return (
     <View style={styles.mainBody}>
@@ -63,11 +71,12 @@ const TypeScreen = ({ navigation }) => {
         <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
-            flex: 1,
+            // flex: 1,
             justifyContent: 'center',
             alignContent: 'center',
           }}>
-          <Text style={styles.titre}>Choisir votre Catégorie </Text>
+          <Text style={styles.titre1}>Créez votre Annonce maintenant!  </Text>
+          <Text style={styles.titre}>Choisissez votre Catégorie </Text>
 
           <View style={styles.blcType}>
             <View style={styles.row}>
@@ -82,48 +91,16 @@ const TypeScreen = ({ navigation }) => {
                     styles.button,
                     [1, 4, 5].includes(value.id) && styles.selected,
                   ]}>
-                  <Text
-                    style={[
-                      styles.buttonLabel,
-                      styles.icon,
-                      [1, 4, 5].includes(value.id) && styles.selectedLabel,
-                    ]}>
-                    {value.type === 'Echanges' ? (
-                      <FontAwesome name="exchange" size={24} color="white" />
-                    ) : value.type === 'Dons' ? (
-                      <FontAwesome5
-                        name="hand-holding-heart"
-                        size={24}
-                        color="white"
-                      />
-                    ) : value.type === 'Bons Plans' ? (
-                      <FontAwesome5
-                        name="search-dollar"
-                        size={24}
-                        color="white"
-                      />
-                    ) : value.type === 'Transports' ? (
-                      <FontAwesome5 name="route" size={24} color="white" />
-                    ) : value.type === 'Infos' ? (
-                      <AntDesign name="infocirlce"
-                        size={24}
-                        color="white"
-                      />
-                    ) : (
-                      <FontAwesome
-                        name="handshake-o"
-                        size={24}
-                        color="white"
-                      />
-                    )}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.buttonLabel,
-                      [1, 4, 5].includes(value.id) && styles.selectedLabel,
-                    ]}>
-                    {value.type}
-                  </Text>
+                  <ImageBackground source={getBeerImage(value.id)} resizeMode="cover" style={{ height: 200, width: 160 }} >
+
+                    <Text
+                      style={[
+                        styles.buttonLabel,
+                        [1, 4, 5].includes(value.id) && styles.selectedLabel,
+                      ]}>
+                      {value.type}
+                    </Text>
+                  </ImageBackground>
                 </TouchableOpacity>
               ))}
             </View>
@@ -148,12 +125,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  titre1: {
+
+    fontSize: 20,
+    paddingTop: 25,
+    color: '#96aa00',
+    width: '100%',
+    textAlign: 'center',
+  },
   titre: {
-    fontStyle: 'italic',
-    fontSize: 22,
+
+    fontSize: 18,
     padding: 20,
-    paddingTop: '15%',
-    paddingBottom: '12%',
     color: '#49382f',
     width: '100%',
     textAlign: 'center',
@@ -168,33 +151,46 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'center'
     /* paddingTop: '10% ',
      marginLeft: '5%',*/
   },
   button: {
-    borderRadius: 10,
-    //borderTopRightRadius: 30,
-    //backgroundColor: 'rgba(115, 126, 29, 0.88)',   
-    backgroundColor: '#b4c62c',
-    marginLeft: '5%',
-    marginBottom: 6,
-    minWidth: '40%',
-    justifyContent: 'center',
-    height: 100,
-    textAlign: 'center'
+    backgroundColor: '#bed61e',
+    //backgroundColor: 'rgba(140, 153, 44 , 0.80)',
+    alignItems: 'center',
+    // justifyContent: 'center',
+    marginHorizontal: 5,
+    marginVertical: 6,
+    borderRadius: 30,
+    height: 200,
+    width: 160,
+
+    //padding: 10
+    //justifyContent: 'center',
+    // textAlignVertical:'center'   
+    //textAlign: 'center',
   },
   selected: {
-    backgroundColor: 'rgba(140, 153, 44 , 0.80)',
+    //backgroundColor: 'rgba(115, 126, 29, 0.88)',
+    backgroundColor: '#4c362b',
     borderWidth: 0,
   },
   buttonLabel: {
-    fontSize: 20,
-    fontWeight: '500',
-    color: 'white',
+    //bottom: Platform.OS != 'web' ? 10 : 8,
+    //position: 'absolute',
+    fontSize: 18,
+    color: '#ffffff',
+    padding: 20,
+    paddingTop: 80,
+    height: 170,
+    width: 160,
+    fontWeight: 'bold',
     textAlign: 'center',
+    justifyContent: 'center'
   },
   selectedLabel: {
-    color: 'white',
+    color: '#ffffff',
   },
 });
 

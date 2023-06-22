@@ -139,8 +139,9 @@ const styles = StyleSheet.create({
         zIndex: 20,
         borderRadius: 10,
         borderWidth: 0,
-        width: '100%',
+        width: '95%',
         marginTop: 5,
+        marginLeft: '3%'
 
     },
     bcBlock: {
@@ -162,6 +163,7 @@ const styles = StyleSheet.create({
     },
     bcSmText: {
         fontSize: 11,
+        color: '#6cc5d5'
     },
 });
 export default HistoriqueScreen;
