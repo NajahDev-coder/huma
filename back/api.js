@@ -287,15 +287,11 @@ router.get("/", function (req, res, next) {
                 method: "post"
             },
             {
-                name: `${req.headers.host}/api/marquerLuMessage/:id_user/:id_user2`,
+                name: `${req.headers.host}/api/marquerLuMessage/:id_user`,
                 description: "marquer message lu",
                 method: "put"
             },
-            {
-                name: `${req.headers.host}/api/marquerLuMessage/:id_user/:id_user2`,
-                description: "marquer message lu",
-                method: "put"
-            },
+
             {
                 name: `${req.headers.host}/api/isLuMessage/:id_user/:id_user2`,
                 description: "if message lu",
@@ -1035,7 +1031,24 @@ router.get("/session/:id_user", function (req, res, next) {
 router.get("/getNotif/:id_user", function (req, res, next) {
 
     try {
-        var sql = "SELECT N.id as ID_notif, N.*, U.* FROM `notifications` as N left join users as U on N.id_user1=U.id where FIND_IN_SET('" + req.params.id_user + "',id_users)!=0 order by N.id DESC LIMIT 50";
+        //var sql="SELECT N.id as ID_notif, N.*, U.* FROM `notifications` as N left join users as U on N.id_user1=U.id where FIND_IN_SET('"+req.params.id_user+"',id_users)!=0 order by N.id DESC LIMIT 50";
+        var sql = "SELECT N.id as ID_notif, N.*, U.* FROM `notifications` as N left join users as U on N.id_user1=U.id where FIND_IN_SET('" + req.params.id_user + "',id_users)!=0 order by N.id DESC LIMIT 8";
+        session.query(sql, function (rows, fields, err) {
+
+            if (err) throw err;
+            res.send({ status: 'success', data: rows })
+        });
+
+    } catch (err) {
+        next(err);
+    }
+});
+/*   getNotif for membre logued */
+router.get("/getAllNotif/:id_user", function (req, res, next) {
+
+    try {
+        //var sql="SELECT N.id as ID_notif, N.*, U.* FROM `notifications` as N left join users as U on N.id_user1=U.id where FIND_IN_SET('"+req.params.id_user+"',id_users)!=0 order by N.id DESC LIMIT 50";
+        var sql = "SELECT N.id as ID_notif, N.*, U.* FROM `notifications` as N left join users as U on N.id_user1=U.id where FIND_IN_SET('" + req.params.id_user + "',id_users)!=0 order by N.id DESC ";
         session.query(sql, function (rows, fields, err) {
 
             if (err) throw err;
@@ -1079,7 +1092,8 @@ router.get("/file_existe/:id_annonce", function (req, res, next) {
 router.get("/user_evaluation/:id_user", function (req, res, next) {
 
     try {
-        var sql = "SELECT *  FROM `avis` where id_user='" + req.params.id_user + "';";
+        //var sql="SELECT *  FROM `avis` where id_user='"+req.params.id_user+"';";
+        var sql = "SELECT N.id as ID_avis, N.*, U.* FROM `avis` as N left join users as U on N.id_user_notant=U.id  where N.id_user_notant!=0 and  N.id_user=" + req.params.id_user + "  order by N.id DESC";
         avis.query(sql, function (rows, fields, err) {
             const rating = rows.SumEtoile / rows.NbreEval
             if (err) throw err;
@@ -1094,7 +1108,7 @@ router.get("/user_evaluation/:id_user", function (req, res, next) {
 router.get("/user_rating/:id_user", function (req, res, next) {
 
     try {
-        var sql = "SELECT SUM(nbre_etoile) as SumEtoile, count(*) as NbreEval FROM `avis` where id_user='" + req.params.id_user + "';";
+        var sql = "SELECT SUM(nbre_etoile) as SumEtoile, count(*) as NbreEval FROM `avis` where id_user='" + req.params.id_user + "' and id_user_notant!=0";
         avis.query(sql, function (rows, fields, err) {
             if (err) throw err;
             var rating = rows[0].SumEtoile / rows[0].NbreEval
@@ -1110,7 +1124,7 @@ router.get("/user_rating/:id_user", function (req, res, next) {
 router.post("/update_user_evaluation", function (req, res, next) {
     /*if(req.body.eamis==0)
     {*/
-    var sql = "insert into `avis` (id_user, id_user_note, nbre_etoile, commentaire) value('" + req.body.user_id1 + "', '" + req.body.user_id2 + "', '" + req.body.evaluation + "','" + req.body.avis + "') ";
+    var sql = "insert into `avis` (id_user, id_user_notant, nbre_etoile, commentaire) value('" + req.body.user_id1 + "', '" + req.body.user_id2 + "', '" + req.body.evaluation + "','" + req.body.avis + "') ";
     avis.query(sql, function (rows, fields, err) {
         if (err) throw err;
         notifications.query("INSERT INTO notifications (id_activite, type_activite, id_user1, id_users, notification) VALUES ('" + req.body.id_user2 + "', 'evaluation', '" + req.body.id_user1 + "', '" + req.body.id_user2 + "', 'Vous a évalué') ", function (rows, fields, err) {
@@ -1274,21 +1288,29 @@ router.post("/sent_messages", function (req, res, next) {
 
     messages.query("insert into  messages (id_user1 ,id_user2,message) VALUES ('" + req.body.id_user1 + "', '" + req.body.id_user2 + "', '" + req.body.message + "')", function (rows, fields, err) {
         if (err) throw err;
-        res.send({ status: "add amis success", data: rows });
+        res.send({ status: "success", data: rows });
     });
 })
-//marquer lu message
-router.put("/marquerLuMessage/:id_user/:id_user2", function (req, res, next) {
+//marquer lu message  id_user==user qui est en train de lire les messages envoyés par id_user2 
+router.put("/marquerLuMessage/:id_user", function (req, res, next) {
 
-    messages.query("update  messages set lu=0 where id_user2='" + req.params.id_user + "' and id_user1='" + req.params.id_user2 + "'", function (rows, fields, err) {
+    messages.query("update  messages set lu=0 where  id_user1='" + req.body.id_user2 + "' and  id_user2='" + req.params.id_user + "'", function (rows, fields, err) {
         if (err) throw err;
-        res.send({ status: "marquer lu msg avec success", data: rows });
+        res.send({ status: "success", data: rows });
     });
 })
 //NOMBRE MSG NON LU BY USER
 router.get("/isLuMessage/:id_user/:id_user2", function (req, res, next) {
 
-    messages.query("select count(*) as nbrNonLu from messages  where lu=1 and id_user2='" + req.params.id_user + "' and id_user1='" + req.params.id_user2 + "' ", function (rows, fields, err) {
+    messages.query("select count(*) as nbrNonLu from messages  where lu=1 and id_user1='" + req.params.id_user + "' and id_user2='" + req.params.id_user2 + "' ", function (rows, fields, err) {
+        if (err) throw err;
+        res.send({ status: "success", data: rows });
+    });
+})
+//check if msg is vu by id_user2
+router.get("/isVuMessage/:id_user/:id_user2", function (req, res, next) {
+
+    messages.query("select *  from messages  where lu=1 and id_user1='" + req.params.id_user + "' and id_user2='" + req.params.id_user2 + "' LIMIT 1", function (rows, fields, err) {
         if (err) throw err;
         res.send({ status: "success", data: rows });
     });
@@ -1297,7 +1319,7 @@ router.get("/isLuMessage/:id_user/:id_user2", function (req, res, next) {
 router.get("/getNotifMsg/:id_user", function (req, res, next) {
 
     try {
-        var sql = "SELECT * FROM `messages` where id_user2='" + req.params.id_user + "' and lu=1;";
+        var sql = "SELECT count(*) as TotalMsgNonLU FROM `messages` where id_user2='" + req.params.id_user + "' and lu=1;";
         session.query(sql, function (rows, fields, err) {
 
             if (err) throw err;
@@ -1383,13 +1405,13 @@ router.post("/upload", function (req, res, next) {
             fs.writeFile(`${dirIMages}/${imgName}`, req.body.imgsource, 'base64', (err) => {
                 //fs.rename(req.file.path, `${dirIMages}/${imgName}.jpg`, (err)=>{
                 if (err)
-                    res.send({ status: err, msg: "error to upload Image profil!" })//throw err
+                    res.send({ status: err, msg: "error to upload Image profile!" })//throw err
                 users_file.query("update users set img_prof='" + imgName + "' where id=" + req.body.user_id, (rows, fields, err) => {
                     if (err)
                         res.send({ status: 'failed', msg: "No file upload!" })//throw err
-                    console.log('Upload Image Profil OK!!');
+                    console.log('Upload Image Profile OK!!');
 
-                    res.send({ status: 'success', msg: "Upload Image Profil OK!!!!" })
+                    res.send({ status: 'success', msg: "Upload Image Profile OK!!!!" })
 
                 })
             })
