@@ -139,7 +139,7 @@ const Notifications = ({ navigation, widthIcone }) => {
                         <Text style={styles.bcText}>{value.notification}</Text>
 
                         <View
-                          style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 25 }}>
+                          style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 40 }}>
                           {getDate(value.date)}
                           {/*<Text style={styles.bcSmText}>{dateDiff(getDate(value.date), today)}  </Text>*/}
                         </View>

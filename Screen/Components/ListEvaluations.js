@@ -11,8 +11,9 @@ import GetProfile from './GetProfile';
 import { Base_url, RequestOptionsGet, ShowDetailAnnonce } from '../utils/utils'
 import { dateDiff } from '../includes/functions';
 //import { ScrollView } from 'react-native-gesture-handler';
+import { Rating, AirbnbRating } from 'react-native-ratings';
 
-
+import Loader from '../Components/Loader';
 const ListEvaluations = ({ navigation, route }) => {
 
     const [refreshKey, setRefreshKey] = useState(0);
@@ -21,6 +22,8 @@ const ListEvaluations = ({ navigation, route }) => {
     const [Enable, setEnable] = useState(0);
     const [fadeAnimation] = useState(new Animated.Value(0));
     const [selected, setSelected] = useState("");
+
+    const [result, setResultat] = useState(<Loader loading={true} />);
     const minDate = new Date(2022, 8, 30);
 
 
@@ -39,13 +42,17 @@ const ListEvaluations = ({ navigation, route }) => {
         let isSubscribed = true;
         const getEvaluations = async () => {
             //alert(id_user)
+
             const fetchUrl = `user_evaluation/${id_user}`;
 
             const responseJson = await RequestOptionsGet(fetchUrl)
-            if (responseJson.data) {
+            if (responseJson.data.length > 0) {
 
                 setEvaluationsList(responseJson.data);
             }
+            else
+
+                setResultat('Pas des Avis & Commentaires ! ')
             //setRefreshKey((oldKey) => oldKey + 1); 
 
         }
@@ -71,28 +78,45 @@ const ListEvaluations = ({ navigation, route }) => {
 
                         <View style={styles.row}>
 
-                            <FlatList
-                                data={EvaluationsList}
-                                renderItem={({ item }) => (
-                                    <View style={styles.lisnotif}>
-                                        <TouchableOpacity key={item.id} onPress={() => NaVIG(item.id_activite)} style={styles.bcBlock}>
-                                            <GetProfile user_id={item.id_user1} navigation={navigation} img_prof={item.img_prof} />
+                            {EvaluationsList.length == 0 ? (
+                                <View style={{ width: '100%' }}>
+                                    <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: '50%', padding: '25%' }}>
 
-                                            <View style={styles.bcDetaille}>
-                                                <Text style={styles.postLabel}>{item.nom} </Text>
-                                                <Text style={styles.bcText}>{item.avis}</Text>
-
-                                                <View
-                                                    style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                                                    <Text style={styles.bcSmText}>{dateDiff(new Date(item.date), today)}  </Text>
-                                                </View>
-                                            </View>
-                                        </TouchableOpacity>
+                                        <Text style={{ color: '#777777', textAlign: 'center', }}>{result}</Text>
                                     </View>
-                                )}
+                                </View>
 
-                                keyExtractor={item => item.id}
-                            />
+                            ) : (
+                                <FlatList
+                                    data={EvaluationsList}
+
+                                    renderItem={({ item }) => (
+                                        <View style={styles.lisnotif}>
+                                            <TouchableOpacity key={item.ID_avis} style={styles.bcBlock}>
+                                                <GetProfile user_id={item.id_user_notant} navigation={navigation} img_prof={item.img_prof} />
+
+                                                <View style={styles.bcDetaille}>
+                                                    <Text style={styles.postLabel}>{item.nom} </Text>
+
+                                                    <Text style={styles.bcText}>{item.commentaire}</Text>
+                                                    <View style={{ flexDirection: 'row' }}>
+                                                        <Text style={styles.txtEtoile}>{item.nbre_etoile}</Text>
+                                                        <Rating
+                                                            style={{ marginTop: 3 }}
+                                                            startingValue={item.nbre_etoile}
+                                                            imageSize={16}
+                                                            readonly={true}
+                                                        />
+                                                    </View>
+
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )}
+
+                                    keyExtractor={item => item.ID_avis}
+                                />
+                            )}
 
                         </View>
                     </View>
@@ -108,6 +132,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignContent: 'center',
+
     },
     image: {
         flex: 1,
@@ -165,8 +190,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 0,
 
-        marginTop: 8,
-        width: '100%'
+        margin: 8,
+        width: '95%',
+        marginLeft: '3%'
 
     },
     bcBlock: {
@@ -181,7 +207,7 @@ const styles = StyleSheet.create({
     bcDetaille: {
         alignSelf: 'flex-start',
         margin: 7,
-        width: '80%',
+        width: '95%',
     },
     bcText: {
         width: '100%',
@@ -189,5 +215,7 @@ const styles = StyleSheet.create({
     bcSmText: {
         fontSize: 11,
     },
+    txtEtoile: { color: '#f1c40f', marginBottom: 2, marginRight: 6, fontSize: 16 }
+
 });
 export default ListEvaluations;

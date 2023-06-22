@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   blc_rating: { flexDirection: 'row', marginLeft: 5, justifyContent: 'flex-start', textAlign: 'left' },
-  txtEtoile: { color: '#f1c40f', marginBottom: 2, marginRight: 2, fontSize: 14 }
+  txtEtoile: { color: '#f1c40f', marginBottom: 2, marginRight: 6, fontSize: 16 }
 
 });
 export default RatingScreen;

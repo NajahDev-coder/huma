@@ -84,7 +84,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
   const visitVedio = (val) => {
     Linking.openURL('http://' + val);
   }
-  const UpdtFavorisAnnonce = useCallback(async () => {
+  const UpdtFavorisAnnonce = async () => {
     var fetchUrl;
     if (favorisAnnonce == 1) {
       fetchUrl = `delfavannonces/${global.User_connecte}/${Id_Annonce}`;
@@ -99,7 +99,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
       setRefreshKey((oldKey) => oldKey + 1)
     }
 
-  }, [Id_Annonce, favorisAnnonce])
+  }
   const GetFavorisAnnonce = async () => {
 
     const fetchUrl = `getfavannonces/${global.User_connecte}/${Id_Annonce}`;
@@ -193,7 +193,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
       isExiteFile();
     }
     return () => (isSubscribed = false);
-  }, []);
+  }, [favorisAnnonce]);
 
   const AfficheDescrp = (description) => {
     const source = { html: description }
@@ -246,25 +246,20 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
                       <View style={styles.bcDetaille}>
                         <View style={styles.row}>
                           <Text style={styles.postLabel}>{AnnonceDetails.titre} </Text>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-end',
-                              position: 'absolute',
-                              right: 20,
-                              top: 0,
-                            }}>
-                            <AntDesign name="eyeo" size={24} color="black" />
-                          </View>
+
                           <View
                             style={{
                               flexDirection: 'row',
                               justifyContent: 'flex-end',
                               position: 'absolute',
                               right: 0,
-                              top: 3,
+                              top: -5,
+                              width: 120,
                             }}>
-                            <Text >{NbreVue}</Text>
+                            <AntDesign name="eyeo" size={24} color="#6cc5d5" style={{ marginRight: 3, marginTop: 2 }} />
+
+                            <Text style={{ marginTop: 3, color: '#6cc5d5' }}>{NbreVue}</Text>
+
                           </View>
                           {AuteurUserId != global.User_connecte && (
                             <View
@@ -272,8 +267,8 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
                                 flexDirection: 'row',
                                 justifyContent: 'flex-end',
                                 position: 'absolute',
-                                right: 50,
-                                top: 0,
+                                right: 0,
+                                top: 25,
                               }}>
 
                               <MaterialIcons
