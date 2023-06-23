@@ -215,7 +215,7 @@ const AccueilScreen = ({ navigation }) => {
                       style={[
                         styles.button,
                         //selectedValue == item.id && styles.selected,
-                        (item.id == 1 || item.id == 3 | item.id == 5) && styles.selected,
+                        (item.id == 1 || item.id == 3 || item.id == 5) && styles.selected,
                       ]}>
 
                       <ImageBackground source={getBeerImage(item.id)} resizeMode="cover" style={{ height: 200, width: 160 }} >

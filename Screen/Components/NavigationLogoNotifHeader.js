@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Marge = parseInt(Dimensions.get('screen').width / 4) + 28;
 
-const NavigationLogoHeader = ({ navigationProps }) => {
+const NavigationLogoNotifHeader = ({ navigationProps }) => {
 
 
 
@@ -22,7 +22,7 @@ const NavigationLogoHeader = ({ navigationProps }) => {
 
       <TouchableOpacity onPress={() => navigationProps.navigate('Accueil')} style={{
         position: 'absolute', height: 50,
-        right: 10,
+        right: Platform.OS === 'web' ? (global.User_connecte != null ? 100 : 10) : (global.User_connecte != null ? Marge : 10),
       }}>
         <Image
 
@@ -33,8 +33,11 @@ const NavigationLogoHeader = ({ navigationProps }) => {
         />
       </TouchableOpacity>
 
-
-
+      {global.User_connecte != null && (
+        <View style={{ position: 'absolute', right: 0 }}>
+          <Notifications navigation={navigationProps} widthIcone={Platform.OS == 'web' ? '100%' : '100%'} />
+        </View>
+      )}
     </View>
   );
 };
@@ -54,4 +57,4 @@ const styles = StyleSheet.create({
 
   }
 })
-export default NavigationLogoHeader;
+export default NavigationLogoNotifHeader;

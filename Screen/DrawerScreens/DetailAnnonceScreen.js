@@ -315,7 +315,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
                         </View>
 
                         <View style={styles.bcText}>
-                          {AnnonceDetails.description != '' && AfficheDescrp(AnnonceDetails.description)}
+                          {AnnonceDetails.description != '' ? AfficheDescrp(AnnonceDetails.description) : (<Text>{AnnonceDetails.court_description}</Text>)}
                         </View>
                         <View style={styles.bcText}>
                           {AnnonceDetails.link_vedio != '' && (

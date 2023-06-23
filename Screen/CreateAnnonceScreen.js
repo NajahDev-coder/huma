@@ -313,18 +313,7 @@ export default function CreateAnnonceScreen(props) {
 
               />
             </View>
-            <View style={styles.sectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(LinkVedio) => setLinkVedio(LinkVedio)}
-                keyboardType='url'
-                underlineColorAndroid="#f000"
-                placeholder="Entrez le Lien vidéo sans http(s):// "
-                placeholderTextColor="#6cc5d5"
-                autoCapitalize="sentences"
-                multiline={true}
-              />
-            </View>
+
             <View style={styles.sectionStyle}>
               <TextInput
                 style={styles.inputStyle}
@@ -404,6 +393,18 @@ export default function CreateAnnonceScreen(props) {
                   },
                 }}
                 ref={adresseInputRef}
+              />
+            </View>
+            <View style={styles.sectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(LinkVedio) => setLinkVedio(LinkVedio)}
+                keyboardType='url'
+                underlineColorAndroid="#f000"
+                placeholder="Entrez le Lien vidéo sans http(s):// "
+                placeholderTextColor="#6cc5d5"
+                autoCapitalize="sentences"
+                multiline={true}
               />
             </View>
             <View style={styles.sectionStyle}>

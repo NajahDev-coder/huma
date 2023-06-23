@@ -59,17 +59,7 @@ const CategScreen = ({ navigation }) => {
 
     if (responseJson.data.length > 0) {
 
-      let data3 = [];
-      Object.entries(responseJson.data).map(([key, value]) => {
-        data3.push({
-          id: value.id,
-          title: value.titre,
-          src: value.slug,
-        });
-      });
-
-
-      SousCateg = data3;
+      SousCateg = responseJson.data;
       SetSsCateg(SousCateg); //return SousCateg;
     } else {
       // alert(PCategID)
@@ -81,6 +71,21 @@ const CategScreen = ({ navigation }) => {
       );
     }
 
+  };
+  const defaultImage = { uri: Base_url + 'images/img/no-picture1.png' };
+  const getBeerImage = (idcateg, slugimg) => {
+    let path = { uri: Base_url + 'images/img/' + idcateg + '/' + slugimg + '.jpg' };
+    return path;
+  };
+
+  const getBeerImageCateg = (idImgCateg) => {
+    //let path = { uri: Base_url + 'images/icones_categories/' + slugimg + '.png' };
+    let path;
+    if (idImgCateg == 1 || idImgCateg == 3)
+      path = { uri: Base_url + 'images/icones_categories/icone_activeCateg.png' };
+    else
+      path = { uri: Base_url + 'images/icones_categories/icone_IN_activeCateg.png' };
+    return path;
   };
 
   return (
@@ -95,73 +100,77 @@ const CategScreen = ({ navigation }) => {
             justifyContent: 'center',
             alignContent: 'center',
           }}>
-          <View style={{ padding: 10, flex: 1 }}>
-
+          <View style={{ padding: 10, flex: 1, width: '100%' }}>
             <View style={styles.row}>
-              {CategroiesList.map((value) => (
-                <TouchableOpacity
-                  key={value.id}
-                  onPress={() => {
-                    displaySCateg(value.id);
-                    setSelectedValue(value.id);
-                  }}
-                  style={[
-                    styles.button,
-                    selectedValue === value.id && styles.selected,
-                  ]}>
-                  <Text
-                    style={[
-                      styles.buttonLabel,
-                      selectedValue === value.id && styles.selectedLabel,
-                    ]}>
-                    {value.titre}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
 
-          <SafeAreaView>
-            <ScrollView
-              horizontal={true}
-              style={{ width: '100%' }}
-            >
               <FlatList
-                data={SousCateg}
+                columnWrapperStyle={{ justifyContent: 'space-between' }}
+                data={CategroiesList}
                 renderItem={({ item }) => (
-                  <View style={styles.viewThumbnail}>
-                    <LinearGradient
-                      colors={['#f3f3f3', '#ffffff', '#f9f9f9']}
-                      start={{
-                        x: 0,
-                        y: 0,
-                      }}
-                      end={{
-                        x: 1,
-                        y: 1,
-                      }}
-                      style={styles.bgThumb}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          displaySCateg(item.id);
-                        }}>
-                        <Text style={styles.txtThumb}>{item.title}</Text>
-                      </TouchableOpacity>
-                    </LinearGradient>
-                  </View>
+                  <TouchableOpacity
+                    key={item.id}
+                    onPress={() => {
+                      displaySCateg(item.id);
+                      setSelectedValue(item.id);
+                    }}
+                    style={[
+                      styles.button,
+                      //selectedValue == item.id && styles.selected,
+                      (item.id == 1 || item.id == 3) && styles.selected,
+                    ]}>
+
+                    <ImageBackground source={getBeerImageCateg(item.id)}  >
+
+                      <Text
+                        style={[
+                          styles.buttonLabel,
+                          selectedValue == item.id && styles.selectedLabel,
+                        ]}>
+                        {item.titre}
+                      </Text>
+
+                    </ImageBackground>
+
+                  </TouchableOpacity>
                 )}
-                //Setting the number of column
+
                 numColumns={3}
                 keyExtractor={(item, index) => index}
               />
-            </ScrollView>
+            </View>
+          </View>
+
+
+          <SafeAreaView>
+
+            <FlatList
+              data={SousCateg}
+              renderItem={({ item }) => (
+                <View style={styles.viewThumbnail} key={item.id}>
+                  <TouchableOpacity onPress={() => displaySCateg(item.id)} key={item.id}>
+                    <ImageBackground
+                      style={styles.imageThumbnail}
+                      imageStyle={{ borderRadius: 3 }}
+                      defaultSource={defaultImage}
+                      source={getBeerImage(PcategID, item.slug)}>
+                      <Text style={styles.txtThumb}>{item.titre}</Text>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                </View>
+              )}
+              //Setting the number of column
+              numColumns={3}
+
+              keyExtractor={(item, index) => index}
+            />
+
           </SafeAreaView>
         </ScrollView>
       </ImageBackground>
-    </View>
+    </View >
   );
 };
-function PreviewLayout({
+/*function PreviewLayout({
   label,
   children,
   values,
@@ -175,7 +184,7 @@ function PreviewLayout({
           <TouchableOpacity
             key={value.id}
             onPress={() => {
-              /*setsousCateg(value.id);*/ setSelectedValue(value.id);
+              setsousCateg(value.id); setSelectedValue(value.id);
             }}
             style={[
               styles.button,
@@ -193,8 +202,8 @@ function PreviewLayout({
       </View>
     </View>
   );
-}
-const renderItem = ({ item, index }) => {
+}*/
+/*const renderItem = ({ item, index }) => {
   const { backgroundColor } = item;
   return (
     <TouchableOpacity
@@ -203,7 +212,7 @@ const renderItem = ({ item, index }) => {
         this._carousel.scrollToIndex(index);
       }}></TouchableOpacity>
   );
-};
+};*/
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
@@ -217,30 +226,41 @@ const styles = StyleSheet.create({
 
   row: {
     flexDirection: 'row',
-    justifyContent: 'center',
     flexWrap: 'wrap',
+    justifyContent: 'center'
   },
   button: {
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderRadius: 4,
-    backgroundColor: 'rgba(140, 153, 44 , 0.80)',
-    alignSelf: 'flex-start',
-    marginHorizontal: '1%',
-    marginBottom: 6,
-    minWidth: '48%',
-    textAlign: 'center',
+    backgroundColor: '#bed61e',
+    //backgroundColor: 'rgba(140, 153, 44 , 0.80)',
+    alignItems: 'center',
+    // justifyContent: 'center',
+    marginHorizontal: 5,
+    marginVertical: 6,
+    borderRadius: 30,
+    height: 110,
+    width: 120,
+
+    //padding: 10
+    //justifyContent: 'center',
+    // textAlignVertical:'center'   
+    //textAlign: 'center',
   },
   selected: {
-    backgroundColor: 'rgba(115, 126, 29, 0.88)',
+    //backgroundColor: 'rgba(115, 126, 29, 0.88)',
+    backgroundColor: '#4c362b',
     borderWidth: 0,
   },
-
   buttonLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: 'white',
+
+    fontSize: 13,
+    color: '#ffffff',
+    //padding: 20,
+    paddingTop: 40,
+    height: 110,
+    width: 100,
+    fontWeight: 'bold',
     textAlign: 'center',
+    justifyContent: 'center'
   },
   selectedLabel: {
     color: 'white',
@@ -289,11 +309,22 @@ const styles = StyleSheet.create({
     // borderLeftColor:'#bac84e'
   },
   txtThumb: {
-    color: '#7f8933',
+    padding: 5,
+    //marginTop: '30%',
+    backgroundColor: 'rgba(140, 153, 44, 0.45)',
+    width: '100%',
     fontSize: 14,
-    fontWeight: 'bold',
+    color: '#ffffff',
     textAlign: 'center',
+    //fontSize: '16px',
+
+    //fontFamily: 'Arial',
   },
+  imageThumbnail: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 100,
+  }
 });
 
 export default CategScreen;

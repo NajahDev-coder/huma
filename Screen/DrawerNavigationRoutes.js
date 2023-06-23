@@ -20,6 +20,7 @@ import CategScreen from './CategScreen';
 import CustomSidebarMenu from './Components/CustomSidebarMenu';
 import NavigationDrawerHeader from './Components/NavigationDrawerHeader';
 import NavigationLogoHeader from './Components/NavigationLogoHeader';
+import NavigationLogoNotifHeader from './Components/NavigationLogoNotifHeader';
 import NavigationBottomTabs from './Components/NavigationDrawerFooter';
 import MembresScreen from './DrawerScreens/MembresScreen';
 const Stack = createStackNavigator();
@@ -54,7 +55,10 @@ const AnnonceScreenStack = ({ navigation }) => {
                 component={DetailAnnonceScreen}
                 options={{
                     title: 'Détails Annonce', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }}
             />
 
@@ -64,7 +68,10 @@ const AnnonceScreenStack = ({ navigation }) => {
                 component={CompteScreen}
                 options={{
                     title: 'Compte', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }}
             />
             <Stack.Screen
@@ -72,7 +79,10 @@ const AnnonceScreenStack = ({ navigation }) => {
                 component={LoginScreen}
                 options={{
                     title: 'Login', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }}
             />
             <Stack.Screen
@@ -80,7 +90,10 @@ const AnnonceScreenStack = ({ navigation }) => {
                 component={RegisterScreen}
                 options={{
                     title: 'Inscription', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }}
             />
         </Stack.Navigator>
@@ -117,7 +130,10 @@ const HomeScreenStack = ({ navigation }) => {
                 component={DetailAnnonceScreen}
                 options={{
                     title: 'Détails Annonce', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }}
             />
             <Stack.Screen
@@ -125,7 +141,10 @@ const HomeScreenStack = ({ navigation }) => {
                 component={LoginScreen}
                 options={{
                     title: 'Login', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }}
             />
             <Stack.Screen
@@ -133,7 +152,10 @@ const HomeScreenStack = ({ navigation }) => {
                 component={RegisterScreen}
                 options={{
                     title: 'Inscription', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }}
             />
             <Stack.Screen
@@ -141,7 +163,10 @@ const HomeScreenStack = ({ navigation }) => {
                 component={CompteScreen}
                 options={{
                     title: 'Compte', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }}
             />
             <Stack.Screen
@@ -149,7 +174,10 @@ const HomeScreenStack = ({ navigation }) => {
                 component={AnnoncesScreen}
                 options={{
                     title: 'Annonces', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }} />
 
 
@@ -159,7 +187,10 @@ const HomeScreenStack = ({ navigation }) => {
                 component={CategScreen}
                 options={{
                     title: 'Nouvelle Annonce', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }}
             />
 
@@ -168,7 +199,10 @@ const HomeScreenStack = ({ navigation }) => {
                 component={ListEvaluations}
                 options={{
                     title: 'Avis & Commentaires', headerTintColor: '#97ab00',
-                    headerTitleStyle: { color: '#97ab00' }
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
                 }}
             />
         </Stack.Navigator>

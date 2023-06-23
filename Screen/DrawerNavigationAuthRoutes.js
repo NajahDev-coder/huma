@@ -22,6 +22,7 @@ import ListNotifications from './Components/ListNotifications';
 import HistoriqueScreen from './Components/HistoriqueScreen';
 import CustomSidebarAuthMenu from './Components/CustomSidebarAuthMenu';
 import NavigationDrawerHeader from './Components/NavigationDrawerHeader';
+import NavigationLogoNotifHeader from './Components/NavigationLogoNotifHeader';
 import NavigationLogoHeader from './Components/NavigationLogoHeader';
 import NavigationCompteHeader from './Components/NavigationCompteHeader';
 import NavigationBottomTabsAuth from './Components/NavigationDrawerFooterAuth';
@@ -74,7 +75,10 @@ const AnnonceScreenStack = ({ navigation }) => {
         component={DetailAnnonceScreen}
         options={{
           title: 'Détails Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
 
@@ -84,7 +88,10 @@ const AnnonceScreenStack = ({ navigation }) => {
         component={CompteScreen}
         options={{
           title: 'Compte', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -92,7 +99,10 @@ const AnnonceScreenStack = ({ navigation }) => {
         component={MonAbonnementScreen}
         options={{
           title: 'Abonnement', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
 
@@ -101,7 +111,10 @@ const AnnonceScreenStack = ({ navigation }) => {
         component={ListEvaluations}
         options={{
           title: 'Avis & Commentaires', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
     </Stack.Navigator>
@@ -122,7 +135,7 @@ const HomeScreenStack = ({ navigation }) => {
           ),
           title: '',
           headerRight: () => (
-            <NavigationLogoHeader navigationProps={navigation} />
+            <NavigationLogoNotifHeader navigationProps={navigation} />
           ),
           headerStyle: {
             backgroundColor: '#FFFFFF', //Set Header
@@ -139,7 +152,10 @@ const HomeScreenStack = ({ navigation }) => {
           component={AbonnementScreen}
           options={{
             title: 'Devenir VIP', headerTintColor: '#97ab00',
-            headerTitleStyle: { color: '#97ab00' }
+            headerTitleStyle: { color: '#97ab00' },
+            headerRight: () => (
+              <NavigationLogoHeader navigationProps={navigation} />
+            ),
           }}
         />}
       <Stack.Screen
@@ -147,7 +163,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={CompteScreen}
         options={{
           title: 'Profile', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -155,7 +174,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={ListNotifications}
         options={{
           title: 'Notifications', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -163,7 +185,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={HistoriqueScreen}
         options={{
           title: 'Historique', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -171,7 +196,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={MembresScreen}
         option={{
           title: 'Membres', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -179,7 +207,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={EditProfile}
         options={{
           title: 'Modifier Profil', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
 
@@ -188,7 +219,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={GetMessages}
         options={{
           title: 'Messages', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
 
@@ -197,7 +231,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={AnnoncesScreen}
         options={{
           title: 'Annonces', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
 
@@ -207,7 +244,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={DetailAnnonceScreen}
         options={{
           title: 'Détails Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
 
@@ -216,7 +256,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={CategScreen}
         options={{
           title: 'Nouvelle Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -224,15 +267,22 @@ const HomeScreenStack = ({ navigation }) => {
         component={CreateAnnonceScreen}
         options={{
           title: 'Nouvelle Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
         name="MesAnnonces"
         component={MesAnnonces}
         options={{
-          title: 'Annonces', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          title: 'Annonces',
+          headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -240,7 +290,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={MesFavAnnonces}
         options={{
           title: 'Mes Favoris', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -248,7 +301,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={EditAnnonceScreen}
         options={{
           title: 'Modifier Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -256,7 +312,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={MonAbonnementScreen}
         options={{
           title: 'Abonnement', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -264,7 +323,10 @@ const HomeScreenStack = ({ navigation }) => {
         component={ListEvaluations}
         options={{
           title: 'Avis & Commentaires', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
     </Stack.Navigator>
@@ -299,7 +361,10 @@ const CreateAnnonceScreenStack = ({ navigation }) => {
         component={CategScreen}
         options={{
           title: 'Nouvelle Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -307,7 +372,10 @@ const CreateAnnonceScreenStack = ({ navigation }) => {
         component={CreateAnnonceScreen}
         options={{
           title: 'Nouvelle Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
     </Stack.Navigator>
@@ -326,7 +394,7 @@ const MembresScreenStack = ({ navigation }) => {
           ),
           title: '',
           headerRight: () => (
-            <NavigationLogoHeader navigationProps={navigation} />
+            <NavigationLogoNotifHeader navigationProps={navigation} />
           ),
           headerStyle: {
             backgroundColor: '#FFFFFF', //Set Header color
@@ -342,7 +410,10 @@ const MembresScreenStack = ({ navigation }) => {
         component={CompteScreen}
         option={{
           title: 'Compte', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -350,7 +421,10 @@ const MembresScreenStack = ({ navigation }) => {
         component={GetMessages}
         options={{
           title: 'Messages', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -358,7 +432,10 @@ const MembresScreenStack = ({ navigation }) => {
         component={ListNotifications}
         options={{
           title: 'Notifications', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -366,14 +443,20 @@ const MembresScreenStack = ({ navigation }) => {
         component={HistoriqueScreen}
         options={{
           title: 'Historique', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
         name='MonAbonnement'
         component={MonAbonnementScreen} options={{
           title: 'Compte', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
 
@@ -382,7 +465,10 @@ const MembresScreenStack = ({ navigation }) => {
         component={ListEvaluations}
         options={{
           title: 'Avis & Commentaires', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
     </Stack.Navigator>
@@ -400,7 +486,7 @@ const MonCompteScreenStack = ({ navigation }) => {
           ),
           title: '',
           headerRight: () => (
-            <NavigationLogoHeader navigationProps={navigation} />
+            <NavigationLogoNotifHeader navigationProps={navigation} />
           ),
           headerStyle: {
             backgroundColor: '#FFFFFF', //Set Header color
@@ -418,7 +504,10 @@ const MonCompteScreenStack = ({ navigation }) => {
         component={EditProfile}
         options={{
           title: 'Modifier Profile', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -426,7 +515,10 @@ const MonCompteScreenStack = ({ navigation }) => {
         component={GetMessages}
         options={{
           title: 'Messages', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
 
@@ -434,8 +526,12 @@ const MonCompteScreenStack = ({ navigation }) => {
         name="MesAnnonces"
         component={MesAnnonces}
         options={{
-          title: 'Mes Annonces', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          title: 'Mes Annonces',
+          headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -443,7 +539,10 @@ const MonCompteScreenStack = ({ navigation }) => {
         component={MesFavAnnonces}
         options={{
           title: 'Mes Favoris', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
@@ -451,14 +550,20 @@ const MonCompteScreenStack = ({ navigation }) => {
         component={EditAnnonceScreen}
         options={{
           title: 'Modifier Annonce', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
       <Stack.Screen
         name='MonAbonnement'
         component={MonAbonnementScreen} options={{
           title: 'Compte', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
 
@@ -467,7 +572,10 @@ const MonCompteScreenStack = ({ navigation }) => {
         component={ListEvaluations}
         options={{
           title: 'Avis & Commentaires', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
     </Stack.Navigator>
@@ -503,7 +611,10 @@ const CreatePubliciteScreenStack = ({ navigation }) => {
         component={AnnoncesScreen}
         options={{
           title: 'Annonces', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' }
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
         }}
       />
 

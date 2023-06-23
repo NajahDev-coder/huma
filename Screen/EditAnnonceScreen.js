@@ -417,19 +417,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
 
               />
             </View>
-            <View style={styles.sectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(LinkVedio) => setLinkVedio(LinkVedio)}
-                keyboardType='url'
-                value={LinkVedio}
-                // underlineColorAndroid="#f000"
-                placeholder="Entrez le Lien vidéo sans http(s):// "
-                placeholderTextColor="#6cc5d5"
-                autoCapitalize="sentences"
-                multiline={true}
-              />
-            </View>
+
             <View style={styles.sectionStyle}>
               <TextInput
                 style={styles.inputStyle}
@@ -513,6 +501,19 @@ export default function EditAnnonceScreen({ navigation, route }) {
                   },
                 }}
                 ref={adresseInputRef}
+              />
+            </View>
+            <View style={styles.sectionStyle}>
+              <TextInput
+                style={styles.inputStyle}
+                onChangeText={(LinkVedio) => setLinkVedio(LinkVedio)}
+                keyboardType='url'
+                value={LinkVedio}
+                // underlineColorAndroid="#f000"
+                placeholder="Entrez le Lien vidéo sans http(s):// "
+                placeholderTextColor="#6cc5d5"
+                autoCapitalize="sentences"
+                multiline={true}
               />
             </View>
             <View style={styles.sectionStyle}>

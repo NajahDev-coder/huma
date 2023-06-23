@@ -70,35 +70,35 @@ const SousCateg = ({ navigation, OnFilter, CategId, refresh }) => {
     return () => (isMounted = false);
   }, [CategId, refresh]);
 
-  const defaultImage = { uri: Base_url + 'images/no-couverture.png' };
+  const defaultImage = { uri: Base_url + 'images/img/no-picture1.png' };
 
   const getBeerImage = (idcateg, slugimg) => {
     let path = { uri: Base_url + 'images/img/' + idcateg + '/' + slugimg + '.jpg' };
     return path;
   };
   return (
-    <ScrollView horizontal={true} style={{ width: '100%' }}>
-      <FlatList
-        data={SsCateg}
-        renderItem={({ item }) => (
-          <View style={styles.viewThumbnail}>
-            <TouchableOpacity onPress={() => getSScateg(item.id)}>
-              <ImageBackground
-                style={styles.imageThumbnail}
-                imageStyle={{ borderRadius: 3 }}
-                defaultSource={defaultImage}
-                source={getBeerImage(CategId, item.slug)}>
-                <Text style={styles.txtThumb}>{item.titre}</Text>
-              </ImageBackground>
-            </TouchableOpacity>
-          </View>
-        )}
-        //Setting the number of column
-        numColumns={3}
 
-        keyExtractor={(item, index) => index}
-      />
-    </ScrollView>
+    <FlatList
+      data={SsCateg}
+      renderItem={({ item }) => (
+        <View style={styles.viewThumbnail} key={item.id}>
+          <TouchableOpacity onPress={() => getSScateg(item.id)} key={item.id}>
+            <ImageBackground
+              style={styles.imageThumbnail}
+              imageStyle={{ borderRadius: 3 }}
+              defaultSource={defaultImage}
+              source={getBeerImage(CategId, item.slug)}>
+              <Text style={styles.txtThumb}>{item.titre}</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+        </View>
+      )}
+      //Setting the number of column
+      numColumns={3}
+
+      keyExtractor={(item, index) => index}
+    />
+
   );
 };
 const styles = StyleSheet.create({
