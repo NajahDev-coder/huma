@@ -33,8 +33,8 @@ const AbonnementScreen = ({ navigation }) => {
   //const [clientSecret, setClientSecret] = useState<string>();  
   const [clientSecret, setClientSecret] = useState('');
 
-  const fetchPaymentSheetParams = async () => {
-    const response = await fetch(`${API_URL}/payment-sheet`, {
+  const fetchPaymentSheetParams = async (amount) => {
+    const response = await fetch(`${Base_url}api/api/abonnement/${amount}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,8 +50,9 @@ const AbonnementScreen = ({ navigation }) => {
     };
   };
 
-  const openPaymentSheet = async (choix) => {
+  const openPaymentSheet = async (choix, amount) => {
     //console.log('clientSecret', clientSecret);
+    initialisePaymentSheet(amount);
     if (!clientSecret) {
       return;
     }
@@ -64,6 +65,7 @@ const AbonnementScreen = ({ navigation }) => {
       //Alert.alert(`Error code: ${error.code}`, error.message);
     } else {
       UpdatePremium(global.User_connecte, choix);
+      //initialisePaymentSheet(choix, amount)
       let actv
       if (choix == 4)
         actv = `Vous êtes abonné pour  {choix} An !`;
@@ -80,12 +82,12 @@ const AbonnementScreen = ({ navigation }) => {
     setLoading(false);
   };
 
-  const initialisePaymentSheet = async () => {
+  const initialisePaymentSheet = async (amount) => {
     const {
       paymentIntent,
       ephemeralKey,
       customer,
-    } = await fetchPaymentSheetParams();
+    } = await fetchPaymentSheetParams(amount);
 
     const { error } = await initPaymentSheet({
       customerId: customer,
@@ -103,7 +105,7 @@ const AbonnementScreen = ({ navigation }) => {
   useEffect(() => {
     // In your app’s checkout, make a network request to the backend and initialize PaymentSheet.
     // To reduce loading time, make this request before the Checkout button is tapped, e.g. when the screen is loaded.
-    initialisePaymentSheet();
+    // initialisePaymentSheet();
     isVIP();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [UserVIP, global.User_VIP]);
@@ -156,7 +158,7 @@ const AbonnementScreen = ({ navigation }) => {
 
                             <Pressable
                               style={styles.buttVIP}
-                              onPress={() => { openPaymentSheet(1) }}>
+                              onPress={() => { openPaymentSheet(1, 12) }}>
                               <Text style={styles.txtbutt}>Abonnez-vous!</Text>
                             </Pressable>
                           </View>
@@ -181,7 +183,7 @@ const AbonnementScreen = ({ navigation }) => {
 
                             <Pressable
                               style={styles.buttVIP}
-                              onPress={() => { openPaymentSheet(2) }}>
+                              onPress={() => { openPaymentSheet(2, 29) }}>
                               <Text style={styles.txtbutt}>Abonnez-vous!</Text>
                             </Pressable>
                           </View>
@@ -208,7 +210,7 @@ const AbonnementScreen = ({ navigation }) => {
 
                             <Pressable
                               style={styles.buttVIP}
-                              onPress={() => { openPaymentSheet(3) }}>
+                              onPress={() => { openPaymentSheet(3, 52) }}>
                               <Text style={styles.txtbutt}>Abonnez-vous!</Text>
                             </Pressable>
                           </View>
@@ -233,7 +235,7 @@ const AbonnementScreen = ({ navigation }) => {
 
                             <Pressable
                               style={styles.buttVIP}
-                              onPress={() => { openPaymentSheet(4) }}>
+                              onPress={() => { openPaymentSheet(4, 88) }}>
                               <Text style={styles.txtbutt}>Abonnez-vous!</Text>
                             </Pressable>
                           </View>

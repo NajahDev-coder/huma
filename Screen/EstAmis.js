@@ -132,7 +132,7 @@ export default EstAmis = ({ id_user1, id_user2, navigation }) => {
             listeAmis(id_user1, id_user2, selected);
           }}
           search={false}
-          arrowicon={<Text style={styles.txtbutt} ><MaterialCommunityIcons name="account-question" size={20} color="white" style={{ marginLeft: 5, marginTop: 3 }} /> Répondre</Text>}
+          arrowicon={<Text style={styles.txtbutt}><MaterialCommunityIcons name="account-question" size={20} color="white" /> Répondre</Text>}
 
           boxStyles={styles.boxdropstyle}
           inputStyles={{ opacity: 0 }}
@@ -143,15 +143,13 @@ export default EstAmis = ({ id_user1, id_user2, navigation }) => {
       {estAmis == 1 && UserInvited == global.User_connecte && (
 
         <SelectList
-
           setSelected={(val) => setSelected(val)}
           data={[{ key: 0, value: 'Annuler' }]}
-
           onSelect={() => {
             listeAmis(id_user1, id_user2, selected);
           }}
           search={false}
-          arrowicon={<View style={styles.viewBT}><Text style={styles.txtbutt} ><MaterialCommunityIcons name="account-question" size={20} color="white" style={{ marginLeft: 5, marginTop: 3 }} /> Demande envoyée</Text></View>}
+          arrowicon={<View style={styles.viewBT}><Text style={styles.txtbutt} ><MaterialCommunityIcons name="account-question" size={20} color="white" /> Demande envoyée</Text></View>}
           boxStyles={styles.boxdropstyle}
           inputStyles={{ opacity: 0 }}
           dropdownStyles={styles.dropstyle}
@@ -185,25 +183,28 @@ const styles = StyleSheet.create({
   dropstyle:
   {
 
-    margin: 0,
+    marginTop: -10,
     zIndex: 20,
 
     padding: 0,
     paddingVertical: 0,
+    borderRadius: 0,
+    borderWidth: 0,
+    backgroundColor: 'transparent'
 
-    borderRadius: 6,
-
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#909475'
   },
   itemdropstyle:
   {
     zIndex: 20,
     paddingVertical: 5,
-    fontWeight: 'bold'
+    fontWeight: 'bold', borderRadius: 6,
+
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#909475'
   },
-  viewBT: {
+  viewBT:
+  {
     paddingBottom: 2,
     position: 'absolute', top: 0, right: 0
   },
@@ -214,9 +215,10 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 3,
     backgroundColor: '#a3ad56',
-    paddingBottom: 5,
-    paddingRight: 5,
+    paddingTop: 5,
+    paddingBottom: 10,
+    paddingHorizontal: 10,
     marginTop: 5,
-    width: 128
+    //width: 135
   },
 })

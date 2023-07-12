@@ -1527,27 +1527,31 @@ router.post("/user/updatePasw/:id_user/:password", function (req, res, next) {
         res.send({ status: "success" });
     });
 });
-router.post("/abonnement/:user_id/:choix", async (req, res) => {
+router.post("/abonnement/:user_id/:choix/:amount", async (req, res) => {
     try {
+        const amount = req.params.amount
         // Getting data from client
-        let { amount, name } = req.body;
-        // Simple validation
-        if (!amount || !name)
-            return res.status(400).json({ message: "All fields are required" });
-        amount = parseInt(amount);
-        // Initiate payment
+        const customer = await stripe.customers.create();
+        const ephemeralKey = await stripe.ephemeralKeys.create(
+            { customer: customer.id },
+            { apiVersion: '2018-11-08' }
+        );
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: Math.round(amount * 100),
-            currency: "INR",
-            payment_method_types: ["card"],
-            metadata: { name },
+            amount: amount,
+            currency: 'eur',
+            customer: customer.id,
+            automatic_payment_methods: {
+                enabled: true,
+            },
         });
-        // Extracting the client secret 
-        const clientSecret = paymentIntent.client_secret;
-        // Sending the client secret as response
 
         user.query("UPDATE users set  VIP=" + req.params.abnnmnt + ", date_abonnement=Now() where id=" + req.params.user_id, function (rows, fields, err) {
-            res.json({ message: "Payment initiated", clientSecret });
+            res.json({
+                paymentIntent: paymentIntent.client_secret,
+                ephemeralKey: ephemeralKey.secret,
+                customer: customer.id,
+
+            });
         })
     } catch (err) {
         // Catch any error and send error 500 to client

@@ -88,7 +88,11 @@ const MonAbonnementScreen = ({ navigation }) => {
 
                     <Text style={styles.titleModal}>Vous êtes Membre VIP!</Text>
                     <Text style={styles.titleModal2} > Votre abonnement est actif</Text>
-                    <Text style={styles.titleModal}>Forfait VIP Plan  {global.User_VIP} Mois</Text>
+                    {global.User_VIP > 4 ? (
+                      <Text style={styles.titleModal}>Forfait VIP Plan  {global.User_VIP} Mois</Text>
+                    ) : (
+                      <Text style={styles.titleModal}>Forfait VIP Plan  {global.User_VIP} An</Text>
+                    )}
                     <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 10, marginBottom: 25 }}>Vous reste encore {RestAbnmt} Jour(s)</Text>
                     <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des annonces. </Text>
                     <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>

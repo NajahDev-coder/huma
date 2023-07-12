@@ -23,6 +23,7 @@ import NavigationLogoHeader from './Components/NavigationLogoHeader';
 import NavigationLogoNotifHeader from './Components/NavigationLogoNotifHeader';
 import NavigationBottomTabs from './Components/NavigationDrawerFooter';
 import MembresScreen from './DrawerScreens/MembresScreen';
+import ListEvaluations from './Components/ListEvaluations';
 const Stack = createStackNavigator();
 const RightDrawer = createDrawerNavigator();
 
@@ -90,6 +91,17 @@ const AnnonceScreenStack = ({ navigation }) => {
                 component={RegisterScreen}
                 options={{
                     title: 'Inscription', headerTintColor: '#97ab00',
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
+                }}
+            />
+            <Stack.Screen
+                name="Evaluations"
+                component={ListEvaluations}
+                options={{
+                    title: 'Avis & Commentaires', headerTintColor: '#97ab00',
                     headerTitleStyle: { color: '#97ab00' },
                     headerRight: () => (
                         <NavigationLogoHeader navigationProps={navigation} />
@@ -196,6 +208,17 @@ const HomeScreenStack = ({ navigation }) => {
 
             <Stack.Screen
                 name="Evaluations"
+                component={ListEvaluations}
+                options={{
+                    title: 'Avis & Commentaires', headerTintColor: '#97ab00',
+                    headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
+                }}
+            />
+            <Stack.Screen
+                name="Evaluations2"
                 component={ListEvaluations}
                 options={{
                     title: 'Avis & Commentaires', headerTintColor: '#97ab00',
