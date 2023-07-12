@@ -17,7 +17,7 @@ import * as Location from 'expo-location';
 }*/
 
 import { Base_url, RequestOptionsGet, ShowDetailAnnonce, ViewProfile } from './utils/utils';
-//import {GOOGLE_PLACES_API_KEY, Google_Geocoding_API_KEY} from './utils/utils'
+
 
 const MapTransporteur = ({ navigation, position, refresh }) => {
     const mapRef = createRef();

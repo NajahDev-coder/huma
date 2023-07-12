@@ -20,7 +20,8 @@ import Loader from './Components/Loader';
 import ModalAlert from './ModalAlert';
 import { useTogglePasswordVisibility } from './Components/useTogglePasswordVisibility';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { Base_url, RequestOptionsPost, GOOGLE_PLACES_API_KEY } from './utils/utils';
+import { GOOGLE_PLACES_API_KEY } from "@env"
+import { Base_url, RequestOptionsPost } from './utils/utils';
 export default function RegisterScreen(props) {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');

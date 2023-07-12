@@ -21,7 +21,8 @@ import { Picker } from '@react-native-picker/picker';
 import * as Location from 'expo-location';
 
 import { SelectList } from 'react-native-dropdown-select-list';
-import { Base_url, RequestOptionsGet, RequestOptionsPut, RequestOptionsPost, GOOGLE_PLACES_API_KEY } from '../utils/utils';
+import { GOOGLE_PLACES_API_KEY } from "@env";
+import { Base_url, RequestOptionsGet, RequestOptionsPut, RequestOptionsPost } from '../utils/utils';
 import moment from 'moment';
 import { MaterialCommunityIcons, Entypo, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import {

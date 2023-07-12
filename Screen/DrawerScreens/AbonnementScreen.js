@@ -22,8 +22,7 @@ import PaymentScreen from '../Components/PaymentScreen';
 import ModalScreenIsVIP from '../ModalIsVIP';
 //import { API_URL } from '../Config';
 
-import { RequestOptionsPost, Base_url, API_URL, PublishableKeyStripe, UpdatePremium, isVIP } from '../utils/utils';
-import { set } from 'react-native-reanimated';
+import { RequestOptionsPost, Base_url, API_URL, UpdatePremium, isVIP } from '../utils/utils';
 
 const AbonnementScreen = ({ navigation }) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();

@@ -11,7 +11,7 @@ import {
 } from '@react-navigation/drawer';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { set } from 'react-native-reanimated';
+
 import GetProfile from './GetProfile';
 
 export default function CustomSidebarMenu(props) {

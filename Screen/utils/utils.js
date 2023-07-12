@@ -6,9 +6,7 @@ export const Base_url = 'https://huma.bzh/';
 export const API_URL = "https://expo-stripe-server-example.glitch.me"
 
 import { durationInMonths } from '@progress/kendo-date-math';
-export const GOOGLE_PLACES_API_KEY = 'AIzaSyAVWheD_CJmbOlCCKBTRKRRkeFJy_Mxzbg'; // never save your real api key in a snack!
-//export const Google_Geocoding_API_KEY='AIzaSyB6XPphkYxCN7xgeTj2f6_jllc0T_MXt6o';     
-export const PublishableKeyStripe = 'pk_test_wZ3eXly7x7s8XmsopJiwTfOr';
+
 export const deleteAction = async (id, type) => {
   if (type == 'annonce') {
     const fetchURL = `/delete_annonce/${id}`;

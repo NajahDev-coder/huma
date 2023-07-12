@@ -11,7 +11,7 @@ import {
 } from '@react-navigation/drawer';
 import GetProfile from './GetProfile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { set } from 'react-native-reanimated';
+
 import { DeleteSession } from '../utils/utils';
 
 //const [UsName, setUsName] = useState('HüMA');

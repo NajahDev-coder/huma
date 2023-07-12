@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text } from 'react-native';
 //import { colors } from '../colors';
 //import { fetchPublishableKey } from '../helpers';
-
-import { RequestOptionsPost, PublishableKeyStripe, fetchPublishableKey, Base_url } from '../utils/utils';
+import { PublishableKeyStripe } from '@env';
+import { RequestOptionsPost, fetchPublishableKey, Base_url } from '../utils/utils';
 interface Props {
   paymentMethod?: string;
 }
@@ -24,7 +24,7 @@ const PaymentScreen: React.FC<Props> = ({ paymentMethod, children }) => {
           urlScheme: 'stripe-example',
           setUrlSchemeOnAndroid: true,
         });
-        //console.log('response stripe:', response)
+        console.log('response stripe:', response)
         setLoading(false);
       }
     }

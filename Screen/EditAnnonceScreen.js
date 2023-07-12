@@ -36,8 +36,8 @@ import {
   StatusBar,
 } from 'react-native';
 
-
-import { Base_url, RequestOptionsGet, SaveImage, RequestOptionsPost, GOOGLE_PLACES_API_KEY, Add_historique } from './utils/utils';
+import { GOOGLE_PLACES_API_KEY } from "@env"
+import { Base_url, RequestOptionsGet, SaveImage, RequestOptionsPost, Add_historique } from './utils/utils';
 import FileUpload from './Components/FileUpload';
 import Loader from './Components/Loader';
 import Modal from 'react-native-modal';

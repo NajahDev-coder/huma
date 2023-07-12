@@ -19,7 +19,7 @@ import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } f
 
 import { RequestOptionsGet } from '../utils/utils';
 
-import { RequestOptionsPost, Base_url, API_URL, PublishableKeyStripe, UpdatePremium } from '../utils/utils';
+import { RequestOptionsPost, Base_url, API_URL, UpdatePremium } from '../utils/utils';
 
 
 import { durationInMonths, addMonths } from '@progress/kendo-date-math';
