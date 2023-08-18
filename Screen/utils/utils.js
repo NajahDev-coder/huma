@@ -3,8 +3,8 @@ import axios from "axios";
 import { Alert, TouchableOpacity, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export const Base_url = 'https://huma.bzh/';
-export const API_URL = "https://expo-stripe-server-example.glitch.me"
 
+export const API_URL = "https://expo-stripe-server-example.glitch.me"
 import { durationInMonths } from '@progress/kendo-date-math';
 
 export const deleteAction = async (id, type) => {
@@ -137,7 +137,7 @@ export const RequestOptionsGet = (Api) => {
 
   const UrlFetch = `${Base_url}api/api/${Api}`;
 
-  //console.log(UrlFetch)
+  //console.log('url get test:', UrlFetch)
   const promise = new Promise(async (resolve, reject) => {
     try {
       fetch(UrlFetch, options).then((data) => data.json()).then((responseJson) => {
@@ -334,8 +334,8 @@ export const DeleteSession = async (navigation) => {
 export const fetchDistanceBetweenPoints = async (lat1, lng1, lat2, lng2) => { // Pass Latitude & Longitude of both points as a parameter
   //maison=(lat2,lng2) 36.8572011,10.275799
   //travail=(lat1,lng1) 36.8135979,10.1783812
-  //GOOGLE_PLACES_API_KEY = 'AIzaSyAVWheD_CJmbOlCCKBTRKRRkeFJy_Mxzbg'
-  var urlToFetchDistance = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + lat1 + ',' + lng1 + '&destinations=' + lat2 + '%2C' + lng2 + '&key=' + "GOOGLE_PLACES_API_KEY";
+  //GooglePlacesApiKey = 'AIzaSyAVWheD_CJmbOlCCKBTRKRRkeFJy_Mxzbg'
+  var urlToFetchDistance = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + lat1 + ',' + lng1 + '&destinations=' + lat2 + '%2C' + lng2 + '&key=' + "GooglePlacesApiKey";
 
   fetch(urlToFetchDistance)
     .then(res => {
@@ -351,16 +351,18 @@ export const fetchDistanceBetweenPoints = async (lat1, lng1, lat2, lng2) => { //
     });
 };
 
-export async function fetchPublishableKey(
+export async function fetchPublishableKey(amount,
   paymentMethod?: string
 ): Promise<string | null> {
   try {
-    const response = await fetch(
-      `${API_URL}/stripe-key?paymentMethod=${paymentMethod}`
-    );
+    console.log('amount:', Number(amount));
 
+    const response = await fetch(
+      `${Base_url}api/api/abonnement/${amount}`
+    );
     const { publishableKey } = await response.json();
 
+    console.log('response::::::', response.json());
     return publishableKey;
   } catch (e) {
     console.warn('Unable to fetch publishable key. Is your server running?');

@@ -48,8 +48,12 @@ const MonAbonnementScreen = ({ navigation }) => {
         let Date_abonnement = new Date(response.data[0].date_abonnement)
         Date_abonnement = moment(Date_abonnement, 'DD-MM-YYYY')
         // const ToDay = new Date();
-        console.log(Date_abonnement)
-        const endDateAbnmt = moment(Date_abonnement).add(global.User_VIP, 'M');
+        console.log(Date_abonnement);
+        let endDateAbnmt
+        if (global.User_VIP < 4)
+          endDateAbnmt = moment(Date_abonnement).add(global.User_VIP, 'M');
+        else
+          endDateAbnmt = moment(Date_abonnement).add(12, 'M');
         console.log(endDateAbnmt)
         const restDay = endDateAbnmt.diff(Date_abonnement, 'days');
         //const diffDuration = moment.duration(diff);
@@ -88,10 +92,10 @@ const MonAbonnementScreen = ({ navigation }) => {
 
                     <Text style={styles.titleModal}>Vous êtes Membre VIP!</Text>
                     <Text style={styles.titleModal2} > Votre abonnement est actif</Text>
-                    {global.User_VIP > 4 ? (
+                    {global.User_VIP < 4 ? (
                       <Text style={styles.titleModal}>Forfait VIP Plan  {global.User_VIP} Mois</Text>
                     ) : (
-                      <Text style={styles.titleModal}>Forfait VIP Plan  {global.User_VIP} An</Text>
+                      <Text style={styles.titleModal}>Forfait VIP Plan  1 An</Text>
                     )}
                     <Text style={{ fontWeight: 'bold', fontSize: 12, marginTop: 10, marginBottom: 25 }}>Vous reste encore {RestAbnmt} Jour(s)</Text>
                     <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des annonces. </Text>

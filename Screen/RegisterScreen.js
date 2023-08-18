@@ -20,7 +20,7 @@ import Loader from './Components/Loader';
 import ModalAlert from './ModalAlert';
 import { useTogglePasswordVisibility } from './Components/useTogglePasswordVisibility';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { GOOGLE_PLACES_API_KEY } from "@env"
+import { GooglePlacesApiKey } from "./utils/env"
 import { Base_url, RequestOptionsPost } from './utils/utils';
 export default function RegisterScreen(props) {
   const [userName, setUserName] = useState('');
@@ -273,7 +273,7 @@ export default function RegisterScreen(props) {
                     placeholderTextColor: '#8b9cb5',
                   }}
                   query={{
-                    key: GOOGLE_PLACES_API_KEY,
+                    key: GooglePlacesApiKey,
                     language: 'fr', // language of the results
                   }}
                   onPress={(data, details = null) =>

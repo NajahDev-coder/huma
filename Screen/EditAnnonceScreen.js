@@ -36,7 +36,7 @@ import {
   StatusBar,
 } from 'react-native';
 
-import { GOOGLE_PLACES_API_KEY } from "@env"
+import { GooglePlacesApiKey } from "./utils/env"
 import { Base_url, RequestOptionsGet, SaveImage, RequestOptionsPost, Add_historique } from './utils/utils';
 import FileUpload from './Components/FileUpload';
 import Loader from './Components/Loader';
@@ -471,7 +471,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
                 //placeholder="Entrez la localisation  "
                 placeholder={adresse}
                 query={{
-                  key: GOOGLE_PLACES_API_KEY,
+                  key: GooglePlacesApiKey,
                   language: 'fr', // language of the results
                 }}
                 onPress={(data, details = null) => { setAdresse(data.description) }}

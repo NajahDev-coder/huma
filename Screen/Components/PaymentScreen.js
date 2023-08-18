@@ -9,20 +9,20 @@ interface Props {
   paymentMethod?: string;
 }
 
-const PaymentScreen: React.FC<Props> = ({ paymentMethod, children }) => {
+const PaymentScreen: React.FC<Props> = ({ paymentMethod, children, amount }) => {
   const [loading, setLoading] = useState(true);
 
 
 
   useEffect(() => {
     async function initialize() {
-      const publishableKey = await fetchPublishableKey(paymentMethod);
+      console.log('children::', amount)
+      const publishableKey = await fetchPublishableKey(amount, paymentMethod);
+      console.log('publishableKey:::', publishableKey);
       if (publishableKey) {
         const response = await initStripe({
           publishableKey,
-          merchantIdentifier: 'merchant.com.stripe.react.native',
-          urlScheme: 'stripe-example',
-          setUrlSchemeOnAndroid: true,
+          merchantIdentifier: 'merchant.com.HüMA'
         });
         console.log('response stripe:', response)
         setLoading(false);
@@ -30,6 +30,7 @@ const PaymentScreen: React.FC<Props> = ({ paymentMethod, children }) => {
     }
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    setLoading(false)
   }, []);
 
   return loading ? (

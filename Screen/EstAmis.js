@@ -132,7 +132,7 @@ export default EstAmis = ({ id_user1, id_user2, navigation }) => {
             listeAmis(id_user1, id_user2, selected);
           }}
           search={false}
-          arrowicon={<Text style={styles.txtbutt}><MaterialCommunityIcons name="account-question" size={20} color="white" /> Répondre</Text>}
+          arrowicon={<Text style={[styles.txtbutt, { marginRight: -17 }]}><MaterialCommunityIcons name="account-question" size={20} color="white" /> Répondre</Text>}
 
           boxStyles={styles.boxdropstyle}
           inputStyles={{ opacity: 0 }}
@@ -183,9 +183,9 @@ const styles = StyleSheet.create({
   dropstyle:
   {
 
-    marginTop: -10,
+    marginTop: -32,
     zIndex: 20,
-
+    marginLeft: 70,
     padding: 0,
     paddingVertical: 0,
     borderRadius: 0,
@@ -197,11 +197,13 @@ const styles = StyleSheet.create({
   {
     zIndex: 20,
     paddingVertical: 5,
-    fontWeight: 'bold', borderRadius: 6,
-
+    fontWeight: 'bold',
+    borderRadius: 6,
+    marginBottom: 2,
     backgroundColor: 'white',
     borderWidth: 1,
-    borderColor: '#909475'
+    borderColor: '#909475',
+    width: 120
   },
   viewBT:
   {

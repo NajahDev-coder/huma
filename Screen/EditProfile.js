@@ -22,7 +22,7 @@ import {
 import * as Location from 'expo-location';
 import Loader from './Components/Loader';
 import NavigationBackHeader from './Components/NavigationBackHeader';
-import { GOOGLE_PLACES_API_KEY } from "@env"
+import { GooglePlacesApiKey } from "./utils/env"
 import { Base_url, Add_historique, SaveImage, RequestOptionsPost, RequestOptionsGet } from './utils/utils';
 import CameraImage, { IdAnnonceImage } from './Components/CameraImageScreen';
 import ModalAlert from './ModalAlert';
@@ -393,7 +393,7 @@ const EditProfile = ({ route }) => {
             <GooglePlacesAutocomplete
               placeholder={userAddress}
               query={{
-                key: GOOGLE_PLACES_API_KEY,
+                key: GooglePlacesApiKey,
                 language: 'fr', // language of the results
               }}
               onPress={(data, details = null) => {

@@ -10,7 +10,7 @@ const LONGITUDE = -122.4053769;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-import { GOOGLE_PLACES_API_KEY } from '../utils/utils';
+import { GooglePlacesApiKey } from '../utils/utils';
 
 class TransporteurScreen extends Component {
 
@@ -66,7 +66,7 @@ class TransporteurScreen extends Component {
               origin={this.state.coordinates[0]}
               waypoints={(this.state.coordinates.length > 2) ? this.state.coordinates.slice(1, -1) : undefined}
               destination={this.state.coordinates[this.state.coordinates.length - 1]}
-              apikey={GOOGLE_PLACES_API_KEY}
+              apikey={GooglePlacesApiKey}
               strokeWidth={3}
               strokeColor="hotpink"
               optimizeWaypoints={true}

@@ -40,7 +40,7 @@ import {
   RichEditor,
   RichToolbar,
 } from 'react-native-pell-rich-editor';
-import { GOOGLE_PLACES_API_KEY } from "@env"
+import { GooglePlacesApiKey } from "./utils/env"
 import { Base_url, SaveImage, RequestOptionsPost } from './utils/utils';
 import FileUpload from './Components/FileUpload';
 import Loader from './Components/Loader';
