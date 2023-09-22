@@ -20,7 +20,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import * as Location from 'expo-location';
 import { SelectList } from 'react-native-dropdown-select-list'
-import { GooglePlacesApiKey } from "./utils/env";
+import { GooglePlacesApiKey } from "../utils/env";
 import { Base_url, RequestOptionsGet, RequestOptionsPut, RequestOptionsPost } from '../utils/utils';
 import moment from 'moment';
 import { MaterialCommunityIcons, Entypo, MaterialIcons, FontAwesome } from '@expo/vector-icons';
@@ -54,7 +54,6 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
   const [txtError, setTxtError] = useState('');
 
   const [currAdresse, setCurrAdresse] = useState('');
-  const [currentPosition, setCurrentPosition] = useState(null);
   const [titreF, setTitreF] = useState('');
 
   const [icoFilter, setIcoFilter] = useState("filter-variant-plus");
@@ -77,27 +76,8 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
   };
 
   //let Adfilter;
-  const getCoordinates = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      setTxtError('Veuillez activer votre poisition!');
-      return;
-    }
-    const userLocation = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
-    // setcCULocation(userLocation);
 
-    setCurrentPosition(userLocation);
-    //  setCurrAdresse(userLocation.description);
-  };
-  const currentPlace = {
-    description: 'Position',
-    geometry: {
-      location: {
-        lat: currentPosition ? currentPosition.coords.latitude : '',
-        lng: currentPosition ? currentPosition.coords.longitude : '',
-      },
-    },
-  };
+
   const AddFilter = async () => {
 
     //console.log('currAdresse',currAdresse)
@@ -159,7 +139,7 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
     let isSubscribed = true;
 
     if (isSubscribed) {
-      getCoordinates();
+      // getCoordinates();
 
     }
     return () => (isSubscribed = false);
@@ -211,7 +191,7 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
               color: '#1faadb',
             },
           }}
-          predefinedPlaces={[currentPlace]}
+        //predefinedPlaces={[currentPlace]}
         />
         <MaterialCommunityIcons
           name={icoFilter}

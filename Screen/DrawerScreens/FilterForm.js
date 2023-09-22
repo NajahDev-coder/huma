@@ -21,10 +21,10 @@ import { Picker } from '@react-native-picker/picker';
 import * as Location from 'expo-location';
 
 import { SelectList } from 'react-native-dropdown-select-list';
-import { GooglePlacesApiKey } from "./utils/env";
+import { GooglePlacesApiKey } from "../utils/env";
 import { Base_url, RequestOptionsGet, RequestOptionsPut, RequestOptionsPost } from '../utils/utils';
 import moment from 'moment';
-import { MaterialCommunityIcons, Entypo, MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome5, Entypo, MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import {
   GooglePlacesAutocomplete,
   Geolocation,
@@ -41,12 +41,12 @@ const workPlace = {
 };
 const windowWidth = Dimensions.get('window').width - 100;
 const windowheight = Dimensions.get('window').height - 150;
+//const windowheight = Dimensions.get('window').height;
+const image = {
+  uri: `${Base_url}images/bg_screen.png`,
+};
 
-/*const currentPlace = {
-      description: 'Position',
-      geometry: { location: { lat: null, lng: null } },
-    };*/
-const FilterForm = ({ OnFilter, OnIndex }) => {
+const FilterForm = ({ navigation, OnFilter, OnIndex }) => {
   //const [categorie, setCategorie] = useState(0);
   //const [type, setType] = useState(0);
   const [localisation, setLocalisation] = useState('');
@@ -54,7 +54,6 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
   const [txtError, setTxtError] = useState('');
 
   const [currAdresse, setCurrAdresse] = useState('');
-  const [currentPosition, setCurrentPosition] = useState(null);
   const [titreF, setTitreF] = useState('');
   const [TypeList, setTypeList] = useState([]);
   const [CategroiesList, setCategroiesList] = useState([]);
@@ -66,7 +65,6 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
   const [Type, setType] = useState('');
   const [CountUpdtCAt, setCountUpdtCAt] = useState(0);
   const [Enable, setEnable] = useState(false);
-  const [fadeAnimation] = useState(new Animated.Value(0));
   const [RefreshKey, setRefreshKey] = useState(0);
   const [icoFilter, setIcoFilter] = useState("filter-variant-plus");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
@@ -74,6 +72,11 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
   const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
+  const [showListType, setShowListType] = useState(0);
+  const [showCalend, setShowCalend] = useState(0);
+  const [showListCateg, setShowListCateg] = useState(0);
+  const [showListSCateg, setShowListSCateg] = useState(0);
+  const [showListSSCateg, setShowListSSCateg] = useState(0);
   const [windowHeight, setWindowHeight] = useState(70)
   const minDate = new Date(1999, 12, 30); // Today
   const maxDate = new Date(20950, 12, 30);
@@ -106,6 +109,25 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
     let newArray = [];
     responseJson.map((item) => { newArray.push({ key: item.id, value: item.type }) })
     setTypeList(newArray);
+  }
+  const updateHeight = async (active, select) => {
+    // alert(active)
+    if (select == 'calend')
+      setShowCalend(!active);
+    if (select == 'type')
+      setShowListType(!active);
+    if (select == 'categ')
+      setShowListCateg(!active);
+    if (select == 'Scateg')
+      setShowListSCateg(!active);
+    if (select == 'SScateg')
+      setShowListSSCateg(!active);
+    if (active) {
+      setWindowHeight((oldKey) => oldKey);
+    }
+    else {
+      setWindowHeight((oldKey) => oldKey + 70);
+    }
   };
   //get list categorie
   const fetchCategorie = async () => {
@@ -144,27 +166,7 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
 
   };
   //let Adfilter;
-  const getCoordinates = async () => {
-    /* const { status } = await Location.requestForegroundPermissionsAsync();
-     if (status !== 'granted') {
-       setTxtError('Veuillez activer votre poisition!');
-       return;
-     }*/
-    const userLocation = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
-    // setcCULocation(userLocation);
 
-    setCurrentPosition(userLocation);
-    //  setCurrAdresse(userLocation.description);
-  };
-  const currentPlace = {
-    description: 'Position',
-    geometry: {
-      location: {
-        lat: currentPosition ? currentPosition.coords.latitude : '',
-        lng: currentPosition ? currentPosition.coords.longitude : '',
-      },
-    },
-  };
   const AddFilter = async () => {
     await AsyncStorage.removeItem('add_filter');
     const categ =
@@ -217,14 +219,16 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
   const ShowAllFilter = (stat) => {
     setEnable(!stat)
     if (stat == 0) {
-      setWindowHeight(windowheight)
+      setWindowHeight(windowheight);
       setIcoFilter("filter-variant-minus");
+      navigation.replace('Filter');
       OnIndex(20);
     }
     else {
-      setWindowHeight(70)
+      setWindowHeight(70);
       setIcoFilter("filter-variant-plus");
-      setShowCalendar(false)
+      setShowCalendar(false);
+      navigation.replace('Annonces');
       OnIndex(1);
     }
 
@@ -235,17 +239,19 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
 
     if (isSubscribed) {
 
-      getCoordinates();
+
       fetchType();
       fetchCategorie();
       if (selectedStartDate != null) setSelectedDate(selectedStartDate);
       //setSelectedDate(selectedStartDate.toString().substring(4, 10));
       if (selectedStartDate != null && selectedEndDate != null)
         setSelectedDate(selectedStartDate + ' / ' + selectedEndDate);
+      setEnable(true)
     }
     return () => (isSubscribed = false);
     //}, [RefreshKey, selectedStartDate, selectedEndDate, selectedDate]);
   }, [RefreshKey, Enable]);
+  //}, []);
 
   const onPressCalendar = () => {
     setSelectedStartDate(null);
@@ -260,205 +266,214 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
   return (
 
 
-    <View style={[styles.rowF, { height: windowHeight }]}>
 
-      <View style={styles.rowAC}>
-        <GooglePlacesAutocomplete
-          placeholder="Localisation "
-          query={{
-            key: GooglePlacesApiKey,
-            language: 'fr', // language of the results
+    <View style={styles.mainBody}>
+      <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            alignContent: 'center',
           }}
-          onPress={(data, details = null) => {
-            setCurrAdresse(data.description);
-            //AddFilter();
-          }}
-          onFail={(error) => console.error(error)}
-          requestUrl={{
-            url: 'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api',
-            useOnPlatform: 'web',
-          }}
-          getDefaultValue={() => currAdresse}
-          styles={{
-            textInputContainer: {
-              backgroundColor: 'transparent',
-              position: 'relative',
-            },
-            textInput: {
-              color: '#5a5959',
-              paddingLeft: 15,
-              paddingRight: 15,
-              borderWidth: 1,
-              borderRadius: 30,
-              borderColor: '#646363',
-              backgroundColor: 'transparent',
-              width: '75%',
-              height: 35,
-              fontSize: 11
-            },
-            predefinedPlacesDescription: {
-              color: '#1faadb',
-            },
-          }}
-          predefinedPlaces={[currentPlace]}
-        />
-        <MaterialCommunityIcons
-          name={icoFilter}
-          size={35}
-          color="black"
-          onPress={() => ShowAllFilter(Enable)}
-        />
-      </View>
+        >
+          <View style={styles.rowF}></View>
+          <View style={styles.rowAC}>
+            {Enable == true && (
+              <>
+                <View style={styles.rowAC}>
+                  <View style={styles.row}>
+                    <GooglePlacesAutocomplete
+                      placeholder="Localisation "
+                      query={{
+                        key: GooglePlacesApiKey,
+                        language: 'fr', // language of the results
+                      }}
+                      onPress={(data, details = null) => {
+                        setCurrAdresse(data.description);
+                        //AddFilter();
+                      }}
+                      onFail={(error) => console.error(error)}
+                      requestUrl={{
+                        url: 'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api',
+                        useOnPlatform: 'web',
+                      }}
+                      getDefaultValue={() => currAdresse}
+                      styles={{
+                        textInputContainer: {
+                          backgroundColor: 'transparent',
+                          position: 'relative',
+                        },
+                        textInput: {
+                          color: '#5a5959',
+                          paddingLeft: 15,
+                          paddingRight: 15,
+                          borderWidth: 1,
+                          borderRadius: 30,
+                          borderColor: '#646363',
+                          backgroundColor: 'transparent',
+                          width: '65%',
+                          height: 35,
+                          fontSize: 11
+                        },
+                        predefinedPlacesDescription: {
+                          color: '#1faadb',
+                        },
+                      }}
+                    />
+                    <FontAwesome5 name="search" size={24} color="black" style={{ position: 'absolute', right: 7, top: 5 }} />
+                  </View>
+                </View>
+
+                <View style={styles.rowAC}>
+
+                  <View style={styles.row}>
+                    <TextInput
+                      selectedValue={titreF}
+                      value={titreF}
+                      style={styles.inputStyle}
+                      onChangeText={(titre) => {
+                        setTitreF(titre);
+                        //AddFilter();
+                      }}
+                      underlineColorAndroid="#f000"
+                      placeholder="Rechercher  "
+                      placeholderTextColor="#5a5959"
+                      autoCapitalize="sentences"
+                    />
+                  </View>
+                  <TouchableOpacity
+                    style={[styles.row, { position: 'relative' }]}
+                    onPress={onPressCalendar}>
+                    <TextInput
+                      value={selectedDate}
+                      style={styles.inputStyle}
+                      editable={false}
+                      underlineColorAndroid="#f000"
+                      placeholder="Choisir une Date  "
+                      placeholderTextColor="#5a5959"
+                      autoCapitalize="sentences"
+                    />
+
+                    <FontAwesome
+                      name="calendar"
+                      size={24}
+                      color="black"
+                      onPress={onPressCalendar}
+                      style={{ position: 'absolute', top: 5, right: 10 }}
+                    />
+                  </TouchableOpacity>
+                  {showCalendar && (
+                    <View style={styles.row}>
+                      <CalendarPicker
+                        startFromMonday={true}
+                        allowRangeSelection={true}
+                        minDate={minDate}
+                        maxDate={maxDate}
+                        todayBackgroundColor="#c4d63c"
+                        selectedDayColor="#c4d63c"
+                        selectedDayTextColor="#FFFFFF"
+                        onDateChange={onDateChange}
+                        width={windowWidth}
+                        initialDate={startDate}
+                      />
+                    </View>
+                  )}
+
+
+                  <View style={styles.row}>
+                    <SelectList
+                      setSelected={(val) => {
+                        setType(val)
+                      }}
+                      data={TypeList}
+
+                      boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5, zIndex: 1 }}
+                      inputStyles={{ fontSize: 12, color: '#5a5959', }}
+                      dropdownStyles={styles.dropselectStyle}
+                      dropdownItemStyles={styles.itemdropselectStyle}
+                      defaultOption={{ key: 0, value: 'Type' }}
+
+                    />
+                  </View>
 
 
 
-      {Enable == true && (
-        <View style={styles.showfilter}>
+                  <View style={styles.row}>
 
-          <View style={styles.row}>
-            <TextInput
-              selectedValue={titreF}
-              value={titreF}
-              style={styles.inputStyle}
-              onChangeText={(titre) => {
-                setTitreF(titre);
-                //AddFilter();
-              }}
-              underlineColorAndroid="#f000"
-              placeholder="Rechercher  "
-              placeholderTextColor="#5a5959"
-              autoCapitalize="sentences"
-            />
+                    <SelectList
+                      ////dropdownShown={false}
+                      setSelected={(val) => { setCatEgorie(val); setSSCatEgorie(val); setSousSSCatEgorie(val); fetchSSCategorie(val); }}
+                      data={CategroiesList}
+                      boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
+                      inputStyles={{ fontSize: 12, color: '#5a5959' }}
+                      dropdownStyles={styles.dropselectStyle}
+                      dropdownItemStyles={styles.itemdropselectStyle}
+                      defaultOption={{ key: 0, value: 'Catégories' }}
+
+                    />
+                  </View>
+
+
+
+                  {SSCategroiesList.length > 0 && (
+                    <View style={styles.row}>
+
+                      <SelectList
+                        //dropdownShown={false}
+                        setSelected={(val) => {
+                          setSSCatEgorie(val);
+                          fetchSousSSCategorie(val);
+                          //AddFilter();
+                        }}
+                        data={SSCategroiesList}
+                        boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
+                        inputStyles={{ fontSize: 12, color: '#5a5959' }}
+                        dropdownStyles={styles.dropselectStyle}
+                        dropdownItemStyles={styles.itemdropselectStyle}
+                        defaultOption={{ key: 0, value: 'Sous Catégories' }}
+                      />
+                    </View>
+                  )}
+                  {SousSSCategroiesList.length > 0 && (
+                    <View style={styles.row}>
+
+                      <SelectList
+                        //dropdownShown={false}
+                        setSelected={(val) => {
+                          setSousSSCatEgorie(val);
+                          // AddFilter();
+                        }}
+                        data={SousSSCategroiesList}
+                        boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
+                        inputStyles={{ fontSize: 12, color: '#5a5959' }}
+                        dropdownStyles={styles.dropselectStyle}
+                        dropdownItemStyles={styles.itemdropselectStyle}
+                        defaultOption={{ key: 0, value: 'Sous Sous Catégories' }}
+                      />
+                    </View>
+                  )}
+                  <View style={styles.rowBT}>
+                    <TouchableOpacity
+                      style={styles.buttonStyle}
+                      activeOpacity={0.5}
+                      onPress={() => DeleteFilter()}>
+                      <Text style={styles.buttonTextStyle}>Réinitialiser</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.buttonStyle}
+                      activeOpacity={0.5}
+                      onPress={() => AddFilter()}>
+                      <Text style={styles.buttonTextStyle}>Rechercher</Text>
+                    </TouchableOpacity>
+
+                  </View>
+
+                </View>
+
+              </>
+            )}
           </View>
-          <TouchableOpacity
-            style={[styles.row, { position: 'relative' }]}
-            onPress={onPressCalendar}>
-            <TextInput
-              value={selectedDate}
-              style={styles.inputStyle}
-              editable={false}
-              underlineColorAndroid="#f000"
-              placeholder="Choisir une Date  "
-              placeholderTextColor="#5a5959"
-              autoCapitalize="sentences"
-            />
-
-            <FontAwesome
-              name="calendar"
-              size={24}
-              color="black"
-              onPress={onPressCalendar}
-              style={{ position: 'absolute', top: 5, right: 10 }}
-            />
-          </TouchableOpacity>
-          {showCalendar && (
-            <View style={styles.row}>
-              <CalendarPicker
-                startFromMonday={true}
-                allowRangeSelection={true}
-                minDate={minDate}
-                maxDate={maxDate}
-                todayBackgroundColor="#c4d63c"
-                selectedDayColor="#c4d63c"
-                selectedDayTextColor="#FFFFFF"
-                onDateChange={onDateChange}
-                width={windowWidth}
-                initialDate={startDate}
-              />
-            </View>
-          )}
-
-          <View style={styles.row}>
-
-            <SelectList
-              //dropdownShown={false}
-              setSelected={(val) => {
-                setType(val);
-                //AddFilter();  
-              }}
-              data={TypeList}
-              boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5, zIndex: 1 }}
-              inputStyles={{ fontSize: 12, color: '#5a5959', }}
-              dropdownStyles={styles.dropselectStyle}
-              dropdownItemStyles={styles.itemdropselectStyle}
-              defaultOption={{ key: 0, value: 'Type' }}
-
-            />
-          </View>
-
-
-          <View style={styles.row}>
-
-            <SelectList
-              ////dropdownShown={false}
-              setSelected={(val) => { setCatEgorie(val); setSSCatEgorie(val); setSousSSCatEgorie(val); fetchSSCategorie(val); }}
-              data={CategroiesList}
-              boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
-              inputStyles={{ fontSize: 12, color: '#5a5959' }}
-              dropdownStyles={styles.dropselectStyle}
-              dropdownItemStyles={styles.itemdropselectStyle}
-              defaultOption={{ key: 0, value: 'Catégories' }}
-
-            />
-          </View>
-
-
-
-          {SSCategroiesList.length > 0 && (
-            <View style={styles.row}>
-
-              <SelectList
-                //dropdownShown={false}
-                setSelected={(val) => {
-                  setSSCatEgorie(val);
-                  fetchSousSSCategorie(val);
-                  //AddFilter();
-                }}
-                data={SSCategroiesList}
-                boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
-                inputStyles={{ fontSize: 12, color: '#5a5959' }}
-                dropdownStyles={styles.dropselectStyle}
-                dropdownItemStyles={styles.itemdropselectStyle}
-                defaultOption={{ key: 0, value: 'Sous Catégories' }}
-              />
-            </View>
-          )}
-          {SousSSCategroiesList.length > 0 && (
-            <View style={styles.row}>
-
-              <SelectList
-                //dropdownShown={false}
-                setSelected={(val) => {
-                  setSousSSCatEgorie(val);
-                  // AddFilter();
-                }}
-                data={SousSSCategroiesList}
-                boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
-                inputStyles={{ fontSize: 12, color: '#5a5959' }}
-                dropdownStyles={styles.dropselectStyle}
-                dropdownItemStyles={styles.itemdropselectStyle}
-                defaultOption={{ key: 0, value: 'Sous Sous Catégories' }}
-              />
-            </View>
-          )}
-          <View style={styles.rowBT}>
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
-              onPress={() => DeleteFilter()}>
-              <Text style={styles.buttonTextStyle}>Réinitialiser</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
-              onPress={() => AddFilter()}>
-              <Text style={styles.buttonTextStyle}>Rechercher</Text>
-            </TouchableOpacity>
-
-          </View>
-
-        </View>
-      )}
+        </ScrollView>
+      </ImageBackground>
     </View>
 
 
@@ -466,18 +481,28 @@ const FilterForm = ({ OnFilter, OnIndex }) => {
 };
 
 const styles = StyleSheet.create({
+  mainBody: {
+    flex: 1,
+    zIndex: 3,
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   row: {
-    flexDirection: 'column',
-    //flexWrap: 'wrap',
+
     width: '100%',
     paddingLeft: Platform.OS == 'web' ? 0 : 12,
     zIndex: 1
   },
   rowF: {
-    paddingVertical: 15,
+    // flex: 1,
+    flexDirection: 'column',
+    paddingVertical: 10,
     paddingHorizontal: 10,
     backgroundColor: '#ffffff',
-
     width: '100%',
     borderBottomEndRadius: 40,
     borderBottomWidth: 5,
@@ -486,7 +511,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-
+    marginBottom: 20
   },
   rowBT: {
     flexDirection: 'row',
@@ -495,14 +520,15 @@ const styles = StyleSheet.create({
   },
   rowAC: {
     flexDirection: 'row',
+    flexWrap: "wrap",
     width: '100%',
     paddingRight: 6,
-    paddingLeft: 6,
+    paddingLeft: 3,
     position: 'relative',
     zIndex: 10
   },
   showfilter: {
-    //flexDirection: 'column',
+    flexDirection: 'column',
     //flexWrap: 'wrap',
     width: '93%',
     padding: 5,
@@ -575,9 +601,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     justifyContent: 'flex-end',
   },
-  dropselectStyle:
-    { backgroundColor: 'white', width: '100%', marginTop: -5 },
-  itemdropselectStyle:
-    { borderBottomWidth: 1, borderBottomColor: '#efefef', zIndex: 100 }
+  dropselectStyle: { backgroundColor: 'white', width: '100%', marginTop: -5 },
+  itemdropselectStyle: { borderBottomWidth: 1, borderBottomColor: '#efefef', zIndex: 100 }
 });
 export default FilterForm;

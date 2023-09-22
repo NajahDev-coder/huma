@@ -61,7 +61,16 @@ const TypeScreen = ({ navigation }) => {
       path = { uri: Base_url + 'images/icones_categories/icone_IN_activeCateg.png' };
     return path;
   };
+  const navigateCateg = async (typeId) => {
+    if (typeId == 3) {
+      navigation.navigate('Don');
+    }
+    else {
 
+      AsyncStorage.setItem('type_id', String(typeId));
+      navigation.navigate('Categ');
+    }
+  }
   return (
     <View style={styles.mainBody}>
       <ImageBackground
@@ -84,8 +93,7 @@ const TypeScreen = ({ navigation }) => {
                 <TouchableOpacity
                   key={value.id}
                   onPress={() => {
-                    AsyncStorage.setItem('type_id', String(value.id));
-                    navigation.navigate('Categ');
+                    navigateCateg(value.id);
                   }}
                   style={[
                     styles.button,

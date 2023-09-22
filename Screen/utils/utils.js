@@ -1,10 +1,10 @@
 import React from 'react';
 import axios from "axios";
 import { Alert, TouchableOpacity, Text, View } from 'react-native';
+import { GooglePlacesApiKey } from './env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export const Base_url = 'https://huma.bzh/';
 
-export const API_URL = "https://expo-stripe-server-example.glitch.me"
 import { durationInMonths } from '@progress/kendo-date-math';
 
 export const deleteAction = async (id, type) => {
@@ -114,6 +114,16 @@ export const UpdatePremium = async (Userid, choix) => {
   const response = await RequestOptionsPost(dataToSend, fetchURL)
   //console.log(response.status);
 };
+export const InsertDonation = async (Userid, amount, duree) => {
+  const fetchURL = 'insertDonnation';
+  const dataToSend = {
+    user_id: Userid,
+    amount: amount,
+    duree: duree
+  }
+  const response = await RequestOptionsPost(dataToSend, fetchURL)
+  //console.log(response.status);
+};
 export const GetAnnonce = async ({ annonceID, navigation }) => {
   const fetchURL = `/annonce/${annonceID}`;
   const response = await RequestOptionsGet(fetchURL)
@@ -144,7 +154,11 @@ export const RequestOptionsGet = (Api) => {
         // console.log('responseJson',responseJson)
         resolve(responseJson)
       })
-    } catch (msg) { reject(msg); }
+    } catch (msg) {
+      console.log('There has been a problem with your fetch operation: ' + msg);
+
+      reject(msg);
+    }
   })
   return promise;
 }
@@ -334,7 +348,6 @@ export const DeleteSession = async (navigation) => {
 export const fetchDistanceBetweenPoints = async (lat1, lng1, lat2, lng2) => { // Pass Latitude & Longitude of both points as a parameter
   //maison=(lat2,lng2) 36.8572011,10.275799
   //travail=(lat1,lng1) 36.8135979,10.1783812
-  //GooglePlacesApiKey = 'AIzaSyAVWheD_CJmbOlCCKBTRKRRkeFJy_Mxzbg'
   var urlToFetchDistance = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + lat1 + ',' + lng1 + '&destinations=' + lat2 + '%2C' + lng2 + '&key=' + "GooglePlacesApiKey";
 
   fetch(urlToFetchDistance)
@@ -373,6 +386,26 @@ export async function fetchPublishableKey(amount,
     return null;
   }
 }
+export async function fetchPublishableKeyDonate(amount,
+  duree
+): Promise<string | null> {
+  try {
 
+    const response = await fetch(
+      `${Base_url}api/api/donate/${amount}/${duree}`
+    );
+    const { publishableKey } = await response.json();
+
+    console.log('response::::::', response.json());
+    return publishableKey;
+  } catch (e) {
+    console.warn('Unable to fetch publishable key. Is your server running?');
+    Alert.alert(
+      'Error',
+      'Unable to fetch publishable key. Is your server running?'
+    );
+    return null;
+  }
+}
 
 

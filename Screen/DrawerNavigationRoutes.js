@@ -24,6 +24,8 @@ import NavigationLogoNotifHeader from './Components/NavigationLogoNotifHeader';
 import NavigationBottomTabs from './Components/NavigationDrawerFooter';
 import MembresScreen from './DrawerScreens/MembresScreen';
 import ListEvaluations from './Components/ListEvaluations';
+import FilterForm from './DrawerScreens/FilterForm';
+
 const Stack = createStackNavigator();
 const RightDrawer = createDrawerNavigator();
 
@@ -103,6 +105,18 @@ const AnnonceScreenStack = ({ navigation }) => {
                 options={{
                     title: 'Avis & Commentaires', headerTintColor: '#97ab00',
                     headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
+                }}
+            />
+            <Stack.Screen
+                name="Filter"
+                component={FilterForm} options={{
+                    headerLeft: () => (
+                        <NavigationDrawerHeader navigationProps={navigation} />
+                    ),
+                    title: '',
                     headerRight: () => (
                         <NavigationLogoHeader navigationProps={navigation} />
                     ),
@@ -223,6 +237,18 @@ const HomeScreenStack = ({ navigation }) => {
                 options={{
                     title: 'Avis & Commentaires', headerTintColor: '#97ab00',
                     headerTitleStyle: { color: '#97ab00' },
+                    headerRight: () => (
+                        <NavigationLogoHeader navigationProps={navigation} />
+                    ),
+                }}
+            />
+            <Stack.Screen
+                name="Filter"
+                component={FilterForm} options={{
+                    headerLeft: () => (
+                        <NavigationDrawerHeader navigationProps={navigation} />
+                    ),
+                    title: '',
                     headerRight: () => (
                         <NavigationLogoHeader navigationProps={navigation} />
                     ),

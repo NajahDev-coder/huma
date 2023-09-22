@@ -31,6 +31,8 @@ import MembresScreen from './DrawerScreens/MembresScreen';
 import GetMessages from './Components/GetMessages';
 import MonAbonnementScreen from './DrawerScreens/MonAbonnementScreen';
 import ListEvaluations from './Components/ListEvaluations';
+import DonateScreen from './DrawerScreens/DonateScreen';
+import FilterForm from './DrawerScreens/FilterForm';
 
 var AbonnementScreen;
 
@@ -117,6 +119,19 @@ const AnnonceScreenStack = ({ navigation }) => {
           ),
         }}
       />
+      <Stack.Screen
+        name="Filter"
+        component={FilterForm} options={{
+
+          headerLeft: () => (
+            <NavigationDrawerHeader navigationProps={navigation} />
+          ),
+          title: '',
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -164,6 +179,7 @@ const HomeScreenStack = ({ navigation }) => {
         options={{
           title: 'Profile', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' },
+
           headerRight: () => (
             <NavigationLogoHeader navigationProps={navigation} />
           ),
@@ -324,6 +340,31 @@ const HomeScreenStack = ({ navigation }) => {
         options={{
           title: 'Avis & Commentaires', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
+        }}
+      />
+
+      <Stack.Screen
+        name="Don"
+        component={DonateScreen}
+        options={{
+          title: 'Fait Don', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="Filter"
+        component={FilterForm} options={{
+
+          headerLeft: () => (
+            <NavigationDrawerHeader navigationProps={navigation} />
+          ),
+          title: '',
           headerRight: () => (
             <NavigationLogoHeader navigationProps={navigation} />
           ),
@@ -578,6 +619,17 @@ const MonCompteScreenStack = ({ navigation }) => {
           ),
         }}
       />
+      <Stack.Screen
+        name="Don"
+        component={DonateScreen}
+        options={{
+          title: 'Fait Don', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -623,6 +675,33 @@ const CreatePubliciteScreenStack = ({ navigation }) => {
     </Stack.Navigator>
   );
 };
+
+const FaitDonScreenStack = ({ navigation }) => {
+  return (
+    <Stack.Navigator initialRouteName="DonateScreen">
+      <Stack.Screen
+        name="Fait Don"
+        component={DonateScreen}
+        options={{
+          headerLeft: () => (
+            <NavigationDrawerHeader navigationProps={navigation} />
+          ),
+          title: '',
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
+          headerStyle: {
+            backgroundColor: '#FFFFFF', //Set Header color
+            borderBottomWidth: 0,
+            height: 75
+          },
+          headerTintColor: '#97ab00', //Set Header text color
+          headerTitleStyle: { color: '#97ab00' }
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 const DrawerNavigatorAuthRoutes = (props) => {
   return (
     <LeftDrawer.Navigator
@@ -659,12 +738,21 @@ const DrawerNavigatorAuthRoutes = (props) => {
       <LeftDrawer.Screen
         name="Type"
         options={{
-          drawerLabel: 'Ajout annonce',
+          drawerLabel: 'Ajout Annonce',
           drawerIcon: ({ color, size }) => (
             <FontAwesome5 name="plus-circle" size={30} color={color} />
           ),
         }}
         component={CreateAnnonceScreenStack}
+      />
+      <LeftDrawer.Screen
+        name="Don"
+        options={{
+          drawerLabel: 'Fait Don',
+          drawerIcon: ({ color, size }) => (
+            <FontAwesome5 name="donate" size={24} color="#97ab00" />),
+        }}
+        component={FaitDonScreenStack}
       />
       {(global.User_VIP > 0) && (
         <LeftDrawer.Screen

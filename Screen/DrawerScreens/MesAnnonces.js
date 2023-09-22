@@ -40,6 +40,7 @@ import { ViewProfile, ViewAnnonces, ShowDetailAnnonce, Base_url, RequestOptionsG
 
 import { SelectList } from 'react-native-dropdown-select-list'
 import ActionDelete from '../Components/ActionDelete';
+import BarFilter from './BarFilter';
 
 const MesAnnonces = ({ navigation, route }) => {
   const [AnnoncesList, setAnnoncesList] = useState([]);
@@ -59,11 +60,11 @@ const MesAnnonces = ({ navigation, route }) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-      GetFilter();
-      fetchData();
-    }, 1000);
+    //setTimeout(() => {
+    setRefreshing(false);
+    GetFilter();
+    fetchData();
+    // }, 1000);
   }, []);
 
   const GetFilter = async () => {
@@ -97,21 +98,20 @@ const MesAnnonces = ({ navigation, route }) => {
     let isSubscribed = true;
 
 
-
     if (isSubscribed) {
-      setTimeout(() => {
-        GetFilter();
-        // alert(filter)
-        //if (Object.keys(filter).length > 0) {
-        setAnnoncesList([])
-        setResultat(<Loader loading={true} />);
-        setLoading(false);
-        fetchData();
-        //}
-      }, 100)
+      GetFilter();
+      // alert(filter)
+      //if (Object.keys(filter).length > 0) {
+      setAnnoncesList([])
+      setResultat(<Loader loading={true} />);
+      setLoading(false);
+      fetchData();
+
+      //  }, 100)
     }
     return () => { isSubscribed = false }
-  }, [filter, refreshing])
+    // }, [filter, refreshing])
+  }, []);
 
 
 
@@ -131,7 +131,7 @@ const MesAnnonces = ({ navigation, route }) => {
           }>
 
           <View style={{ position: 'absolute', top: 0, right: 0, height: 70, width: '100%', zIndex: 100 }}>
-            <FilterForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
+            <BarFilter navigation={navigation} />
           </View>
           <View style={{ padding: 10, zIndex: 2, flex: 1, width: '100%', marginTop: 70 }}>
 

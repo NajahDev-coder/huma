@@ -54,7 +54,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
   const [NomAuteur, setNomAuteur] = useState('');
   const [imageProfile, setImageProfile] = useState(null);
   const [fadeAnimation] = useState(new Animated.Value(0));
-  const [imageAnnonce, setImageAnnonce] = useState([]);
+  const [imageAnnonce, setImageAnnonce] = useState([{ id: 0, url: `${Base_url}images/img/no-picture1.png` }]);
   const [favorisAnnonce, setFavorisAnnonce] = useState(0);
   const [position, setPosition] = useState(1);
 
@@ -67,11 +67,11 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-      fetchData();
-      isExiteFile();
-    }, 2000);
+    // setTimeout(() => {
+    setRefreshing(false);
+    fetchData();
+    isExiteFile();
+    // }, 2000);
   }, []);
 
   const img_annonce_cv = createRef();
@@ -84,22 +84,36 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
   const visitVedio = (val) => {
     Linking.openURL('http://' + val);
   }
-  const UpdtFavorisAnnonce = async () => {
+
+  const UpdtFavorisAnnonce = () => {
+
     var fetchUrl;
     if (favorisAnnonce == 1) {
-      fetchUrl = `delfavannonces/${global.User_connecte}/${Id_Annonce}`;
+      fetchUrl = `${Base_url}api/api/delfavannonces/${global.User_connecte}/${Id_Annonce}`;
     }
     else {
-      fetchUrl = `addfavannonces/${global.User_connecte}/${Id_Annonce}`;
+      fetchUrl = `${Base_url}api/api/addfavannonces/${global.User_connecte}/${Id_Annonce}`;
     }
-    response = await RequestOptionsGet(fetchUrl);
-    if (response.affectedRows == 1) {
-      // console.log('update favorisanno avec success!');
-      setFavorisAnnonce(!favorisAnnonce);
-      setRefreshKey((oldKey) => oldKey + 1)
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
     }
+    //const baseUrl = "https://jsonplaceholder.typicode.com/posts";
+    const data = fetch(fetchUrl, options)
+      .then((response) => response.json())
+      .then((responseJson) => {
 
-  }
+        setFavorisAnnonce(!favorisAnnonce);
+        //setRefreshKey((oldKey) => oldKey + 1);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+
   const GetFavorisAnnonce = async () => {
 
     const fetchUrl = `getfavannonces/${global.User_connecte}/${Id_Annonce}`;
@@ -120,17 +134,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
     }).start();
   };
 
-  const getAuteur = async (id_user) => {
-    const fetchUrl = `user/${id_user}`;
-    response = await RequestOptionsGet(fetchUrl);
 
-    if (response.data.length > 0) {
-      var nomAuteur = response.data[0].nom;
-      setNomAuteur(nomAuteur);
-      var imgprof = response.data[0].img_prof;
-      setImageProfile(imgprof)
-    }
-  };
   const isExiteFile = async () => {
     const fetchUrl = `file_existe/${Id_Annonce}`;
 
@@ -150,32 +154,29 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
       //console.log(dataImg)
       setImageAnnonce(dataImg);
     }
-    else {
-      //setImageAnnonce([{ url: `${Base_url}images/img/no-picture.png` }]);
-      setImageAnnonce([{ id: 0, url: `${Base_url}images/img/no-picture1.png` }]);
 
-      //console.log('imgAnnonce', imageAnnonce);
-    }
   }
 
   const fetchData = async () => {
     const fetchUrl = `annonce/${Id_Annonce}`;
 
     const responseJson = await RequestOptionsGet(fetchUrl);
-
+    console.log(responseJson)
     if (responseJson.data.length > 0) {
       setAnnonceDetails(responseJson.data[0]);
 
       setAnnonceType(responseJson.data[0].type);
       setAnnonceCateg(responseJson.data[0].categorie);
-      getAuteur(responseJson.data[0].user_id);
+      //getAuteur(responseJson.data[0].user_id);
       setAuteurUserId(responseJson.data[0].user_id);
-
+      setNomAuteur(responseJson.data[0].nom);
+      setImageProfile(responseJson.data[0].img_prof)
       //setIdAnnonce(responseJson.data[0].id);
       setNbreVue(responseJson.data[0].nbre_vue + 1)
 
 
-      if (responseJson.data[0].user_id != global.User_connecte && global.User_connecte != 0 && responseJson.data[0].user_id != 0 && responseJson.data[0].user_id != null) {
+      //if (responseJson.data[0].user_id != global.User_connecte && global.User_connecte != 0 && responseJson.data[0].user_id != 0 && responseJson.data[0].user_id != null) {
+      if (global.User_connecte != null && responseJson.data[0].user_id != global.User_connecte) {
         update_NbreVue();
         GetFavorisAnnonce();
       }
@@ -193,9 +194,10 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
       isExiteFile();
     }
     return () => (isSubscribed = false);
-  }, [favorisAnnonce]);
+  }, []);
 
   const AfficheDescrp = (description) => {
+
     const source = { html: description }
     return (
       <RenderHtml
@@ -203,6 +205,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
         source={source}
       />
     )
+
   }
   const DefaultimageAnnonce = { uri: `${Base_url}images/img/no-picture1.png` };
   return (
@@ -230,7 +233,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
 
 
                   <View style={styles.bcBlockpf}>
-                    <View style={{ width: 50, justifyContent: 'center', marginLeft: 10 }}>
+                    <View style={{ width: 50, justifyContent: 'center', marginLeft: 10, zIndex: 2 }}>
                       <GetProfile user_id={AnnonceDetails.user_id} navigation={navigation} img_prof={imageProfile} />
                     </View>
                     <View style={styles.auteurProfile}>
@@ -239,120 +242,126 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
                   </View>
                 </View>
 
-                <TouchableOpacity style={styles.post}>
 
-                  <Animated.View style={{ width: '100%', opacity: fadeAnimation }}>
-                    <View style={styles.bcBlock}>
-                      <View style={styles.bcDetaille}>
-                        <View style={styles.row}>
-                          <Text style={styles.postLabel}>{AnnonceDetails.titre} </Text>
 
+                <View style={styles.post}>
+                  <Animated.View style={[styles.bcBlock, { opacity: fadeAnimation }]}>
+                    <View style={styles.bcDetaille}>
+                      <View style={{ zIndex: 20 }}>
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-end',
+                            position: 'absolute',
+                            right: 0,
+                            top: -5,
+                            width: 120,
+                          }}>
+                          <AntDesign name="eyeo" size={24} color="#6cc5d5" style={{ marginRight: 3, marginTop: 2 }} />
+
+                          <Text style={{ marginTop: 3, color: '#6cc5d5' }}>{NbreVue}</Text>
+
+                        </View>
+
+                        {AuteurUserId != global.User_connecte && (
                           <View
                             style={{
                               flexDirection: 'row',
                               justifyContent: 'flex-end',
                               position: 'absolute',
                               right: 0,
-                              top: -5,
-                              width: 120,
+                              top: 25,
                             }}>
-                            <AntDesign name="eyeo" size={24} color="#6cc5d5" style={{ marginRight: 3, marginTop: 2 }} />
 
-                            <Text style={{ marginTop: 3, color: '#6cc5d5' }}>{NbreVue}</Text>
-
+                            <MaterialIcons
+                              name={favorisAnnonce == 1 ? "favorite" : "favorite-border"}
+                              size={24}
+                              color="#c4d63c"
+                              //onPress={(favorisAnnonce) => {
+                              onPress={() => {
+                                UpdtFavorisAnnonce();
+                              }}
+                            />
                           </View>
-                          {AuteurUserId != global.User_connecte && (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'flex-end',
-                                position: 'absolute',
-                                right: 0,
-                                top: 25,
-                              }}>
+                        )}
+                        {AuteurUserId == global.User_connecte && (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'flex-end',
+                              position: 'absolute',
+                              right: 0,
+                              top: 25,
+                              zIndex: 20,
+                            }}>
 
-                              <MaterialIcons
-                                name={favorisAnnonce == 1 ? "favorite" : "favorite-border"}
-                                size={24}
-                                color="#c4d63c"
-                                onPress={() => { UpdtFavorisAnnonce(); }}
-                              />
-                            </View>
-                          )}
-                          {AuteurUserId == global.User_connecte && (
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                justifyContent: 'flex-end',
-                                position: 'absolute',
-                                right: 50,
-                                top: 0,
-                              }}>
-
-                              <AntDesign
-                                name="edit"
-                                size={24}
-                                color="#c4d63c"
-                                onPress={() => {
-                                  navigation.navigate({
-                                    name: 'EditAnnonce',
-                                    params: {
-                                      //id_user: AuteurUserId,
-                                      id_annonce: Id_Annonce
-                                    },
-                                  })
-                                }}
-                              />
-                            </View>
-                          )}
+                            <AntDesign
+                              name="edit"
+                              size={24}
+                              color="#c4d63c"
+                              onPress={() => {
+                                navigation.navigate({
+                                  name: 'EditAnnonce',
+                                  params: {
+                                    //id_user: AuteurUserId,
+                                    id_annonce: Id_Annonce
+                                  },
+                                })
+                              }}
+                            />
+                          </View>
+                        )}
 
 
-                        </View>
-                        <View >
-                          <Text style={styles.postDateLabel}>
-                            Publié le  {moment(AnnonceDetails.Date).format('MM-DD-YYYY')}
-                          </Text>
-                        </View>
+                      </View>
+                      <View style={{ zIndex: 1, width: '80%' }}>
+                        <Text style={styles.postLabel}>{AnnonceDetails.titre}</Text>
 
-                        <View style={styles.bcText}>
-                          {AnnonceDetails.description != '' ? AfficheDescrp(AnnonceDetails.description) : (<Text>{AnnonceDetails.court_description}</Text>)}
-                        </View>
-                        <View style={styles.bcText}>
-                          {AnnonceDetails.link_vedio != '' && (
-                            <TouchableOpacity onPress={() => { visitVedio(AnnonceDetails.link_vedio) }}>
+                        <Text style={styles.postDateLabel}>
+                          Publié le  {moment(AnnonceDetails.Date).format('MM-DD-YYYY')}
+                        </Text>
+                      </View>
+
+                      <View style={styles.bcText}>
+                        {AnnonceDetails.description && AnnonceDetails.description != '' ? AfficheDescrp(AnnonceDetails.description) : (<Text>{AnnonceDetails.court_description}</Text>)}
+                      </View>
+                      <View style={styles.bcText}>
+                        {AnnonceDetails.link_vedio && AnnonceDetails.link_vedio != '' && (
+                          <TouchableOpacity onPress={() => { visitVedio(AnnonceDetails.link_vedio) }}>
 
 
-                              <Text> <Entypo name="video-camera" size={18} color="black" style={{ marginTop: 5, marginRight: 5 }} /> https://{AnnonceDetails.link_vedio}</Text>
-                            </TouchableOpacity>
-                          )}
-                        </View>
+                            <Text style={{ color: '#6cc5d5' }}> <Entypo name="video-camera" size={16} color="#6cc5d5" /> https://{AnnonceDetails.link_vedio}</Text>
+                          </TouchableOpacity>
+                        )}
                       </View>
                     </View>
-
-                    <View style={styles.bcBlock2}>
-                      <Text style={styles.bcText2}>
-                        <Entypo name="location-pin" size={20} color="grey" />
-
-                        {AnnonceDetails.adresse}
-                      </Text>
-                    </View>
-
-
-                    <View style={styles.bcBlock}>
-                      <View style={styles.btCateg}>
-                        <View style={styles.blocDeco}></View>
-                        <GetCategorie id_annonce={AnnonceCateg} />
-                        <View style={styles.blocDeco2}></View>
-                      </View>
-                      <View style={styles.btType}>
-                        <View style={styles.blocDeco}></View>
-                        <GetType id_annonce={AnnonceType} />
-                        <View style={styles.blocDeco2}></View>
-                      </View>
-                    </View>
-
                   </Animated.View>
-                </TouchableOpacity>
+
+                  <View style={styles.bcBlock2}>
+                    <Text style={styles.bcText2}>
+                      <Entypo name="location-pin" size={20} color="grey" />
+
+                      {AnnonceDetails.adresse}
+                    </Text>
+                  </View>
+
+
+                  <View style={styles.bcBlock}>
+                    <View style={styles.btCateg}>
+                      <View style={styles.blocDeco}></View>
+                      <GetCategorie id_annonce={AnnonceCateg} />
+                      <View style={styles.blocDeco2}></View>
+                    </View>
+                    <View style={styles.btType}>
+                      <View style={styles.blocDeco}></View>
+                      <GetType id_annonce={AnnonceType} />
+                      <View style={styles.blocDeco2}></View>
+                    </View>
+                  </View>
+
+                </View>
+
 
                 <View style={{ width: '100%' }}>
 
@@ -461,14 +470,14 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   auteurProfile: {
-    flexDirection: 'column',
-    //alignContent: 'flex-center',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(255, 255, 255,0.5)',
+    backgroundColor: 'rgba(255, 255, 255,0.8)',
     padding: 10,
+    paddingLeft: 75,
+    marginTop: -63,
+    zIndx: 1
   },
   titAuteurProfile: {
-    paddingLeft: 3,
+
     color: '#49382f',
     fontWeight: 'bold'
   },

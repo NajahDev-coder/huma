@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
-  // DeviceEventEmitter,
+  Dimensions,
   RefreshControl
 } from 'react-native';
 
@@ -44,19 +44,13 @@ const GetMessages = ({ navigation, route }) => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [MyUser, setMyUser] = useState(0);
   const [isSent, setIsSent] = useState(false)
-
+  const [limite, setLimite] = useState(10)
   const [Vu, setVu] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const id_user1 = global.User_connecte;
-
   const id_user2 = route.params?.id_user2;
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
+  const msgInput = createRef();
+  const scroll = createRef();
 
 
 
@@ -66,7 +60,13 @@ const GetMessages = ({ navigation, route }) => {
     });*/
 
 
-
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    //setTimeout(() => {
+    setRefreshing(false);
+    setLimite((oldKey) => oldKey + 10)
+    // }, 2000);
+  }, []);
   //sent message
   const handleSubmitPress = async () => {
 
@@ -77,7 +77,7 @@ const GetMessages = ({ navigation, route }) => {
       setIsAlert(true);
       return;
     }
-
+    setLimite(10);
 
     //  const UserId = await AsyncStorage.getItem('user_id');
     // setLoading(true);
@@ -88,61 +88,58 @@ const GetMessages = ({ navigation, route }) => {
     };
     setUserMessage(' ');
     setOffFocus(false);
-    setVu(' ');
+    setVu('');
 
 
     const fetchUrl = 'sent_messages';
     //alert(refreshKey);
-    RequestOptionsPost(dataToSend, fetchUrl).then((response, error) => {
+    //await RequestOptionsPost(dataToSend, fetchUrl).then((response, error) => {
+    const response = await RequestOptionsPost(dataToSend, fetchUrl)
 
-      if (response.status == 'success') {
-        // console.log('sent_messages',responseJson)
+    if (response.status == 'success') {
+      // console.log('sent_messages',responseJson)
 
-        setRefreshKey((oldKey) => oldKey + 1);
-        // 
-        //console.log('Message envoyé avec success!');
-      } else {
-        setErrortext('Erreur inatendu! Essayer plus tard!');
-        //console.log('Erreur inatendu! Essayer plus tard!');
-      }
-    })
+      setRefreshKey((oldKey) => oldKey + 1);
+      // 
+      //console.log('Message envoyé avec success!');
+    } else {
+      setErrortext('Erreur inatendu! Essayer plus tard!');
+      //console.log('Erreur inatendu! Essayer plus tard!');
+    }
+
 
   };
-  const fetchData = useCallback(async () => {
-    const fetchUrl = `messages/${global.User_connecte}/${id_user2}`;
+  const fetchData = async (limite) => {
+    const fetchUrl = `messages/${global.User_connecte}/${id_user2}/${limite}`;
     //const json = await RequestOptionsGet(fetchUrl)
 
     // convert data to json
-    RequestOptionsGet(fetchUrl).then((response, error) => {
-      if (response.data.length > 0) {
-        setMessages(response.data);
-        //setRefreshKey((oldKey) => oldKey + 1);
-      }
-    });
-
-  }, [id_user2]);
-
-  const marquerlu = async () => {
-    const fetchUrl = `marquerLuMessage/${global.User_connecte}`;
-    const dataToSend = {
-      id_user2: id_user2
-    };
-    const response = await RequestOptionsPut(dataToSend, fetchUrl);
-    console.log('msg lu?', response);
+    const response = await RequestOptionsGet(fetchUrl);
     if (response.data.length > 0) {
-      //setVu('Vu');
-      //DeviceEventEmitter.emit("sendNewMsg", { islu: true, id_user: id_user2 });
+      //alert("kk");
+      let DataN = response.data.reverse();
+
+      // DataN = DataN.reverse();
+
+      setMessages(DataN);
+      //setRefreshKey((oldKey) => oldKey + 1);
+      // isVU();
+      // marquerlu();
     }
-  }
+
+
+  };
+
+
   const isVU = async () => {
     const fetchUrl = `isVuMessage/${global.User_connecte}/${id_user2}`;
     const response = await RequestOptionsGet(fetchUrl);
-    //console.log('is lu?', response.data[0].nbrNonLu);
-    if (response.data[0].length == 0) {
+
+    if (response.data.length == 0) {
       setVu('Vu');
     }
     else {
-      setVu(' ')
+      setVu('')
     }
   }
 
@@ -153,13 +150,15 @@ const GetMessages = ({ navigation, route }) => {
 
       // setUserMessage('');
 
-      marquerlu();
-      isVU();
-      fetchData();
+      fetchData(limite);
+      // scroll.scrollToEnd()
+      //isVU();
+      //if(global.User_connecte==)
+      // marquerlu();
 
     }
     return () => (isSubscribed = false);
-  }, [refreshKey], fetchData);
+  }, [refreshKey, limite]);
 
 
   return (
@@ -169,87 +168,96 @@ const GetMessages = ({ navigation, route }) => {
         resizeMode="cover"
         style={styles.image}>
         <ScrollView
+          ref={scroll}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
             alignContent: 'center',
           }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }>
-          <View style={{ padding: 10, flex: 1, width: '100%' }}>
+          }
+        >
+          <View >
 
-            <View style={styles.row}>
-              {Messages.map((item) => (
+            <View style={{ padding: 10, flex: 1, width: '100%', paddingBottom: 100 }}>
 
-                <View style={{ flex: 1, width: '100%' }} key={item.id}>
+              <View style={styles.row}>
+                {Messages.map((item) => (
 
-                  <TouchableOpacity
-                    key={item.id}
-                    style={
-                      global.User_connecte != item.id_user1 ? styles.post : styles.post2
-                    }>
-                    {global.User_connecte != item.id_user1 ? (
-                      <View style={styles.leftpost}><Text></Text></View>
-                    ) : (
-                      <View style={styles.rightpost}><Text></Text></View>
-                    )
-                    }
-                    <View style={styles.bcBlock}>
+                  <View style={{ flex: 1, width: '100%' }} key={item.id}>
 
-
-
-                      <GetProfile user_id={item.id_user1} navigation={navigation} img_prof={item.img_prof} />
+                    <TouchableOpacity
+                      key={item.id}
+                      style={
+                        global.User_connecte != item.id_user1 ? styles.post : styles.post2
+                      }>
+                      {global.User_connecte != item.id_user1 ? (
+                        <View style={styles.leftpost}><Text></Text></View>
+                      ) : (
+                        <View style={styles.rightpost}><Text></Text></View>
+                      )
+                      }
+                      <View style={styles.bcBlock}>
 
 
-                      <View style={styles.bcDetaille}>
-                        <GetUser id_user={item.id_user1} />
 
-                        <Text style={styles.postLabel2}>{item.message}</Text>
+                        <GetProfile user_id={item.id_user1} navigation={navigation} img_prof={item.img_prof} />
+
+
+                        <View style={styles.bcDetaille}>
+                          <GetUser id_user={item.id_user1} />
+
+                          <Text style={styles.postLabel2}>{item.message}</Text>
+                        </View>
                       </View>
-                    </View>
-                  </TouchableOpacity>
+                    </TouchableOpacity>
 
+                  </View>
+
+                ))
+                }
+
+              </View>
+              {/*Vu != '' && (
+                <View style={{ alignSelf: 'flex-end', padding: 15, marginRight: 5 }}>
+                  <Text style={{ color: '#b1b1b0', fontSize: 11 }}>{Vu}</Text>
                 </View>
-
-              ))
-              }
+              )*/}
 
             </View>
+            <View style={{ flex: 1 }}>
+              <View style={{ width: '95%', padding: 3, position: 'absolute', bottom: 0, left: 4, right: 4 }}>
+                <TextInput
+                  multiline={true}
+                  style={styles.inputStyle}
+                  onChangeText={(val) => { setUserMessage(val); setOffFocus(true); }}
+                  ref={msgInput}
+                  onKeyPress={(e) => {
+                    !UserMessage ? setOffFocus(false) : setOffFocus(true);
+                  }}
+                  value={UserMessage}
+                  placeholder="Ecrire votre message..."
+                  placeholderTextColor="#8b9cb5"
+                  numberOfLines={4}
+                />
+                {errortext && <Text style={styles.errorTextStyle}>{errortext}</Text>}
+                {OffFocus === true ? (
+                  <TouchableOpacity
+                    style={{ position: 'absolute', right: 14, bottom: 14 }}
+                    activeOpacity={0.5}
+                    onPress={() => handleSubmitPress()}>
 
-            <View style={{ alignSelf: 'flex-end', padding: 15 }}>
-              <Text style={{ color: '#b1b1b0', fontSize: 11 }}>{Vu}</Text>
-            </View>
-            <View style={{ width: '97%', padding: 3, marginLeft: 4 }}>
-              <TextInput
-                multiline={true}
-                style={styles.inputStyle}
-                onChangeText={(val) => { setUserMessage(val); setOffFocus(true); }}
+                    <Ionicons name="send-sharp" size={24} color="#c4d63c" />
 
-                onKeyPress={(e) => {
-                  !UserMessage ? setOffFocus(false) : setOffFocus(true);
-                }}
-                value={UserMessage}
-                placeholder="Ecrire votre message..."
-                placeholderTextColor="#8b9cb5"
-                numberOfLines={4}
-              />
-              {errortext && <Text style={styles.errorTextStyle}>{errortext}</Text>}
-              {OffFocus === true ? (
-                <TouchableOpacity
-                  style={{ position: 'absolute', right: 14, bottom: 14 }}
-                  activeOpacity={0.5}
-                  onPress={handleSubmitPress}>
-
-                  <Ionicons name="send-sharp" size={24} color="#c4d63c" />
-
-                </TouchableOpacity>
-              ) : (
-                <Text
-                  style={{ position: 'absolute', right: 14, bottom: 14 }}>
-                  <Ionicons name="send-outline" size={24} color="grey" />
-                </Text>
-              )
-              }
+                  </TouchableOpacity>
+                ) : (
+                  <Text
+                    style={{ position: 'absolute', right: 14, bottom: 14 }}>
+                    <Ionicons name="send-outline" size={24} color="grey" />
+                  </Text>
+                )
+                }
+              </View>
             </View>
             {isAlert && (
               <ModalAlert msgAlerte={MsgAlerte} />
@@ -260,6 +268,8 @@ const GetMessages = ({ navigation, route }) => {
     </View>
   );
 };
+const minHeight = parseInt(Dimensions.get('window').height - 50)
+
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
@@ -272,6 +282,8 @@ const styles = StyleSheet.create({
   },
   row: {
     width: '100%',
+    // height: minHeight,
+
   },
   post: {
     paddingHorizontal: 8,

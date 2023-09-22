@@ -21,6 +21,7 @@ import {
   FlatList,
 } from 'react-native';
 import { Base_url, RequestOptionsGet } from './utils/utils'
+
 const SousCateg = ({ navigation, OnFilter, CategId, refresh }) => {
   const [SsCateg, SetSsCateg] = useState({});
   const [CategorieId, setCategorieId] = useState(CategId)
@@ -29,6 +30,7 @@ const SousCateg = ({ navigation, OnFilter, CategId, refresh }) => {
 
   const Updtfilter = async (categ) => {
     await AsyncStorage.removeItem('add_filter');
+
     let Upfilter = {
       adresse: '',
       titre: '',
@@ -41,7 +43,10 @@ const SousCateg = ({ navigation, OnFilter, CategId, refresh }) => {
 
     //console.log('filt idcateg', Upfilter)
 
-    AsyncStorage.setItem('add_filter', JSON.stringify(Upfilter));
+    await AsyncStorage.setItem('add_filter', JSON.stringify(Upfilter));
+
+
+
     OnFilter()
     //navigation.navigate({ name: 'Annonces', Upfilter });
     // OnFilter();
@@ -53,8 +58,8 @@ const SousCateg = ({ navigation, OnFilter, CategId, refresh }) => {
     if (responseJson.data.length === 0) {
       Updtfilter(CategId);
 
-      //navigation.navigate( {name:'AnnoncesScreen',filter}); 
-      OnFilter()
+      //navigation.navigate( {name:'AnnoncesScreen',categ:categ}); 
+      // OnFilter()
     }
     SetSsCateg(responseJson.data);
     // });

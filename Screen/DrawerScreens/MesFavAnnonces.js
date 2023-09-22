@@ -41,17 +41,18 @@ const MesFavAnnonces = ({ navigation, route }) => {
 
 
   const [loading, setLoading] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0)
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const [result, setResultat] = useState('Loading ....');
+  const [result, setResultat] = useState(<Loader loading={true} />);
   const id_user = route.params.id_user;
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
+    //  setTimeout(() => {
+    setRefreshing(false);
 
-      fetchData();
-    }, 1000);
+    fetchData();
+    // }, 1000);
   }, []);
 
 
@@ -60,8 +61,10 @@ const MesFavAnnonces = ({ navigation, route }) => {
     const baseUrl = `${Base_url}api/api/delfavannonces/${id_user}/${id_annce}`;
     fetch(baseUrl).then((response) => response.json())
       .then((responseJson) => {
-        //console.log('delete favoris avec success!');
-        setRefreshKey((oldKey) => oldKey + 1)
+        console.log('delete favoris avec success!');
+
+        // setRefreshKey((oldKey) => oldKey + 1);
+        onRefresh();
       }
       );
   }
@@ -73,29 +76,27 @@ const MesFavAnnonces = ({ navigation, route }) => {
 
     //console.log('favoris', fetchUrl)
     const json = await RequestOptionsGet(fetchUrl);
-    //console.log('favoris', json)
-    if (json.length > 0)
+    console.log('favoris', json)
+    if (json.length > 0) {
       setAnnoncesList(json)
-    else
+    }
+    else {
+      setAnnoncesList([]);
       setResultat(<Text style={{ color: '#93a600' }}>Pas de Coups de Cœur ! <MaterialIcons name="favorite" size={24} color="#93a600" /></Text>)
+    }
   }
 
   useEffect(() => {
     //setLoading(true)
     let isSubscribed = true;
-
-
-
-
     if (isSubscribed) {
-      setTimeout(() => {
-        //setLoading(false);
 
-        fetchData();
-      }, 200)
+
+      fetchData();
+
     }
     return () => (isSubscribed = false);
-  }, [refreshKey, id_user]);
+  }, [refreshKey]);
 
 
 

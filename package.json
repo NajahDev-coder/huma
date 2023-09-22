@@ -68,6 +68,7 @@
     "react-native-pell-rich-editor": "*",
     "react-native-places-input": "*",
     "react-native-popup-dialog": "*",
+    "react-native-radio-buttons-group": "^3.0.2",
     "react-native-range-datepicker": "*",
     "react-native-ratings": "*",
     "react-native-reanimated": "~2.14.4",

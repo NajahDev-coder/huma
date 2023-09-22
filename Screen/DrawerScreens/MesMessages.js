@@ -36,7 +36,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import GetSession from '../Components/GetSession';
 import GetProfile from '../Components/GetProfile';
 import { GetAmis, viewProfile } from '../includes/functions';
-import { RequestOptionsGet, Base_url } from '../utils/utils';
+import { RequestOptionsGet, Base_url, RequestOptionsPut } from '../utils/utils';
 const MesMessages = ({ navigation }) => {
   const [messagesList, setMessagesList] = useState([]);
   const [UserId, setUserId] = useState(0);
@@ -89,6 +89,17 @@ const MesMessages = ({ navigation }) => {
       setResultat('Pas de Messages trouvés! ')
   };
 
+  const marquerlu = async (id_user2) => {
+    const fetchUrl = `marquerLuMessage/${global.User_connecte}`;
+    const dataToSend = {
+      id_user2: id_user2
+    };
+    setRefreshing(true);
+    const response = await RequestOptionsPut(dataToSend, fetchUrl);
+    //console.log('msg lu?', response);
+
+    setRefreshing(false);
+  }
   useEffect(() => {
     //setLoading(true)
     let isSubscribed = true;
@@ -102,7 +113,7 @@ const MesMessages = ({ navigation }) => {
 
     }
     return () => (isSubscribed = false);
-  }, []);
+  }, [refreshing]);
   const sendNewMsg = (data) => {
     /*(data && data.id_user) ? alert(data.id_user) : alert(user_id)
     (data && data.islu) ? alert(data.islu) : alert('nn lu')*/
@@ -142,10 +153,10 @@ const MesMessages = ({ navigation }) => {
                       <TouchableOpacity
                         key={item.amis.id}
                         onPress={() => {
+                          marquerlu(item.amis.id);
                           navigation.navigate({
                             name: 'GetMessages',
                             params: {
-                              id_user1: global.User_connecte,
                               id_user2: item.amis.id,
                             },
                           });

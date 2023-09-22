@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text } from 'react-native';
 //import { colors } from '../colors';
 //import { fetchPublishableKey } from '../helpers';
-import { PublishableKeyStripe } from '@env';
+//import { PublishableKeyStripe } from '@env';
 import { RequestOptionsPost, fetchPublishableKey, Base_url } from '../utils/utils';
 interface Props {
   paymentMethod?: string;

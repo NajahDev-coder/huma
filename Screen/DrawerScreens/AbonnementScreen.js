@@ -83,15 +83,16 @@ const AbonnementScreen = ({ navigation }) => {
 
       UpdatePremium(global.User_connecte, choix);
       //initialisePaymentSheet(choix, amount)
-      let actv;
-      if (choix == 4)
-        actv = `Vous êtes abonné pour  {choix} An !`;
-      else
-        actv = `Vous êtes abonné pour  {choix} mois!`;
-      Add_historique(global.User_connecte, actv, global.User_connecte);
       global.User_VIP = choix;
 
       setUserVIP(choix)
+      let actv;
+      if (choix == 4)
+        actv = `Vous êtes abonné pour  1 An !`;
+      else
+        actv = `Vous êtes abonné pour  ${choix} mois!`;
+      Add_historique(global.User_connecte, actv, global.User_connecte);
+
       //Alert.alert('Success', 'The payment was confirmed successfully');
       navigation.navigate('MonAbonnement', { id_user: global.User_connecte })
     }
@@ -114,7 +115,7 @@ const AbonnementScreen = ({ navigation }) => {
       paymentIntentClientSecret: paymentIntent,
       allowsDelayedPaymentMethods: true,
       defaultBillingDetails: {
-        name: 'HüMA Member',
+        name: 'Abonnement HüMA Membre',
       },
       style: 'alwaysDark',
     });

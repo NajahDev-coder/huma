@@ -39,7 +39,7 @@ import { decode } from '@mapbox/polyline';
 import FilterForm from './DrawerScreens/FilterForm';
 import CategCarousel from './CategCarousel';
 import MapGeoScreen from './MapGeoScreen';
-
+import BarFilter from './DrawerScreens/BarFilter';
 //import Constants from 'expo-constants';
 //const { manifest } = Constants;
 
@@ -78,13 +78,14 @@ const AccueilScreen = ({ navigation }) => {
   const [NonVIP, setNonVIP] = useState(1);
   const [UserLocation, setUserLocation] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [timeShow, setTimeShow] = useState(false)
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-      fetchData();
-    }, 2000);
+    //setTimeout(() => {
+    setRefreshing(false);
+    fetchData();
+    // }, 2000);
   }, []);
 
   const FindAnnoncePosition = async () => {
@@ -135,19 +136,35 @@ const AccueilScreen = ({ navigation }) => {
     if (isSubscribed) {
       isVIP();
       fetchData();
-
       fadeIn();
+      setTimeout(() => {
+        setTimeShow(true);
+      }, 5000)
     }
     return () => (isSubscribed = false);
   }, [selectedValue, refreshing, global.User_VIP]);
+  //}, [selectedValue]);
 
-  const GetFilter = () => {
+  const GetFilter = async () => {
 
     setZindexF(1);
     setSelectedValue(0);
     setSelectedValue(1);
-    navigation.navigate('Annonces');
+    const filter = await AsyncStorage.getItem('add_filter').then((value) => {
+      if (value) {
+        //alert('filter:::' + value);
+        //setTimeout(() => {*/
+        navigation.navigate({
+          name: 'Annonces', params: {
+            filter: value
+          },
+        });
+        // }, 500);
+      }
+    });
+
   };
+
   const defaultImage = { uri: Base_url + 'images/logo.png' };
   const getBeerImage = (idImgCateg) => {
     //let path = { uri: Base_url + 'images/icones_categories/' + slugimg + '.png' };
@@ -171,9 +188,11 @@ const AccueilScreen = ({ navigation }) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
 
-          <View style={{ position: 'absolute', top: 0, right: 0, width: '100%', height: 100, zIndex: 100 }}>
-            <FilterForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
+          <View style={{ position: 'absolute', top: 0, right: 0, left: 0, width: '100%', height: 70, zIndex: 100 }}>
+            {/* <FilterForm navigation={navigation} OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />*/}
+            <BarFilter navigation={navigation} />
           </View>
+
 
           <View
             style={{
@@ -275,7 +294,7 @@ const AccueilScreen = ({ navigation }) => {
 
 
             {/** pop up*/}
-            {(global.User_connecte != null && global.User_VIP == 0) && (
+            {(global.User_connecte != null && global.User_VIP == 0 && timeShow) && (
               <ModalScreenVIP navigation={navigation} />
             )}
           </View>
@@ -283,7 +302,7 @@ const AccueilScreen = ({ navigation }) => {
 
         </ScrollView>
       </ImageBackground>
-    </View>
+    </View >
   );
 };
 
@@ -355,7 +374,3 @@ const styles = StyleSheet.create({
 });
 
 export default AccueilScreen;
-
-/*export default GoogleApiWrapper({
-  apiKey: 'AIzaSyB_5nxISlZhAxCAdtzDG5Cmx04kbMc1vDc'
-})(MapContainer);*/

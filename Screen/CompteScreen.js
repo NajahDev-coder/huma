@@ -306,7 +306,7 @@ const CompteScreen = ({ navigation, route }) => {
                   style={{
                     width: '100%',
                     opacity: fadeAnimation,
-                    paddingBottom: 20,
+                    paddingBottom: 10,
                   }}>
                   <View>
                     <Text style={styles.titreOff}> HüMA </Text>
@@ -353,7 +353,39 @@ const CompteScreen = ({ navigation, route }) => {
                       }}>{Mes}Évaluations
                     </Text>
                   </View>
-
+                </Animated.View>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.post}>
+                <Animated.View
+                  style={{
+                    width: '100%',
+                    opacity: fadeAnimation,
+                    paddingBottom: 10,
+                  }}>
+                  <View>
+                    <Text style={styles.titreOff}> Action </Text>
+                  </View>
+                  <View style={styles.hrbc}>
+                    <Text>&nbsp;</Text>
+                  </View>
+                  {MyUserId === UserId && (
+                    <View>
+                      <FontAwesome5 name="plus-circle" size={24} color="#823a14" style={styles.icone} />
+                      <Text
+                        style={styles.linkdtl}
+                        onPress={() => navigation.navigate('Type')}>Ajout Annonce
+                      </Text>
+                    </View>
+                  )}
+                  {MyUserId === UserId && (
+                    <View>
+                      <FontAwesome5 name="donate" size={24} color="#97ab00" style={styles.icone} />
+                      <Text
+                        style={[styles.linkdtl, { color: '#97ab00' }]}
+                        onPress={() => navigation.navigate('Don')}>Fait Don
+                      </Text>
+                    </View>
+                  )}
                 </Animated.View>
               </TouchableOpacity>
               {MyUserId === UserId && (
@@ -362,7 +394,7 @@ const CompteScreen = ({ navigation, route }) => {
                     style={{
                       width: '100%',
                       opacity: fadeAnimation,
-                      paddingBottom: 20,
+                      paddingBottom: 10,
                     }}>
                     <View>
                       <Text style={styles.titreOff2}> Paramètres </Text>
@@ -370,6 +402,8 @@ const CompteScreen = ({ navigation, route }) => {
                     <View style={styles.hrbc}>
                       <Text>&nbsp;</Text>
                     </View>
+
+
                     <View>
                       <MaterialIcons name="history-edu" size={24} color="#823a14" style={styles.icone} />
                       <Text

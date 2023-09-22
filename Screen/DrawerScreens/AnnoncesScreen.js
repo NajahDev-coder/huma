@@ -18,6 +18,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
+  Dimensions,
 } from 'react-native';
 
 import Loader from '../Components/Loader';
@@ -29,12 +30,14 @@ import GetType from '../Components/GetType';
 import GetProfile from '../Components/GetProfile';
 import FilterForm from './FilterForm';
 import RatingScreen from '../Components/RatingScreen';
-
-import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
-const AnnoncesScreen = ({ navigation }) => {
+import BarFilter from './BarFilter';
+const AnnoncesScreen = ({ navigation, route }) => {
+  const filterN = route.params?.filter;
+  //alert('filter accuiel:' + filterN)
   const [AnnoncesList, setAnnoncesList] = useState([]);
 
   const [filter, setFilter] = useState(JSON.stringify({ "adresse": "", "titre": "", "type": "", "categorie": "", "dateStart": "", "dateEnd": "" }));
+  //const [filter, setFilter] = useState(JSON.stringify(filterN));
   const [loading, setLoading] = useState(false);
   const [zIndexF, setZindexF] = useState(1);
   const [result, setResultat] = useState(<Loader loading={true} />);
@@ -42,21 +45,34 @@ const AnnoncesScreen = ({ navigation }) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-      GetFilter();
-      fetchData();
-    }, 1000);
+    // setTimeout(() => {
+    setRefreshing(false);
+    GetFilter();
+    fetchData();
+    // }, 1000);
   }, []);
-  const GetFilter = async () => {
+  const GetFilterForm = async () => {
+    setLoading(true);
+    setResultat(<Loader loading={true} />)
+    setAnnoncesList([]);
     await AsyncStorage.getItem('add_filter').then((value) => {
       //  console.log('value  filter:', value);
 
       if (value != null && !Object.is(filter, value)) {
         setFilter(value);
       }
-
+      else {
+        setFilter(filterN);
+      }
     });
+    setLoading(false);
+  }
+  const GetFilter = async () => {
+    setLoading(true);
+    setResultat(<Loader loading={true} />)
+    setAnnoncesList([])
+    setFilter(filterN);
+    setLoading(false)
   }
 
 
@@ -80,38 +96,29 @@ const AnnoncesScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    setLoading(true)
+
     let isSubscribed = true;
 
 
-    //if (isSubscribed) {
-    setTimeout(() => {
+    if (isSubscribed) {
       GetFilter();
-      // alert(filter)
-      //if (Object.keys(filter).length > 0) {
-      // setAnnoncesList([])
-      setResultat(<Loader loading={true} />);
-      setLoading(false);
       fetchData();
-      //}
-    }, 100)
-    const intervalId = setInterval(() => {
-      // alert('rr');
-      fetchData();
-    }, 1000 * 5)
-    return () => clearInterval(intervalId)
-    //}
-    //return () => { isSubscribed = false }
-  }, [filter])
+    }
+
+    return () => { isSubscribed = false }
+  }, [filter, route.params?.filter])
+  //}, [])
 
 
   const isdivisibleNine = (num) => {
+
     var myArr = 0;
     String(num).split("").map((num) => {
       myArr += Number(num)
     })
-    //console.log('num::', num);
-    if (myArr == 9 || myArr == 18) return true;
+    if (myArr == 9 || myArr == 18) {
+      return true;
+    }
     return false;
   }
 
@@ -126,106 +133,98 @@ const AnnoncesScreen = ({ navigation }) => {
           contentContainerStyle={{
             alignContent: 'center',
           }}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }>
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
 
           <View style={{ zIndex: zIndexF, position: 'absolute', top: 0, right: 0, height: 70, width: '100%', zIndex: 100 }}>
-            <FilterForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
+            <BarFilter navigation={navigation} />
           </View>
 
 
-          <View style={{ padding: 10, flex: 1, zIndex: 2, width: '100%', marginTop: 70 }}>
+          <View style={{ padding: 10, flex: 1, zIndex: 2, width: '100%', marginTop: 70, minHeight: Dimensions.get('window').height - 100 }}>
             <View style={styles.row}>
-              {loading ? <Loader loading={loading} /> :
-                (AnnoncesList.length > 0 ? (
-                  <FlatList
-                    data={AnnoncesList}
-                    renderItem={({ item }) => (
-                      <>
-                        <TouchableOpacity
-                          key={item.ID_ance}
-                          onPress={() => {
-                            ShowDetailAnnonce(
-                              item.ID_ance,
-                              navigation
-                            );
-                          }}
-                          style={styles.post}>
-                          <View style={styles.bcBlock}>
+              {loading ? <Loader loading={loading} /> : (
+                <>
+                  {AnnoncesList.length > 0 ? AnnoncesList.map((item, key) => (
+                    <>
+                      <TouchableOpacity
+                        key={item.ID_ance}
+                        onPress={() => {
+                          ShowDetailAnnonce(
+                            item.ID_ance,
+                            navigation
+                          );
+                        }}
+                        style={styles.post}>
+                        <View style={styles.bcBlock}>
 
 
 
-                            <GetProfile user_id={item.user_id} navigation={navigation} img_prof={item.img_prof} />
+                          <GetProfile user_id={item.user_id} navigation={navigation} img_prof={item.img_prof} />
 
-                            <View style={styles.bcDetaille}>
-                              <Text style={styles.postLabel}>{item.nom}</Text>
-                              <RatingScreen user_id1={item.user_id} user_id2={0} />
-                              <Text style={styles.postLabel}>
-                                {item.titre}
-                              </Text>
-                              <Text style={styles.postLabel2}>
-                                Description:
-                              </Text>
-                              <Text style={styles.bcText}>
-                                {item.court_description}
-                              </Text>
-                            </View>
+                          <View style={styles.bcDetaille}>
+                            <Text style={styles.postLabel}>{item.nom}</Text>
+                            <RatingScreen user_id1={item.user_id} user_id2={0} />
+                            <Text style={styles.postLabel}>
+                              {item.titre}
+                            </Text>
+                            <Text style={styles.postLabel2}>
+                              Description:
+                            </Text>
+                            <Text style={styles.bcText}>
+                              {item.court_description}
+                            </Text>
                           </View>
-
-
-                          {item.Adresse_ance.length != 0 && (
-                            <View style={styles.bcBlock2}>
-                              <Text style={styles.bcText2}>
-                                <Entypo name="location-pin" size={20} color="grey" />
-
-                                {item.Adresse_ance}
-                              </Text>
-                            </View>
-                          )}
-                          <View style={styles.bcBlock}>
-                            <View style={styles.btCateg}>
-                              <View style={styles.blocDeco}></View>
-                              <GetCategorie id_annonce={item.categorie} />
-
-                              <View style={styles.blocDeco2}></View>
-                            </View>
-                            <View style={styles.btType}>
-
-                              <View style={styles.blocDeco}></View>
-                              <GetType id_annonce={item.type} />
-
-                              <View style={styles.blocDeco2}></View>
-                            </View>
-                          </View>
-                        </TouchableOpacity>
-                        <View>
-                          {isdivisibleNine(item.ID_ance) && (
-                            <View style={styles.post}>
-
-                              <PublicitesSlideshow key={item.ID_ance} navigation={navigation} rang={item.ID_ance} />
-
-                            </View>
-                          )}
                         </View>
-                      </>
-                    )}
 
-                    keyExtractor={item => item.ID_ance}
-                    style={{ minHeight: 600 }}
-                  />
-                ) : (
 
-                  <View style={{ width: '100%' }}>
-                    <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: '50%', padding: '25%' }}>
+                        {item.Adresse_ance.length != 0 && (
+                          <View style={styles.bcBlock2}>
+                            <Text style={styles.bcText2}>
+                              <Entypo name="location-pin" size={20} color="grey" />
 
-                      <Text style={{ color: '#777777', textAlign: 'center', }}>{result}</Text>
+                              {item.Adresse_ance}
+                            </Text>
+                          </View>
+                        )}
+                        <View style={styles.bcBlock}>
+                          <View style={styles.btCateg}>
+                            <View style={styles.blocDeco}></View>
+                            <GetCategorie id_annonce={item.categorie} />
+
+                            <View style={styles.blocDeco2}></View>
+                          </View>
+                          <View style={styles.btType}>
+
+                            <View style={styles.blocDeco}></View>
+                            <GetType id_annonce={item.type} />
+
+                            <View style={styles.blocDeco2}></View>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                      <View>
+                        {isdivisibleNine(key) && (
+
+                          <PublicitesSlideshow navigation={navigation} rang={key} />
+
+                        )}
+                      </View>
+                    </>
+
+                  )) : (
+
+                    <View style={{ width: '100%' }}>
+                      <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: '50%', padding: '25%' }}>
+
+                        <Text style={{ color: '#777777', textAlign: 'center', }}>{result}</Text>
+                      </View>
+
                     </View>
+                  )}
+                </>
 
-                  </View>
-
-
-                ))}
+              )}
             </View>
           </View>
         </ScrollView>

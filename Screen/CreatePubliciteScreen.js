@@ -122,13 +122,14 @@ export default function CreatePubliciteScreen(props) {
     const fetchUrl = `publicite/create`;
     const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
 
-    ////console.log('responseJson create publicite:', responseJson)
+    console.log('responseJson create publicite:', responseJson)
 
     //Hide Loader
     setLoading(false);
     var dataToSend;
     if (responseJson.status) {
-      ////console.log('Photo', responseJson);
+      const idPub = responseJson.data.insertId;
+
       if (Photo != '') {
         dataToSend = {
           imgsource: Photo.assets[0].base64,
