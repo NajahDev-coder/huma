@@ -2,6 +2,7 @@
 
 # Requirements 
 react >= 18.2.0
+
 react-native >= 0.71.8
 npm >= 9.6.4
 Nodejs >=  v14.17.6
@@ -18,6 +19,7 @@ React - React
 React Native - React Native
 Axios - Axios
 Nodejs 
+Snack Expo
 
 Install the dependencies and start the server.
 
@@ -27,14 +29,21 @@ npm install
 # Run
 npx expo start
 
-open Expo (web / android /ios) to scan qr code and excute
+You can preview the changes directly on your phone or tablet by scanning the **QR code** or use the iOS or Android emulators. 
 
 # Available Scripts
 In the project directory, you can run:
- ## "start:staging": "APP_ENV=staging npx  expo start ",
- ## "android:staging": "APP_ENV=staging npx expo run:android",
- ## "ios:staging": "APP_ENV=staging npx expo run:ios",
- ## "web:staging": "APP_ENV=staging npx expo start --web"
+ ### `start:staging`:
+ "APP_ENV=staging npx  expo start ",
+ 
+ ### `android:staging`:
+ "APP_ENV=staging npx expo run:android",
+ 
+ ### `ios:staging`: 
+ "APP_ENV=staging npx expo run:ios",
+ 
+ ### `web:staging`: 
+ "APP_ENV=staging npx expo start --web"
 
  
 # huma_ex
