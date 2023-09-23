@@ -1,12 +1,39 @@
-# Sample Snack app
+# Don & exchange  App
 
-Open the `App.js` file to start writing some code. You can preview the changes directly on your phone or tablet by scanning the **QR code** or use the iOS or Android emulators. When you're done, click **Save** and share the link!
+Requirements 
+react >= 18.2.0
+react-native >= 0.71.8
+npm >= 9.6.4
+Nodejs >=  v14.17.6
 
-When you're ready to see everything that Expo provides (or if you want to use your own editor) you can **Download** your project and use it with [expo-cli](https://docs.expo.io/get-started/installation).
+Version
+1.0.0
 
-All projects created in Snack are publicly available, so you can easily share the link to this project via link, or embed it on a web page with the `<>` button.
+Installation
+Download zip file and extract it latest pre-built release. Or clone the repository and cd into it.
 
-If you're having problems, you can tweet to us [@expo](https://twitter.com/expo) or ask in our [forums](https://forums.expo.io/c/snack).
+Weather-App uses a number of open source projects to work properly:
 
-Snack is Open Source. You can find the code on the [GitHub repo](https://github.com/expo/snack).
+React - React
+Bootstrap - Bootstrap
+Axios - Axios
+Lodash - Lodash
+Install the dependencies and start the server.
+
+cd huma
+npm install
+
+Run
+npx expo start
+
+open expo (web / android /ios) to scan qr code and excute
+
+Available Scripts
+In the project directory, you can run:
+ "start:staging": "APP_ENV=staging npx  expo start ",
+ "android:staging": "APP_ENV=staging npx expo run:android",
+ "ios:staging": "APP_ENV=staging npx expo run:ios",
+ "web:staging": "APP_ENV=staging npx expo start --web"
+
+ 
 # huma_ex
