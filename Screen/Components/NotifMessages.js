@@ -6,11 +6,11 @@ const NotifMessages = ({ color }) => {
 
 
   useEffect(() => {
-    getTotalMsgNnLu();
+    /*getTotalMsgNnLu();
     const intervalId = setInterval(() => {
       // alert('rr');
       getTotalMsgNnLu();
-    }, 1000 * 5)
+    }, 1000 * 10)*/
   }, [global.TotalMsgNonLU])
 
   return (

@@ -16,13 +16,13 @@ import {
   Alert,
   Pressable
 } from 'react-native';
+import ModalAlert from '../ModalAlert';
 import RadioGroup from 'react-native-radio-buttons-group';
-import { initStripe } from '@stripe/stripe-react-native';
+import { initStripe, useStripe } from '@stripe/stripe-react-native';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
-import { useStripe } from '@stripe/stripe-react-native';
+
 import Button from '../Components/Button';
-import PaymentScreen from '../Components/PaymentScreen';
-import ModalScreenIsVIP from '../ModalIsVIP';
+
 
 //import { API_URL } from '../Config';
 
@@ -41,6 +41,8 @@ const DonateScreen = ({ navigation }) => {
   const [DonateDuree, setDonateDuree] = useState(12);
   const [choixDuree, setChoixDuree] = useState('PAR MOIS');
   const [NbreDuree, setNbreDuree] = useState(1);
+  const [isAlert, setIsAlert] = useState(false);
+  const [MsgAlerte, setMsgAlert] = useState('');
 
   const fetchPaymentSheetParams = async (duree, amount) => {
     const apiuRL = `donate/${amount}/${duree}`
@@ -60,13 +62,13 @@ const DonateScreen = ({ navigation }) => {
   async function initialize(amount, duree) {
 
     const publishableKey = await fetchPublishableKeyDonate(amount, duree);
-    console.log('publishableKey:::', publishableKey);
+    //console.log('publishableKey:::', publishableKey);
     if (publishableKey) {
       const response = await initStripe({
         publishableKey,
         merchantIdentifier: 'merchant.com.HüMA'
       });
-      console.log('response stripe:', response)
+      // console.log('response stripe:', response)
 
     }
   }
@@ -76,28 +78,35 @@ const DonateScreen = ({ navigation }) => {
 
     await initialisePaymentSheet(duree, amount);
 
-
-    if (!clientSecret) {
-      Alert.alert(`Une erreur est survenue lors de la tentative de traitement de votre demande!`);
-      setLoading(false);
-      return;
-    }
+    console.log('clientSecret:::', clientSecret)
+    /* if (!clientSecret) {
+ 
+       setLoading(false);
+       // Alert.alert(`Une erreur est survenue lors de la tentative de traitement de votre demande!`);
+       Alert.alert(`Réessayez. Désolé. Une erreur est survenue!`);
+ 
+       return;
+ 
+     }*/
     const { error } = await presentPaymentSheet({
       clientSecret,
     });
     setLoading(false);
     if (error) {
-      Alert.alert(`Error code: ${error.code}`, error.message);
+      Alert.alert(`Réessayez. Désolé. Une erreur est survenue!`, error.message);
     } else {
 
       InsertDonation(global.User_connecte, amount, duree);
       //initialisePaymentSheet(choix, amount)
-      let actv = `Vous avez fait don de  ${amount}€ pour  ${duree} mois!`;
+      let actv = `Vous avez Fait un Don de  ${amount}€ pour  ${duree} mois!`;
       Add_historique(global.User_connecte, actv, global.User_connecte);
 
 
-      Alert.alert('Success', 'Votre don nous a beaucoup touché et nous vous remercions vivement pour ce geste!');
-      navigation.navigate('Accueil')
+      const msg = "Votre Don nous a beaucoup touché et nous vous remercions vivement pour ce geste!";
+      setMsgAlert(msg);
+      setIsAlert(true);
+
+
     }
     setPaymentSheetEnabled(false);
     //setLoading(false);
@@ -196,7 +205,9 @@ const DonateScreen = ({ navigation }) => {
     }
   ]), []);
 
+  useEffect(() => {
 
+  }, [isAlert])
 
   return (
     <>
@@ -271,7 +282,9 @@ const DonateScreen = ({ navigation }) => {
                     </View>
                   </View>
 
-
+                  {isAlert && (
+                    <ModalAlert msgAlerte={MsgAlerte} action={() => { navigation.navigate('Accueil'); }} />
+                  )}
                 </KeyboardAvoidingView>
               </View>
             </ScrollView>

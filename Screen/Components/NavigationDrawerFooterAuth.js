@@ -13,9 +13,8 @@ import CompteScreen from '../CompteScreen';
 import { getTotalMsgNnLu } from '../utils/utils';
 import MesMessages from '../DrawerScreens/MesMessages';
 
-//import NotifMessages from './NotifMessages';
 import TypeScreen from '../TypeScreen';
-//import DrawerNavigatorAuthRoutes from '../DrawerNavigationAuthRoutes'
+import FilterForm from '../DrawerScreens/FilterForm';
 const Tab = createBottomTabNavigator();
 
 export default function NavigationBottomTabsAuth(props) {
@@ -30,10 +29,11 @@ export default function NavigationBottomTabsAuth(props) {
     )
   }
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      // alert('rr');
-      getTotalMsgNnLu();
-    }, 1000 * 5)
+
+    // alert('rr');
+    //getTotalMsgNnLu();
+
+
   }, [global.TotalMsgNonLU])
 
   return (

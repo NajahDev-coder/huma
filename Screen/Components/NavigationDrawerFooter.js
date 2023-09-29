@@ -13,7 +13,7 @@ import CompteScreen from '../CompteScreen';
 import MembresScreen from '../DrawerScreens/MembresScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TypeScreen from '../TypeScreen';
-
+import AnnonceScreenStack from './NavigationAnnoncesScreen';
 const Tab = createBottomTabNavigator();
 
 export default function NavigationBottomTabs(props) {
@@ -46,7 +46,7 @@ export default function NavigationBottomTabs(props) {
         }}
       />
       <Tab.Screen
-        name="AnnoncesB"
+        name="AnnoncesBottom"
         component={AnnoncesScreen}
         options={{
           headerShown: false,

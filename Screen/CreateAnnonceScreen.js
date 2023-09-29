@@ -58,7 +58,10 @@ export default function CreateAnnonceScreen(props) {
   const [adresse, setAdresse] = useState('');
   const [codePostal, setCodePostal] = useState('');
   const [proposLivraison, setProposLivraison] = useState(0);
-  const [qty, setQty] = useState(0);
+  const [qty, setQty] = useState(1);
+  const [Type, setType] = useState(null);
+  const [Categ, setCateg] = useState(null);
+  const [Auteur, setAuteur] = useState(null);
 
   //const Dateauj = new Date().getDate();
   /*const [type, setType] = useState('');
@@ -74,6 +77,7 @@ export default function CreateAnnonceScreen(props) {
   const [LinkVedio, setLinkVedio] = useState('');
   const [UserID, setUserID] = useState(null);
   const [isAlert, setIsAlert] = useState(false);
+  const [IsRedirect, setIsRedirect] = useState(false);
   const [MsgAlerte, setMsgAlert] = useState('');
   const titreInputRef = createRef();
   const link_vedioRef = createRef();
@@ -85,20 +89,25 @@ export default function CreateAnnonceScreen(props) {
 
 
   useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      getPresInfoAnce();
+    }
+    return () => (isMounted = false);
 
-  }, [isCreationSuccess])
+  }, [])
 
-
-  const handleSubmitButton = async (e) => {
-    e.preventDefault();
-
+  const getPresInfoAnce = async () => {
     const type = await AsyncStorage.getItem('type_id');
+    setType(type);
     const categorie = await AsyncStorage.getItem('categ_id');
+    setCateg(categorie);
     const auteur = await AsyncStorage.getItem('user_email');
-    // const user_id = await AsyncStorage.getItem('user_id');
+    setAuteur(auteur);
+  }
 
-
-    setErrortext('');
+  const handleSubmitButton = async () => {
+    setIsAlert(false);
     if (!titre) {
       const msg = "Veuillez remplir le titre de votre annonce";
       setMsgAlert(msg);
@@ -136,12 +145,12 @@ export default function CreateAnnonceScreen(props) {
       linkVedio: LinkVedio,
       court_description: court_description,
       description: description,
-      auteur: auteur,
+      auteur: Auteur,
       adresse: adresse,
       latitude: latitude,
       longitude: longitude,
-      type: type,
-      categorie: categorie,
+      type: Type,
+      categorie: Categ,
       propos_livraison: proposLivraison,
       qty: qty
     };
@@ -161,8 +170,13 @@ export default function CreateAnnonceScreen(props) {
       Add_historique(global.User_connecte, activite, global.User_connecte);
 
       if (Photo) {
+        var Imgsource;
+        if (typeof Photo.assets != 'undefined')
+          Imgsource = Photo.assets[0].base64;
+        else
+          Imgsource = Photo.base64;
         var dataToSendPhoto = {
-          imgsource: Photo.assets[0].base64,
+          imgsource: Imgsource,
           annonce_id: responseJson.data.insertId,
           user_id: global.User_connecte,
           num: 1
@@ -170,8 +184,13 @@ export default function CreateAnnonceScreen(props) {
         SaveImage(dataToSendPhoto);
       }
       if (Photo2) {
+        var Imgsource2;
+        if (typeof Photo2.assets != 'undefined')
+          Imgsource2 = Photo2.assets[0].base64;
+        else
+          Imgsource2 = Photo2.base64;
         var dataToSendPhoto2 = {
-          imgsource: Photo2.assets[0].base64,
+          imgsource: Imgsource2,
           annonce_id: responseJson.data.insertId,
           user_id: global.User_connecte,
           num: 2
@@ -179,72 +198,31 @@ export default function CreateAnnonceScreen(props) {
         SaveImage(dataToSendPhoto2);
       }
       if (Photo3) {
+        var Imgsource3;
+        if (typeof Photo3.assets != 'undefined')
+          Imgsource3 = Photo3.assets[0].base64;
+        else
+          Imgsource3 = Photo3.base64;
         var dataToSendPhoto3 = {
-          imgsource: Photo3.assets[0].base64,
+          imgsource: Imgsource3,
           annonce_id: responseJson.data.insertId,
           user_id: global.User_connecte,
           num: 3
         }
         SaveImage(dataToSendPhoto3);
       }
-      // CameraImage.IdAnnonceImage(capturedImage,responseJson.ID)
-      setIsCreationSuccess(true);
-      setTimeout(function () {
-        setIsCreationSuccess(false);
-      }, 2000);
-      //console.log('Création annonce réussi!');
-      //console.log(responseJson.status)
+
+      const msg = "Création annonce réussie!";
+      setMsgAlert(msg);
+      setIsAlert(true);
+      setIsRedirect(true);
     } else {
-      setErrortext('Création annonce échouée!');
+      const msg = "Création annonce échouée!!";
+      setMsgAlert(msg);
+      setIsAlert(true);
     }
   };
 
-  if (isCreationSuccess) {
-    return (
-      <View style={styles.mainBody}>
-        <ImageBackground
-          source={{ uri: Base_url + 'images/bg_screen.png' }}
-          resizeMode="cover"
-          style={styles.image}>
-          <Loader loading={loading} />
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              alignContent: 'center',
-            }}>
-
-            <View>
-              <KeyboardAvoidingView enabled>
-                <View style={{ alignItems: 'center', margin: 20 }}>
-                  <Image
-                    source={{ uri: `${Base_url}images/success.png` }}
-                    style={{
-                      height: 150,
-                      resizeMode: 'contain',
-                      alignSelf: 'center',
-                    }}
-                  />
-                  <Text style={styles.successTextStyle}>
-                    Annonce crée avec success!
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.buttonStyle}
-                    activeOpacity={0.5}
-                    onPress={() => props.navigation.navigate('Annonces')}>
-                    <Text style={styles.buttonTextStyle}>Liste Annonces</Text>
-                  </TouchableOpacity>
-                </View>
-                {isAlert && (
-                  <ModalAlert msgAlerte={MsgAlerte} />
-                )}
-              </KeyboardAvoidingView>
-            </View>
-          </ScrollView>
-        </ImageBackground>
-      </View>
-    );
-    //setIsCreationSuccess(false);
-  }
 
   return (
     <View style={styles.mainBody}>
@@ -271,20 +249,21 @@ export default function CreateAnnonceScreen(props) {
               />
             </View>
             {Photo ? (
-              <View style={styles.section2Img}>
-                <View style={styles.sectionStyleImg2}>
-                  <CameraImage
-                    captureImage={setPhoto3}
-                    PStyle={{ width: 80, height: 80 }}
-                    isinvisible={true}
+              <View style={styles.sectionThumbImg}>
 
-                  />
-                </View>
-                <View style={styles.sectionStyleImg2}>
+                <View style={styles.sectionStyleThumbImg}>
                   <CameraImage
                     captureImage={setPhoto2}
-                    PStyle={{ width: 80, height: 80 }}
+                    PStyle={styles.thumbSizeIMg}
                     isinvisible={true}
+                  />
+                </View>
+                <View style={styles.sectionStyleThumbImg}>
+                  <CameraImage
+                    captureImage={setPhoto3}
+                    PStyle={styles.thumbSizeIMg}
+                    isinvisible={true}
+
                   />
                 </View>
               </View>
@@ -292,7 +271,7 @@ export default function CreateAnnonceScreen(props) {
               <></>
             )}
             <View style={styles.sectionStyleSwitch}>
-              <Text style={styles.labelStyle}>Livraison </Text>
+              <Text style={styles.labelStyle}>Livraison Possible</Text>
               <Switch
                 trackColor={{ true: '#6cc5d5', false: '#6cc5d5' }}
                 thumbColor={proposLivraison ? '#6cc5d5' : '#D6ECF0'}
@@ -307,7 +286,7 @@ export default function CreateAnnonceScreen(props) {
                 style={styles.inputStyle}
                 onChangeText={(titre) => setTitre(titre)}
                 underlineColorAndroid="#f000"
-                placeholder="Entrez Le Titre  "
+                placeholder="Titre  "
                 placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
 
@@ -321,7 +300,7 @@ export default function CreateAnnonceScreen(props) {
                   setCourtDescription(court_description)
                 }
                 underlineColorAndroid="#f000"
-                placeholder="Entrez votre courte description"
+                placeholder="Courte description"
                 placeholderTextColor="#6cc5d5"
                 keyboardType="email-address"
 
@@ -334,7 +313,7 @@ export default function CreateAnnonceScreen(props) {
               <RichEditor
                 ref={descriptionInputRef}
                 onChange={(description) => setDescription(description)}
-                placeholder="Entrez votre description"
+                placeholder="Description"
                 androidHardwareAccelerationDisabled={true}
                 style={styles.richTextEditorStyle}
                 initialHeight={250}
@@ -361,7 +340,7 @@ export default function CreateAnnonceScreen(props) {
 
             <View style={styles.sectionStyle2}>
               <GooglePlacesAutocomplete
-                placeholder="Entrez la localisation  "
+                placeholder="Localisation  "
                 query={{
                   key: GooglePlacesApiKey,
                   language: 'fr', // language of the results
@@ -401,27 +380,29 @@ export default function CreateAnnonceScreen(props) {
                 onChangeText={(LinkVedio) => setLinkVedio(LinkVedio)}
                 keyboardType='url'
                 underlineColorAndroid="#f000"
-                placeholder="Entrez le Lien vidéo sans http(s):// "
+                placeholder="Vidéo (sans http(s)://) "
                 placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
                 multiline={true}
               />
             </View>
-            <View style={styles.sectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(qty) => setQty(qty)}
-                keyboardType='numeric'
-                value={qty.toString()}
-                underlineColorAndroid="#f000"
-                placeholder="quantité "
-                placeholderTextColor="#6cc5d5"
-                autoCapitalize="sentences"
-                multiline={false}
-              />
-            </View>
+            {Type != 6 && (
+              <View style={styles.sectionStyle}>
 
-            <Text style={styles.errorTextStyle}>{errortext}</Text>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(qty) => setQty(qty)}
+                  keyboardType='numeric'
+                  value={qty.toString()}
+                  underlineColorAndroid="#f000"
+                  placeholder="Quantité "
+                  placeholderTextColor="#6cc5d5"
+                  autoCapitalize="sentences"
+                  multiline={false}
+                />
+              </View>
+            )}
+
 
             <TouchableOpacity
               style={styles.buttonStyle}
@@ -429,9 +410,11 @@ export default function CreateAnnonceScreen(props) {
               onPress={handleSubmitButton}>
               <Text style={styles.buttonTextStyle}>Valider</Text>
             </TouchableOpacity>
+
             {isAlert && (
-              <ModalAlert msgAlerte={MsgAlerte} />
+              <ModalAlert msgAlerte={MsgAlerte} action={() => (IsRedirect ? props.navigation.navigate('MesAnnonces') : null)} />
             )}
+
           </KeyboardAvoidingView>
         </ScrollView>
       </ImageBackground>
@@ -457,20 +440,24 @@ const styles = StyleSheet.create({
     marginRight: 25,
     margin: 10,
   },
-  section2Img: {
+  sectionThumbImg: {
     flexDirection: 'row',
-    height: 80,
+    height: 100,
     marginTop: 10,
     marginBottom: 10,
     marginLeft: 25,
     marginRight: 25,
   },
-  sectionStyleImg2: {
+  sectionStyleThumbImg: {
     flexDirection: 'row',
-    height: 80,
-    width: 80,
+    height: 100,
+    width: 100,
     marginLeft: 5,
     marginRight: 5,
+  },
+  thumbSizeIMg: {
+    height: 100,
+    width: 100,
   },
   sectionStyle: {
     flexDirection: 'row',
@@ -519,17 +506,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: '#D6ECF0',
   },
-  errorTextStyle: {
-    color: 'red',
-    textAlign: 'center',
-    fontSize: 14,
-  },
-  successTextStyle: {
-    color: '#c4d63c',
-    textAlign: 'center',
-    fontSize: 18,
-    padding: 30,
-  },
+
   richTextContainer: {
     display: 'flex',
     flexDirection: 'column-reverse',

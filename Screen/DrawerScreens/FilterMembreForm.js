@@ -39,15 +39,9 @@ const workPlace = {
   description: 'Work',
   geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
 };
-const windowWidth = Dimensions.get('window').width - 50;
-const windowheight = Dimensions.get('window').height / 2 - 50;
 
-/*const currentPlace = {
-      description: 'Position',
-      geometry: { location: { lat: null, lng: null } },
-    };*/
 const FilterMembreForm = ({ OnFilter, OnIndex }) => {
-  //const [categorie, setCategorie] = useState(0);
+
   const [Type, setType] = useState('');
   const [localisation, setLocalisation] = useState('');
   const [etat, setEtat] = useState(0);
@@ -62,7 +56,6 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
   const [fadeAnimation] = useState(new Animated.Value(0));
   const [RefreshKey, setRefreshKey] = useState(0);
 
-  const [windowHeight, setWindowHeight] = useState(70)
 
   const TypeList = [
     { key: 'Simple', value: 'Simple' },
@@ -106,22 +99,13 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
     ShowAllFilter(1);
   };
   const ShowAllFilter = (stat) => {
-    //console.log(fadeAnimation);
-
-    //const stat = JSON.stringify(fadeAnimation) == '1' ? 0 : 1;
-
-    //alert(stat);
-    //const duration = JSON.stringify(fadeAnimation) == '1' ? 100 : 500
-    // console.log('stat', stat);
 
     setEnable(!stat);
     if (stat == 0) {
-      setWindowHeight(windowheight)
       setIcoFilter("filter-variant-minus");
       OnIndex(20);
     }
     else {
-      setWindowHeight(70)
       setIcoFilter("filter-variant-plus");
       OnIndex(1);
     }
@@ -143,7 +127,7 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
 
     }
     return () => (isSubscribed = false);
-  }, [RefreshKey, windowHeight, Enable]);
+  }, [RefreshKey, Enable]);
 
 
 
@@ -151,7 +135,7 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
   return (
 
 
-    <View style={[styles.rowF, { height: windowHeight }]}>
+    <View style={styles.rowF}>
 
       <View style={styles.rowAC}>
         <GooglePlacesAutocomplete
@@ -184,7 +168,7 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
               borderColor: '#646363',
               backgroundColor: 'transparent',
               width: '75%',
-              height: 35,
+              marginLeft: 5,
               fontSize: 11
             },
             predefinedPlacesDescription: {
@@ -202,7 +186,8 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
       </View>
 
       {Enable == true && (
-        <View style={styles.showfilter}>
+
+        <View>
           <View style={styles.row}>
             <TextInput
               selectedValue={titreF}
@@ -222,11 +207,11 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
           <View style={styles.row}>
 
             <SelectList
-              //dropdownShown={false}
-              setSelected={(val) => { setType(val); setWindowHeight((oldKey) => oldKey + 80) }}
-              onSelect={() => { AddFilter() }}
+              dropdownShown={false}
+              setSelected={(val) => { setType(val); }}
+              onSelect={() => { AddFilter(); }}
               data={TypeList}
-              boxStyles={{ borderRadius: 30, padding: 5, marginBottom: 5 }}
+              boxStyles={{ borderRadius: 30, padding: 5, marginBottom: -10 }}
               inputStyles={{ fontSize: 12, color: '#5a5959' }}
               dropdownStyles={styles.dropselectStyle}
               dropdownItemStyles={styles.itemdropselectStyle}
@@ -252,6 +237,7 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
 
           </View>
         </View>
+
       )}
 
     </View>
@@ -262,12 +248,15 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
 
 const styles = StyleSheet.create({
   row: {
-    flexDirection: 'column',
-    //flexWrap: 'wrap',
-    width: '100%',
-    paddingLeft: Platform.OS == 'web' ? 0 : 12
+
+    width: '98%',
+    paddingLeft: Platform.OS == 'web' ? 0 : 10,
+    marginVertical: 2
   },
   rowF: {
+    flex: 1,
+    justifyContent: 'center',
+    alignContent: 'center',
     paddingVertical: 15,
     paddingHorizontal: 10,
     backgroundColor: '#ffffff',
@@ -283,6 +272,7 @@ const styles = StyleSheet.create({
 
   },
   rowBT: {
+    marginTop: 20,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'flex-end',
@@ -298,7 +288,7 @@ const styles = StyleSheet.create({
   showfilter: {
     //flexDirection: 'column',
     //flexWrap: 'wrap',
-    width: '93%',
+    width: '100%',
     padding: 5,
     position: 'absolute',
     top: 60,
@@ -322,11 +312,11 @@ const styles = StyleSheet.create({
   inputStyle: {
     flex: 1,
     color: '#5a5959',
-    padding: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
     borderWidth: 1,
     borderRadius: 30,
     borderColor: '#646363',
-    height: 35,
     width: '100%',
     backgroundColor: 'transparent',
     marginBottom: 5,
@@ -368,9 +358,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     justifyContent: 'flex-end',
   },
-  dropselectStyle:
-    { backgroundColor: 'white', width: '100%' },
-  itemdropselectStyle:
-    { borderBottomWidth: 1, borderBottomColor: '#efefef' }
+  dropselectStyle: { backgroundColor: 'transparent', borderWidth: 0, width: '100%' },
+  itemdropselectStyle: { borderBottomWidth: 1, borderBottomColor: '#efefef' }
 });
 export default FilterMembreForm;

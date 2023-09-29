@@ -76,7 +76,7 @@ const MesFavAnnonces = ({ navigation, route }) => {
 
     //console.log('favoris', fetchUrl)
     const json = await RequestOptionsGet(fetchUrl);
-    console.log('favoris', json)
+    //console.log('favoris', json)
     if (json.length > 0) {
       setAnnoncesList(json)
     }

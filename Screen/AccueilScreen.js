@@ -75,7 +75,7 @@ const AccueilScreen = ({ navigation }) => {
   const [fadeAnimation] = useState(new Animated.Value(0));
   const [selectedValue, setSelectedValue] = useState(1);
   const [Oldkey, setOldkey] = useState(0);
-  const [NonVIP, setNonVIP] = useState(1);
+
   const [UserLocation, setUserLocation] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [timeShow, setTimeShow] = useState(false)
@@ -134,7 +134,7 @@ const AccueilScreen = ({ navigation }) => {
     let isSubscribed = true;
 
     if (isSubscribed) {
-      isVIP();
+      //   isVIP();
       fetchData();
       fadeIn();
       setTimeout(() => {
@@ -302,7 +302,7 @@ const AccueilScreen = ({ navigation }) => {
 
         </ScrollView>
       </ImageBackground>
-    </View >
+    </View>
   );
 };
 
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   buttonLabel: {
     //bottom: Platform.OS != 'web' ? 10 : 8,
     //position: 'absolute',
-    fontSize: 18,
+    fontSize: 16,
     color: '#ffffff',
     padding: 20,
     paddingTop: 60,

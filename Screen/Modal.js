@@ -17,12 +17,15 @@ const ModalScreenVIP = ({ navigation }) => {
         <View style={styles.centeredView}>
 
           <View style={styles.modalView}>
-            <Text style={styles.titleModal}>Membre Premium!</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+
+              <Text style={styles.titleModal}>Membre Premium!</Text>
+            </View>
             <Text><Feather name="check" size={24} color="#c4d63c" /> Publier  des annonces. </Text>
             <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres. </Text>
             <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
             <Text><Ionicons name="lock-closed" size={24} color="grey" />Vos Publicités Produits. <Text style={styles.viptxt}>(VIP)</Text> </Text>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
               <Pressable
                 style={styles.butt}
                 onPress={() => setModalVisible(!modalVisible)}>
@@ -47,7 +50,7 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    //alignItems: 'center',
     marginTop: 22,
 
   },
@@ -56,7 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
-    alignItems: 'center',
+    // alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -97,7 +100,8 @@ const styles = StyleSheet.create({
   },
   viptxt:
   {
-    color: 'red',
+    color: '#c4d63c',
+    fontWeight: 'bold'
   },
   titleModal:
   {
@@ -106,7 +110,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#c4d63c',
     borderBottomWidth: 5,
     paddingBottom: 20,
-    marginBottom: 10
+    marginBottom: 10,
+
   }
 });
 

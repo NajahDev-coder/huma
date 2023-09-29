@@ -2,8 +2,8 @@
 import React from 'react';
 import { Platform } from 'react-native'
 // Import Navigators from React Navigation
-import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
+import { createDrawerNavigator, Ionicons } from '@react-navigation/drawer';
 
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 // Import Screens
@@ -33,6 +33,9 @@ import MonAbonnementScreen from './DrawerScreens/MonAbonnementScreen';
 import ListEvaluations from './Components/ListEvaluations';
 import DonateScreen from './DrawerScreens/DonateScreen';
 import FilterForm from './DrawerScreens/FilterForm';
+import NavigationBackHeader from './Components/NavigationBackHeader';
+import PublicitesScreen from './DrawerScreens/PublicitesScreen';
+import EditPubliciteScreen from './EditPubliciteScreen';
 
 var AbonnementScreen;
 
@@ -50,7 +53,9 @@ const styleTitleLabel = {
 }
 const AnnonceScreenStack = ({ navigation }) => {
   return (
-    <Stack.Navigator initialRouteName="AnnoncesScreen">
+    <Stack.Navigator initialRouteName="AnnoncesScreen"
+
+    >
       <Stack.Screen
         name="Annonces"
         component={AnnoncesScreen}
@@ -120,13 +125,27 @@ const AnnonceScreenStack = ({ navigation }) => {
         }}
       />
       <Stack.Screen
-        name="Filter"
-        component={FilterForm} options={{
-
-          headerLeft: () => (
-            <NavigationDrawerHeader navigationProps={navigation} />
+        name="MesPublicites"
+        component={PublicitesScreen}
+        options={{
+          title: 'Publicités', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
           ),
-          title: '',
+        }}
+      />
+      <Stack.Screen
+        name="Filter"
+        component={FilterForm}
+        options={{
+          headerLeft: () => (
+            <NavigationBackHeader navigationProps={navigation} Screen='Accueil' />
+          ),
+          title: "",
+          headerTintColor: "#97ab00",
+          headerTitleStyle: { color: "#97ab00" },
+          cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid,
           headerRight: () => (
             <NavigationLogoHeader navigationProps={navigation} />
           ),
@@ -139,7 +158,9 @@ const AnnonceScreenStack = ({ navigation }) => {
 
 const HomeScreenStack = ({ navigation }) => {
   return (
-    <Stack.Navigator initialRouteStack="DrawerNavigatorAuthRoutes">
+    <Stack.Navigator initialRouteStack="DrawerNavigatorAuthRoutes"
+
+    >
       <Stack.Screen
         name="Accueil"
         component={NavigationBottomTabsAuth}
@@ -150,7 +171,7 @@ const HomeScreenStack = ({ navigation }) => {
           ),
           title: '',
           headerRight: () => (
-            <NavigationLogoNotifHeader navigationProps={navigation} />
+            <NavigationLogoNotifHeader navigationProps={navigation} enableAction={global.EnableAction} />
           ),
           headerStyle: {
             backgroundColor: '#FFFFFF', //Set Header
@@ -177,6 +198,8 @@ const HomeScreenStack = ({ navigation }) => {
         name="Compte"
         component={CompteScreen}
         options={{
+          cardStyleInterpolator:
+            CardStyleInterpolators.forFadeFromBottomAndroid,
           title: 'Profile', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' },
 
@@ -189,8 +212,16 @@ const HomeScreenStack = ({ navigation }) => {
         name="ListNotifications"
         component={ListNotifications}
         options={{
+          headerLeft: () => (
+            <NavigationBackHeader
+              navigationProps={navigation}
+              Screen='Accueil'
+
+            />
+          ),
           title: 'Notifications', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' },
+          cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid,
           headerRight: () => (
             <NavigationLogoHeader navigationProps={navigation} />
           ),
@@ -324,6 +355,17 @@ const HomeScreenStack = ({ navigation }) => {
         }}
       />
       <Stack.Screen
+        name="EditPublicite"
+        component={EditPubliciteScreen}
+        options={{
+          title: 'Modifier Publicité', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
+        }}
+      />
+      <Stack.Screen
         name='MonAbonnement'
         component={MonAbonnementScreen}
         options={{
@@ -345,12 +387,22 @@ const HomeScreenStack = ({ navigation }) => {
           ),
         }}
       />
-
+      <Stack.Screen
+        name="MesPublicites"
+        component={PublicitesScreen}
+        options={{
+          title: 'Publicités', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
+        }}
+      />
       <Stack.Screen
         name="Don"
         component={DonateScreen}
         options={{
-          title: 'Fait Don', headerTintColor: '#97ab00',
+          title: 'Faire un Don', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' },
           headerRight: () => (
             <NavigationLogoHeader navigationProps={navigation} />
@@ -359,12 +411,15 @@ const HomeScreenStack = ({ navigation }) => {
       />
       <Stack.Screen
         name="Filter"
-        component={FilterForm} options={{
-
+        component={FilterForm}
+        options={{
           headerLeft: () => (
-            <NavigationDrawerHeader navigationProps={navigation} />
+            <NavigationBackHeader navigationProps={navigation} Screen='Accueil' />
           ),
-          title: '',
+          title: "",
+          headerTintColor: "#97ab00",
+          headerTitleStyle: { color: "#97ab00" },
+          cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid,
           headerRight: () => (
             <NavigationLogoHeader navigationProps={navigation} />
           ),
@@ -376,7 +431,9 @@ const HomeScreenStack = ({ navigation }) => {
 
 const CreateAnnonceScreenStack = ({ navigation }) => {
   return (
-    <Stack.Navigator initialRouteName="TypeScreen">
+    <Stack.Navigator initialRouteName="TypeScreen"
+
+    >
       <Stack.Screen
         name="Type"
         component={TypeScreen}
@@ -425,7 +482,8 @@ const CreateAnnonceScreenStack = ({ navigation }) => {
 
 const MembresScreenStack = ({ navigation }) => {
   return (
-    <Stack.Navigator initialRouteName="MembresScreen">
+    <Stack.Navigator initialRouteName="MembresScreen"
+    >
       <Stack.Screen
         name="Membres"
         component={MembresScreen}
@@ -468,17 +526,8 @@ const MembresScreenStack = ({ navigation }) => {
           ),
         }}
       />
-      <Stack.Screen
-        name="ListNotifications"
-        component={ListNotifications}
-        options={{
-          title: 'Notifications', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' },
-          headerRight: () => (
-            <NavigationLogoHeader navigationProps={navigation} />
-          ),
-        }}
-      />
+
+
       <Stack.Screen
         name="Historique"
         component={HistoriqueScreen}
@@ -512,12 +561,24 @@ const MembresScreenStack = ({ navigation }) => {
           ),
         }}
       />
+      <Stack.Screen
+        name="MesPublicites"
+        component={PublicitesScreen}
+        options={{
+          title: 'Publicités', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
+        }}
+      />
     </Stack.Navigator>
   );
 };
 const MonCompteScreenStack = ({ navigation }) => {
   return (
-    <Stack.Navigator initialRouteName="CompteScreen">
+    <Stack.Navigator initialRouteName="CompteScreen"
+    >
       <Stack.Screen
         name="Compte"
         component={CompteScreen}
@@ -598,6 +659,17 @@ const MonCompteScreenStack = ({ navigation }) => {
         }}
       />
       <Stack.Screen
+        name="EditPublicite"
+        component={EditPubliciteScreen}
+        options={{
+          title: 'Modifier Publicité', headerTintColor: '#97ab00',
+          headerTitleStyle: { color: '#97ab00' },
+          headerRight: () => (
+            <NavigationLogoHeader navigationProps={navigation} />
+          ),
+        }}
+      />
+      <Stack.Screen
         name='MonAbonnement'
         component={MonAbonnementScreen} options={{
           title: 'Compte', headerTintColor: '#97ab00',
@@ -623,7 +695,7 @@ const MonCompteScreenStack = ({ navigation }) => {
         name="Don"
         component={DonateScreen}
         options={{
-          title: 'Fait Don', headerTintColor: '#97ab00',
+          title: 'Faire un Don', headerTintColor: '#97ab00',
           headerTitleStyle: { color: '#97ab00' },
           headerRight: () => (
             <NavigationLogoHeader navigationProps={navigation} />
@@ -636,7 +708,8 @@ const MonCompteScreenStack = ({ navigation }) => {
 
 const CreatePubliciteScreenStack = ({ navigation }) => {
   return (
-    <Stack.Navigator initialRouteName="CreatePubliciteScreen">
+    <Stack.Navigator initialRouteName="CreatePubliciteScreen"
+    >
       <Stack.Screen
         name="Ajout Publicite"
         component={CreatePubliciteScreen}
@@ -678,9 +751,10 @@ const CreatePubliciteScreenStack = ({ navigation }) => {
 
 const FaitDonScreenStack = ({ navigation }) => {
   return (
-    <Stack.Navigator initialRouteName="DonateScreen">
+    <Stack.Navigator initialRouteName="DonateScreen"
+    >
       <Stack.Screen
-        name="Fait Don"
+        name="Faire un Don"
         component={DonateScreen}
         options={{
           headerLeft: () => (
@@ -748,7 +822,7 @@ const DrawerNavigatorAuthRoutes = (props) => {
       <LeftDrawer.Screen
         name="Don"
         options={{
-          drawerLabel: 'Fait Don',
+          drawerLabel: 'Faire un Don',
           drawerIcon: ({ color, size }) => (
             <FontAwesome5 name="donate" size={24} color="#97ab00" />),
         }}

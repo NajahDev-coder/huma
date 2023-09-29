@@ -41,7 +41,7 @@ import {
   RichToolbar,
 } from 'react-native-pell-rich-editor';
 import { GooglePlacesApiKey } from "./utils/env"
-import { Base_url, SaveImage, RequestOptionsPost } from './utils/utils';
+import { Base_url, SaveImage, RequestOptionsPost, RequestOptionsGet, Add_historique } from './utils/utils';
 import FileUpload from './Components/FileUpload';
 import Loader from './Components/Loader';
 //import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
@@ -52,24 +52,17 @@ import ModalAlert from './ModalAlert';
 import CameraImage, { IdAnnonceImage } from './Components/CameraImageScreen';
 
 
-
-
-export default function CreatePubliciteScreen(props) {
-  //const auteur = 1;
-  const [titre, setTitre] = useState('');
-
-
-  //const Dateauj = new Date().getDate();
-  /*const [type, setType] = useState('');
-  const [categorie, setCategorie] = useState('');*/
-
+export default function EditPubliciteScreen({ navigation, route }) {
+  const id_publicite = route.params?.id_publicite;
+  const [Titre, setTitre] = useState('');
   const [loading, setLoading] = useState(false);
 
   const [show, setShow] = useState(true);
   const [Photo, setPhoto] = useState('');
+  const [PhotoNew, setPhotoNew] = useState('');
 
+  const [PreviewVisible, setPreviewVisible] = useState(false);
   const [isAlert, setIsAlert] = useState(false);
-
   const [IsRedirect, setIsRedirect] = useState(false);
   const [MsgAlerte, setMsgAlert] = useState('');
   const [LinkPublicite, setLinkPublicite] = useState('');
@@ -77,24 +70,39 @@ export default function CreatePubliciteScreen(props) {
   const titreInputRef = createRef();
   const link_vedioRef = createRef();
 
+  const fetchData = async () => {
 
+    const fetchUrl = `publicite/${id_publicite}`;
 
+    const responseJson = await RequestOptionsGet(fetchUrl);
 
+    if (responseJson.data.length > 0) {
+
+      setTitre(responseJson.data[0].titre);
+      setLinkPublicite(responseJson.data[0].lien)
+      if (responseJson.data[0].image != '') {
+        setPreviewVisible(true);
+        const imgPub = responseJson.data[0].image;
+        url_img = `${Base_url}images/${imgPub}`
+        setPhoto(url_img)
+      }
+    }
+    // setLoading(false);
+  };
 
   useEffect(() => {
-
+    let isMounted = true;
+    if (isMounted) {
+      fetchData();
+    }
+    return () => { isMounted = false }
   }, [])
 
 
   const handleSubmitButton = async () => {
 
-
-    setIsAlert(false)
-    const auteur = await AsyncStorage.getItem('user_email');
-    // const user_id = await AsyncStorage.getItem('user_id');
-
-
-    if (!titre) {
+    setIsAlert(false);
+    if (!Titre) {
       const msg = "Veuillez remplir le titre de votre publicite";
       setMsgAlert(msg);
       setIsAlert(true);
@@ -108,7 +116,7 @@ export default function CreatePubliciteScreen(props) {
       return;
     }
 
-    if (!Photo) {
+    if (!Photo && !PhotoNew) {
       const msg = "Veuillez ajouter une photo pour votre publicite";
       setMsgAlert(msg);
       setIsAlert(true);
@@ -128,45 +136,53 @@ export default function CreatePubliciteScreen(props) {
     }
 
     var dataToSend1 = {
-      id_user: global.User_connecte,
-      titre: titre,
+      id_publicite: id_publicite,
+      titre: Titre,
       lien: lienPub
     };
-    const fetchUrl = `publicite/create`;
+
+    const fetchUrl = `publicite/update`;
     const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
+
 
     //Hide Loader
     setLoading(false);
-    var dataToSend;
 
-    if (responseJson.status) {
-      const idPub = responseJson.data.insertId;
-      console.log('idPub:', idPub)
-      if (Photo != '') {
-        // console.log('photo::::', Photo.base64)
-        var urlPhoto;
-        if (typeof Photo.assets != 'undefined')
-          urlPhoto = Photo.assets[0].base64;
+    if (responseJson.status === 'success') {
+
+      const activite = "Votre Publicité est bien modifiée!"
+      Add_historique(global.User_connecte, activite, global.User_connecte);
+
+
+      if (PhotoNew) {
+        let update = false;
+        if (Photo) update = true;
+        var Imgsource;
+        if (typeof PhotoNew.assets != 'undefined')
+          Imgsource = PhotoNew.assets[0].base64;
         else
-          urlPhoto = Photo.base64;
+          Imgsource = PhotoNew.base64;
 
-        dataToSend = {
-          imgsource: urlPhoto,
-          pub_id: responseJson.data.insertId,
+        var dataToSendPhoto = {
+          imgsource: Imgsource,
+          pub_id: id_publicite,
           user_id: global.User_connecte,
-          num: 1
+          num: 1,
+          update: update
         }
-        SaveImage(dataToSend);
+
+        SaveImage(dataToSendPhoto);
       }
-      // CameraImage.IdAnnonceImage(capturedImage,responseJson.ID)
-      const msg = "Publicité crée avec success!";
+
+      const msg = "Publicité Modifiée avec success!";
       setMsgAlert(msg);
       setIsAlert(true);
       setIsRedirect(true);
 
     } else {
 
-      const msg = "Création publicité échouée!!";
+
+      const msg = "Modification publicite échouée!";
       setMsgAlert(msg);
       setIsAlert(true);
     }
@@ -190,19 +206,31 @@ export default function CreatePubliciteScreen(props) {
           }}>
           <KeyboardAvoidingView enabled>
             <View style={styles.sectionStyleImg}>
+              {PreviewVisible && Photo ? (
+                <ImageBackground
+                  source={{ uri: Photo }}
+                  style={{ width: '100%', height: 150, marginLeft: 5 }}>
+                  <View>
+                    <AntDesign name="picture" size={24} color="white" style={{ left: 5, top: 5 }} onPress={() => setPreviewVisible(false)} />
+                  </View>
 
-              <CameraImage
-                captureImage={setPhoto}
-                PStyle={{ width: '100%', height: 150 }}
-                isinvisible={true}
-              />
+                </ImageBackground>
+              )
+                : (
+                  <CameraImage
+                    captureImage={setPhotoNew}
+                    PStyle={{ width: '100%', height: 150 }}
+                    isinvisible={true}
+                  />
+                )}
             </View>
 
             <View style={styles.sectionStyle}>
               <TextInput
                 style={styles.inputStyle}
-                onChangeText={(titre) => setTitre(titre)}
+                onChangeText={(Titre) => setTitre(Titre)}
                 // underlineColorAndroid="#f000"
+                value={Titre}
                 placeholder="Titre  "
                 placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
@@ -214,12 +242,14 @@ export default function CreatePubliciteScreen(props) {
                 style={styles.inputStyle}
                 onChangeText={(val) => setLinkPublicite(val)}
                 // underlineColorAndroid="#f000"
+                value={LinkPublicite}
                 placeholder="Lien "
                 placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
                 multiline={true}
               />
             </View>
+
 
 
 
@@ -233,8 +263,9 @@ export default function CreatePubliciteScreen(props) {
             </TouchableOpacity>
 
             {isAlert && (
-              <ModalAlert msgAlerte={MsgAlerte} action={() => (IsRedirect ? props.navigation.navigate('MesPublicites') : null)} />
+              <ModalAlert msgAlerte={MsgAlerte} action={() => (IsRedirect ? navigation.navigate('MesPublicites') : null)} />
             )}
+
 
           </KeyboardAvoidingView>
         </ScrollView>

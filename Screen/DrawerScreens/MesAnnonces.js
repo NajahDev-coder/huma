@@ -39,7 +39,7 @@ import ModalSuppression from '../ModalSuppression'
 import { ViewProfile, ViewAnnonces, ShowDetailAnnonce, Base_url, RequestOptionsGet } from '../utils/utils'
 
 import { SelectList } from 'react-native-dropdown-select-list'
-import ActionDelete from '../Components/ActionDelete';
+import ActionGestion from '../Components/ActionGestion';
 import BarFilter from './BarFilter';
 
 const MesAnnonces = ({ navigation, route }) => {
@@ -60,7 +60,7 @@ const MesAnnonces = ({ navigation, route }) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    //setTimeout(() => {
+    //setTimeout(() => {  
     setRefreshing(false);
     GetFilter();
     fetchData();
@@ -79,7 +79,7 @@ const MesAnnonces = ({ navigation, route }) => {
 
   const fetchData = async () => {
     const detailFilter = encodeURIComponent(filter);
-    console.log(detailFilter)
+    //console.log(detailFilter)
     const fetchUrl = `mesannonces/${id_user}/${detailFilter}`;
     const json = await RequestOptionsGet(fetchUrl);
     ////console.log('json mesannonces', json)
@@ -170,8 +170,8 @@ const MesAnnonces = ({ navigation, route }) => {
                                 zIndex: 100
                               }}>
                               {global.User_connecte == id_user &&
-                                <View style={{ position: 'absolute', right: 0, top: 0 }}>
-                                  <ActionDelete navigation={navigation} id={item.ID_ance} type='annonce' msgAlerte={msgAlerte} />
+                                <View style={{ position: 'absolute', right: -8, top: -6, width: 100, zIndex: 100 }}>
+                                  <ActionGestion navigation={navigation} id={item.ID_ance} type='annonce' msgAlerte={msgAlerte} onAction={fetchData} />
                                 </View>
                               }
                             </View>
@@ -214,7 +214,7 @@ const MesAnnonces = ({ navigation, route }) => {
           </View>
         </ScrollView>
       </ImageBackground>
-    </View >
+    </View>
   );
 };
 let category = '';
@@ -266,7 +266,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     //justifyContent: 'end',
-    zIndex: 1
+    zIndex: 1,
+    marginTop: 5
   },
   bcProfile: {
     borderRadius: 60,
@@ -335,7 +336,8 @@ const styles = StyleSheet.create({
     width: '40%',
     textAlign: 'center',
     justifyContent: 'center',
-    height: 65
+    height: 65,
+    zIndex: 1
   },
   btCateg: {
     alignSelf: 'flex-start',
@@ -349,6 +351,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
     height: 65,
+    zIndex: 1
     // maxWidth: 130,
   },
   bcnoreslt: {

@@ -2,16 +2,17 @@
 // https://aboutreact.com/react-native-login-and-signup/
 
 // Import React and Component
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, TouchableOpacity } from 'react-native';
 import { Base_url } from '../utils/utils';
 import { AntDesign } from '@expo/vector-icons';
 //import Constants from 'expo-constants';
 const NavigationDrawerHeader = (props) => {
-    const [toggle, setToggle] = useState(0);
+    //const [toggle, setToggle] = useState(0);
     const toggleDrawer = () => {
+
         props.navigationProps.toggleDrawer();
-        setToggle(!toggle)
+        //  setToggle(!toggle)
     };
 
     return (

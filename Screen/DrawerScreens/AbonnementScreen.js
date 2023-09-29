@@ -17,19 +17,20 @@ import {
 } from 'react-native';
 
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
-import { useStripe } from '@stripe/stripe-react-native';
+
+import { initStripe, useStripe } from '@stripe/stripe-react-native';
 import Button from '../Components/Button';
 import PaymentScreen from '../Components/PaymentScreen';
 import ModalScreenIsVIP from '../ModalIsVIP';
 //import { API_URL } from '../Config';
 
-import { RequestOptionsPost, Add_historique, Base_url, API_URL, UpdatePremium, isVIP, RequestOptionsGet } from '../utils/utils';
+import { RequestOptionsPost, fetchPublishableKey, Add_historique, Base_url, API_URL, UpdatePremium, isVIP, RequestOptionsGet } from '../utils/utils';
 
 const AbonnementScreen = ({ navigation }) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [paymentSheetEnabled, setPaymentSheetEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [UserVIP, setUserVIP] = useState(0);
+
   //const [clientSecret, setClientSecret] = useState<string>();  
   const [clientSecret, setClientSecret] = useState('');
 
@@ -59,17 +60,38 @@ const AbonnementScreen = ({ navigation }) => {
       customer,
     };
   };
-
+  async function initialize(amount) {
+    // console.log('children::', amount)
+    //const publishableKey = await fetchPublishableKey(amount, paymentMethod);
+    const publishableKey = await fetchPublishableKey(amount);
+    //console.log('publishableKey:::', publishableKey);
+    if (publishableKey) {
+      const response = await initStripe({
+        publishableKey,
+        merchantIdentifier: 'merchant.com.HüMA'
+      });
+      // console.log('response stripe:', response)
+      setLoading(false);
+    }
+  }
   const openPaymentSheet = async (choix, amount) => {
-    console.log('clientSecret', clientSecret);
-
+    setLoading(true);
+    await initialize(amount);
+    // console.log('clientSecret', clientSecret);
     await initialisePaymentSheet(amount);
 
+    // console.log('clientSecret:::', clientSecret)
 
 
-    if (!clientSecret) {
+    /*if (!clientSecret) {
+
+      setLoading(false);
+      // Alert.alert(`Une erreur est survenue lors de la tentative de traitement de votre demande!`);
+      Alert.alert(`Réessayez. Désolé. Une erreur est survenue!`);
+
       return;
-    }
+
+    }*/
     // console.log('clientSecret', clientSecret);
 
     // 
@@ -77,15 +99,16 @@ const AbonnementScreen = ({ navigation }) => {
       clientSecret,
     });
 
+    setLoading(false);
     if (error) {
-      Alert.alert(`Error code: ${error.code}`, error.message);
+      Alert.alert(`Réessayez. Désolé. Une erreur est survenue!`, error.message);
     } else {
 
       UpdatePremium(global.User_connecte, choix);
       //initialisePaymentSheet(choix, amount)
       global.User_VIP = choix;
 
-      setUserVIP(choix)
+      //  setUserVIP(choix)
       let actv;
       if (choix == 4)
         actv = `Vous êtes abonné pour  1 An !`;
@@ -123,30 +146,16 @@ const AbonnementScreen = ({ navigation }) => {
       setPaymentSheetEnabled(true);
     }
   };
-  /*async function initialize() {
-  
-    const publishableKey = await fetchPublishableKey(amount, paymentMethod);
-    console.log('publishableKey:', publishableKey);
-    if (publishableKey) {
-      const response = await initStripe({
-        publishableKey,
-        merchantIdentifier: 'merchant.com.stripe.react.native',
-        urlScheme: 'stripe-example',
-        setUrlSchemeOnAndroid: true,
-      });
-      console.log('response stripe:', response)
-      setLoading(false);
-    }
-  }*/
+
   const getPackAbonnement = async () => {
     const api = 'getPackAbnmt';
     const response = await RequestOptionsGet(api);
 
     const amount1 = response.data[0]["prix"];
-    console.log("amount1:::", amount1)
+    //console.log("amount1:::", amount1)
     setAbnmtAmount1(amount1);
 
-    console.log('response.data prix:', amount1)
+    //console.log('response.data prix:', amount1)
 
     const duree1 = response.data[0]["duree"];
     setAbnmtDuree1(duree1);
@@ -175,11 +184,11 @@ const AbonnementScreen = ({ navigation }) => {
     let isMounted = true;
     if (isMounted) {
       getPackAbonnement();
-      isVIP();
+      //  isVIP();
     }
     return () => { isMounted = false }
 
-  }, [UserVIP, global.User_VIP]);
+  }, [global.User_VIP]);
 
   return (
     <>
@@ -216,107 +225,104 @@ const AbonnementScreen = ({ navigation }) => {
                     ) :
                       (
                         <View style={styles.threeBloc}>
-                          <PaymentScreen amount={Abnmt_amount1}>
+                          {/* <PaymentScreen amount={Abnmt_amount1}>*/}
 
-                            <View style={styles.blocAbnmt}>
+                          <View style={styles.blocAbnmt}>
 
-                              <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.titleModal}>Gold - </Text>
-                                <Text style={styles.chiffre}>{Abnmt_duree1}</Text>
-                                <Text style={styles.titleModal}> mois: {Abnmt_amount1}€ !</Text>
-                              </View>
+                            <View style={{ flexDirection: 'row' }}>
+                              <Text style={styles.titleModal}>Gold - </Text>
+                              <Text style={styles.chiffre}>{Abnmt_duree1}</Text>
+                              <Text style={styles.titleModal}> mois: {Abnmt_amount1}€ !</Text>
+                            </View>
 
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Recevoir des notifications. </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Proposez vos offres</Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
-                              <View style={{ flexDirection: 'row' }}>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Recevoir des notifications. </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposez vos offres</Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
+                            <View style={{ flexDirection: 'row' }}>
 
 
-                                <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(1, Abnmt_amount1) }} disabled={!loading} />
-                              </View>
+                              <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(1, Abnmt_amount1) }} disabled={!loading} />
+                            </View>
+                          </View>
+
+
+
+                          <View style={styles.blocAbnmt}>
+
+
+                            <View style={{ flexDirection: 'row' }}>
+                              <Text style={styles.titleModal}>Silver - </Text>
+                              <Text style={styles.chiffre}>{Abnmt_duree2}</Text>
+                              <Text style={styles.titleModal}> mois: {Abnmt_amount2}€ !</Text>
+                            </View>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Publiez des Posts. </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Recevoir des notifications. </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                              <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(2, Abnmt_amount2) }} disabled={!loading} />
+
+                            </View>
+                          </View>
+
+
+                          <View style={styles.blocAbnmt}>
+
+                            <View style={{ flexDirection: 'row' }}>
+                              <Text style={styles.titleModal}>Gold - </Text>
+                              <Text style={styles.chiffre}>{Abnmt_duree3}</Text>
+                              <Text style={styles.titleModal}> mois: {Abnmt_amount3}€ !</Text>
                             </View>
 
 
-                          </PaymentScreen>
-                          <PaymentScreen amount={Abnmt_amount2}>
-                            <View style={styles.blocAbnmt}>
 
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" />Vos Publicités Produits.</Text>
+                            <View style={{ flexDirection: 'row' }}>
 
-                              <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.titleModal}>Silver - </Text>
-                                <Text style={styles.chiffre}>{Abnmt_duree2}</Text>
-                                <Text style={styles.titleModal}> mois: {Abnmt_amount2}€ !</Text>
-                              </View>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Publiez des Posts. </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Recevoir des notifications. </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
-                              <View style={{ flexDirection: 'row' }}>
-                                <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(2, Abnmt_amount2) }} disabled={!loading} />
+                              <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(3, Abnmt_amount3) }} disabled={!loading} />
 
-                              </View>
                             </View>
-
-                          </PaymentScreen>
-                          <PaymentScreen amount={Abnmt_amount3}>
-                            <View style={styles.blocAbnmt}>
-
-                              <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.titleModal}>Gold - </Text>
-                                <Text style={styles.chiffre}>{Abnmt_duree3}</Text>
-                                <Text style={styles.titleModal}> mois: {Abnmt_amount3}€ !</Text>
-                              </View>
+                          </View>
 
 
+                          <View style={styles.blocAbnmt}>
 
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" />Vos Publicités Produits.</Text>
-                              <View style={{ flexDirection: 'row' }}>
-
-                                <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(3, Abnmt_amount3) }} disabled={!loading} />
-
-                              </View>
+                            <View style={{ flexDirection: 'row' }}>
+                              <Text style={styles.titleModal}>Platinium - </Text>
+                              {Abnmt_duree4 == 12 ? (
+                                <>
+                                  <Text style={styles.chiffre}>1</Text>
+                                  <Text style={styles.titleModal}> An : {Abnmt_amount4}€ !</Text>
+                                </>
+                              ) : (
+                                <>
+                                  <Text style={styles.chiffre}>{Abnmt_duree4}</Text>
+                                  <Text style={styles.titleModal}> mois  : {Abnmt_amount4}€ !</Text>
+                                </>
+                              )
+                              }
                             </View>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
+                            <Text><Feather name="check" size={24} color="#c4d63c" /> Changez les Visuels de vos pubs comme vous le souhaitez et mettez vos produits
+                              en avant.</Text>
+                            <View style={{ flexDirection: 'row' }}>
 
-                          </PaymentScreen>
-                          <PaymentScreen amount={Abnmt_amount4}>
-                            <View style={styles.blocAbnmt}>
+                              <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(4, Abnmt_amount4) }} disabled={!loading} />
 
-                              <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.titleModal}>Platinium - </Text>
-                                {Abnmt_duree4 == 12 ? (
-                                  <>
-                                    <Text style={styles.chiffre}>1</Text>
-                                    <Text style={styles.titleModal}> An : {Abnmt_amount4}€ !</Text>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Text style={styles.chiffre}>{Abnmt_duree4}</Text>
-                                    <Text style={styles.titleModal}> mois  : {Abnmt_amount4}€ !</Text>
-                                  </>
-                                )
-                                }
-                              </View>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
-                              <Text><Feather name="check" size={24} color="#c4d63c" /> Changez les Visuels de vos pubs comme vous le souhaitez et mettez vos produits
-                                en avant.</Text>
-                              <View style={{ flexDirection: 'row' }}>
-
-                                <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(4, Abnmt_amount4) }} disabled={!loading} />
-
-                              </View>
                             </View>
-                          </PaymentScreen>
+                          </View>
+
                         </View>
                       )
                     }

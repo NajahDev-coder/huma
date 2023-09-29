@@ -1,12 +1,49 @@
-# Sample Snack app
+# Don & exchange  App
 
-Open the `App.js` file to start writing some code. You can preview the changes directly on your phone or tablet by scanning the **QR code** or use the iOS or Android emulators. When you're done, click **Save** and share the link!
+# Requirements 
+react >= 18.2.0
 
-When you're ready to see everything that Expo provides (or if you want to use your own editor) you can **Download** your project and use it with [expo-cli](https://docs.expo.io/get-started/installation).
+react-native >= 0.71.8
+npm >= 9.6.4
+Nodejs >=  v14.17.6
 
-All projects created in Snack are publicly available, so you can easily share the link to this project via link, or embed it on a web page with the `<>` button.
+# Version
+1.0.0
 
-If you're having problems, you can tweet to us [@expo](https://twitter.com/expo) or ask in our [forums](https://forums.expo.io/c/snack).
+# Installation
+Download zip file and extract it latest pre-built release. Or clone the repository and cd into it.
 
-Snack is Open Source. You can find the code on the [GitHub repo](https://github.com/expo/snack).
+HüMA APP uses a number of open source projects to work properly:
+
+React - React
+React Native - React Native
+Axios - Axios
+Nodejs 
+Snack Expo
+
+Install the dependencies and start the server.
+
+cd huma
+npm install
+
+# Run
+npx expo start
+
+You can preview the changes directly on your phone or tablet by scanning the **QR code** or use the iOS or Android emulators. 
+
+# Available Scripts
+In the project directory, you can run:
+ ### `start:staging`:
+ "APP_ENV=staging npx  expo start ",
+ 
+ ### `android:staging`:
+ "APP_ENV=staging npx expo run:android",
+ 
+ ### `ios:staging`: 
+ "APP_ENV=staging npx expo run:ios",
+ 
+ ### `web:staging`: 
+ "APP_ENV=staging npx expo start --web"
+
+ 
 # huma_ex

@@ -69,8 +69,11 @@ export const NaVIG = (idNotif, type_activite, navigation) => {
   if (type_activite.includes('invitation') || type_activite.includes('amis') || type_activite.includes('profile') || type_activite.includes('abonn')) {
     ViewProfile(idNotif, navigation);
   }
-  else {
+  else if (type_activite.includes('annonce')) {
     ShowDetailAnnonce(idNotif, navigation);
+  }
+  else {
+    return;
   }
 
 }
@@ -105,30 +108,35 @@ export const Add_historique = async (Userid, activite, id_activite) => {
   const response = await RequestOptionsPost(dataToSend, fetchURL)
   //console.log(response.status);
 };
-export const UpdatePremium = async (Userid, choix) => {
-  const fetchURL = 'UpdatePremium';
+export const UpdatePremium = async (Userid, abnnmnt) => {
+  const fetchURL = `UpdatePremium`;
+
   const dataToSend = {
     user_id: Userid,
-    abnnmnt: choix
+    abnnmnt: abnnmnt
   }
   const response = await RequestOptionsPost(dataToSend, fetchURL)
   //console.log(response.status);
 };
 export const InsertDonation = async (Userid, amount, duree) => {
-  const fetchURL = 'insertDonnation';
-  const dataToSend = {
+  //const fetchURL = `insertDonnation`;
+  const fetchURL = `insertDonnation/${Userid}/${amount}/${duree}`;
+
+  /*const dataToSend = {
     user_id: Userid,
     amount: amount,
     duree: duree
-  }
-  const response = await RequestOptionsPost(dataToSend, fetchURL)
-  //console.log(response.status);
+  }*/
+
+  //const response = await RequestOptionsPost(dataToSend, fetchURL)
+  const response = await RequestOptionsGet(fetchURL)
+
 };
 export const GetAnnonce = async ({ annonceID, navigation }) => {
   const fetchURL = `/annonce/${annonceID}`;
   const response = await RequestOptionsGet(fetchURL)
   const titre = response.data[0].titre
-  // return titre
+  // return titre  
   return (
     <View>
       <TouchableOpacity onPress={() => ShowDetailAnnonce = (annonceID, navigation)}>
@@ -151,7 +159,7 @@ export const RequestOptionsGet = (Api) => {
   const promise = new Promise(async (resolve, reject) => {
     try {
       fetch(UrlFetch, options).then((data) => data.json()).then((responseJson) => {
-        // console.log('responseJson',responseJson)
+        //console.log('responseJson::', responseJson)
         resolve(responseJson)
       })
     } catch (msg) {
@@ -194,6 +202,8 @@ export const RequestOptionsPut = (dataToSend, Api) => {
 export const RequestOptionsPost = async (dataToSend, Api) => {
   var formBody = [];
 
+
+  //console.log('post abnmt:::', dataToSend)
   for (var key in dataToSend) {
     var encodedKey = encodeURIComponent(key);
     var encodedValue = encodeURIComponent(dataToSend[key]);
@@ -240,8 +250,7 @@ export const getTotalMsgNnLu = async () => {
     global.TotalMsgNonLU = responseJson.data[0].TotalMsgNonLU
   }
   else global.TotalMsgNonLU = 0;
-  //console.log(global.TotalMsgNonLU)
-  //setRefreshKey((oldKey) => oldKey + 1);
+
 };
 export const isVIP = async () => {
 
@@ -284,7 +293,7 @@ export const Access = async (navigation) => {
       if (value !== null) {
         // alert('g')
         global.User_connecte = value;
-        isVIP();
+        // isVIP();
         //console.log('gggg')
         navigation.replace('Auth')
       }
@@ -301,12 +310,38 @@ export const Access = async (navigation) => {
   }
 
 };
+//GET INREAD nOTIFICATION NUMBER
+export const getNbreNotifications = async () => {
+
+  const fetchUrl = `getNreENotifNonLu/${global.User_connecte}`;
+
+  const responseJson = await RequestOptionsGet(fetchUrl)
+  if (responseJson.data.length > 0) {
+
+    global.NbreNotifNonLU = responseJson.data.length;
+  }
+}
+export const UpdateReadNotification = async (type_activite, idNotif) => {
+  var fetchUrl;
+
+  if (type_activite.includes('invitation') || type_activite.includes('amis') || type_activite.includes('profile') || type_activite.includes('abonn')) {
+
+    fetchUrl = `setReadNotifUser/${global.User_connecte}/${idNotif}`;
+  }
+  else {
+    fetchUrl = `setReadNotifGeneral/${global.User_connecte}/${idNotif}`;
+  }
+
+  const responseJson = await RequestOptionsGet(fetchUrl);
+};
 export const SaveImage = async (dataToSend) => {
-  //alert(UserID);
-  // console.log('SaveImage', dataToSend)
+
   const fetchUrl = 'upload';
+
+
   const response = await RequestOptionsPost(dataToSend, fetchUrl);
-  //console.log('SaveImage response', response)
+  console.log('SaveImage response', response)
+
 
 };
 export const DeleteSession = async (navigation) => {
@@ -364,18 +399,16 @@ export const fetchDistanceBetweenPoints = async (lat1, lng1, lat2, lng2) => { //
     });
 };
 
-export async function fetchPublishableKey(amount,
-  paymentMethod?: string
-): Promise<string | null> {
+export async function fetchPublishableKey(amount): Promise<string | null> {
   try {
-    console.log('amount:', Number(amount));
+    // console.log('amount:', Number(amount));
 
     const response = await fetch(
       `${Base_url}api/api/abonnement/${amount}`
     );
     const { publishableKey } = await response.json();
 
-    console.log('response::::::', response.json());
+
     return publishableKey;
   } catch (e) {
     console.warn('Unable to fetch publishable key. Is your server running?');
@@ -396,7 +429,6 @@ export async function fetchPublishableKeyDonate(amount,
     );
     const { publishableKey } = await response.json();
 
-    console.log('response::::::', response.json());
     return publishableKey;
   } catch (e) {
     console.warn('Unable to fetch publishable key. Is your server running?');

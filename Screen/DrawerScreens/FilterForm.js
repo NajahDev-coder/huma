@@ -39,14 +39,12 @@ const workPlace = {
   description: 'Work',
   geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
 };
-const windowWidth = Dimensions.get('window').width - 100;
-const windowheight = Dimensions.get('window').height - 150;
-//const windowheight = Dimensions.get('window').height;
+
 const image = {
   uri: `${Base_url}images/bg_screen.png`,
 };
-
-const FilterForm = ({ navigation, OnFilter, OnIndex }) => {
+const windowWidth = Dimensions.get('window').width - 50;
+const FilterForm = ({ navigation }) => {
   //const [categorie, setCategorie] = useState(0);
   //const [type, setType] = useState(0);
   const [localisation, setLocalisation] = useState('');
@@ -77,7 +75,7 @@ const FilterForm = ({ navigation, OnFilter, OnIndex }) => {
   const [showListCateg, setShowListCateg] = useState(0);
   const [showListSCateg, setShowListSCateg] = useState(0);
   const [showListSSCateg, setShowListSSCateg] = useState(0);
-  const [windowHeight, setWindowHeight] = useState(70)
+
   const minDate = new Date(1999, 12, 30); // Today
   const maxDate = new Date(20950, 12, 30);
 
@@ -92,15 +90,12 @@ const FilterForm = ({ navigation, OnFilter, OnIndex }) => {
 
       setShowCalendar(false);
 
-      // setWindowHeight(400)
     } else {
       setStartDate(date);
       setSelectedStartDate(dateselec);
       setSelectedEndDate(null);
     }
-    //await (() => {
 
-    // });
   };
   //get list type
   const fetchType = async () => {
@@ -110,25 +105,7 @@ const FilterForm = ({ navigation, OnFilter, OnIndex }) => {
     responseJson.map((item) => { newArray.push({ key: item.id, value: item.type }) })
     setTypeList(newArray);
   }
-  const updateHeight = async (active, select) => {
-    // alert(active)
-    if (select == 'calend')
-      setShowCalend(!active);
-    if (select == 'type')
-      setShowListType(!active);
-    if (select == 'categ')
-      setShowListCateg(!active);
-    if (select == 'Scateg')
-      setShowListSCateg(!active);
-    if (select == 'SScateg')
-      setShowListSSCateg(!active);
-    if (active) {
-      setWindowHeight((oldKey) => oldKey);
-    }
-    else {
-      setWindowHeight((oldKey) => oldKey + 70);
-    }
-  };
+
   //get list categorie
   const fetchCategorie = async () => {
     const fetchUrl = `categories`;
@@ -192,11 +169,10 @@ const FilterForm = ({ navigation, OnFilter, OnIndex }) => {
     //console.log('filter...', filter)
     await AsyncStorage.setItem('add_filter', JSON.stringify(filter));
 
-    setRefreshKey((oldKey) => oldKey + 1);
-    //console.log('refraichissement....');
-    ShowAllFilter(Enable);
+
     OnFilter();
   };
+
   const DeleteFilter = async () => {
     let filter = {
       adresse: '',
@@ -212,28 +188,27 @@ const FilterForm = ({ navigation, OnFilter, OnIndex }) => {
     AsyncStorage.setItem('add_filter', JSON.stringify(filter));
     //console.log('refraichissement....');
 
+
     OnFilter();
-    ShowAllFilter(1)
-    setRefreshKey((oldKey) => oldKey + 1);
-  };
-  const ShowAllFilter = (stat) => {
-    setEnable(!stat)
-    if (stat == 0) {
-      setWindowHeight(windowheight);
-      setIcoFilter("filter-variant-minus");
-      navigation.replace('Filter');
-      OnIndex(20);
-    }
-    else {
-      setWindowHeight(70);
-      setIcoFilter("filter-variant-plus");
-      setShowCalendar(false);
-      navigation.replace('Annonces');
-      OnIndex(1);
-    }
-
   };
 
+  const OnFilter = async () => {
+
+
+    const filter = await AsyncStorage.getItem('add_filter').then((value) => {
+      if (value) {
+        //alert('filter:::' + value);
+        //setTimeout(() => {*/
+        navigation.navigate({
+          name: 'Annonces', params: {
+            filter: value
+          },
+        });
+        // }, 500);
+      }
+    });
+
+  };
   useEffect(() => {
     let isSubscribed = true;
 
@@ -274,183 +249,187 @@ const FilterForm = ({ navigation, OnFilter, OnIndex }) => {
           contentContainerStyle={{
             alignContent: 'center',
           }}
-        >
-          <View style={styles.rowF}></View>
-          <View style={styles.rowAC}>
-            {Enable == true && (
-              <>
-                <View style={styles.rowAC}>
-                  <View style={styles.row}>
-                    <GooglePlacesAutocomplete
-                      placeholder="Localisation "
-                      query={{
-                        key: GooglePlacesApiKey,
-                        language: 'fr', // language of the results
-                      }}
-                      onPress={(data, details = null) => {
-                        setCurrAdresse(data.description);
-                        //AddFilter();
-                      }}
-                      onFail={(error) => console.error(error)}
-                      requestUrl={{
-                        url: 'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api',
-                        useOnPlatform: 'web',
-                      }}
-                      getDefaultValue={() => currAdresse}
-                      styles={{
-                        textInputContainer: {
-                          backgroundColor: 'transparent',
-                          position: 'relative',
-                        },
-                        textInput: {
-                          color: '#5a5959',
-                          paddingLeft: 15,
-                          paddingRight: 15,
-                          borderWidth: 1,
-                          borderRadius: 30,
-                          borderColor: '#646363',
-                          backgroundColor: 'transparent',
-                          width: '65%',
-                          height: 35,
-                          fontSize: 11
-                        },
-                        predefinedPlacesDescription: {
-                          color: '#1faadb',
-                        },
-                      }}
-                    />
-                    <FontAwesome5 name="search" size={24} color="black" style={{ position: 'absolute', right: 7, top: 5 }} />
-                  </View>
-                </View>
+        ><>
 
-                <View style={styles.rowAC}>
+            <View style={styles.rowTop}></View>
 
-                  <View style={styles.row}>
-                    <TextInput
-                      selectedValue={titreF}
-                      value={titreF}
-                      style={styles.inputStyle}
-                      onChangeText={(titre) => {
-                        setTitreF(titre);
-                        //AddFilter();
-                      }}
-                      underlineColorAndroid="#f000"
-                      placeholder="Rechercher  "
-                      placeholderTextColor="#5a5959"
-                      autoCapitalize="sentences"
-                    />
-                  </View>
-                  <TouchableOpacity
-                    style={[styles.row, { position: 'relative' }]}
-                    onPress={onPressCalendar}>
-                    <TextInput
-                      value={selectedDate}
-                      style={styles.inputStyle}
-                      editable={false}
-                      underlineColorAndroid="#f000"
-                      placeholder="Choisir une Date  "
-                      placeholderTextColor="#5a5959"
-                      autoCapitalize="sentences"
-                    />
-
-                    <FontAwesome
-                      name="calendar"
-                      size={24}
-                      color="black"
-                      onPress={onPressCalendar}
-                      style={{ position: 'absolute', top: 5, right: 10 }}
-                    />
-                  </TouchableOpacity>
-                  {showCalendar && (
+            <View style={styles.rowF}>
+              {Enable == true && (
+                <>
+                  <View style={styles.rowAC}>
                     <View style={styles.row}>
-                      <CalendarPicker
-                        startFromMonday={true}
-                        allowRangeSelection={true}
-                        minDate={minDate}
-                        maxDate={maxDate}
-                        todayBackgroundColor="#c4d63c"
-                        selectedDayColor="#c4d63c"
-                        selectedDayTextColor="#FFFFFF"
-                        onDateChange={onDateChange}
-                        width={windowWidth}
-                        initialDate={startDate}
-                      />
-                    </View>
-                  )}
-
-
-                  <View style={styles.row}>
-                    <SelectList
-                      setSelected={(val) => {
-                        setType(val)
-                      }}
-                      data={TypeList}
-
-                      boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5, zIndex: 1 }}
-                      inputStyles={{ fontSize: 12, color: '#5a5959', }}
-                      dropdownStyles={styles.dropselectStyle}
-                      dropdownItemStyles={styles.itemdropselectStyle}
-                      defaultOption={{ key: 0, value: 'Type' }}
-
-                    />
-                  </View>
-
-
-
-                  <View style={styles.row}>
-
-                    <SelectList
-                      ////dropdownShown={false}
-                      setSelected={(val) => { setCatEgorie(val); setSSCatEgorie(val); setSousSSCatEgorie(val); fetchSSCategorie(val); }}
-                      data={CategroiesList}
-                      boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
-                      inputStyles={{ fontSize: 12, color: '#5a5959' }}
-                      dropdownStyles={styles.dropselectStyle}
-                      dropdownItemStyles={styles.itemdropselectStyle}
-                      defaultOption={{ key: 0, value: 'Catégories' }}
-
-                    />
-                  </View>
-
-
-
-                  {SSCategroiesList.length > 0 && (
-                    <View style={styles.row}>
-
-                      <SelectList
-                        //dropdownShown={false}
-                        setSelected={(val) => {
-                          setSSCatEgorie(val);
-                          fetchSousSSCategorie(val);
+                      <GooglePlacesAutocomplete
+                        placeholder="Localisation "
+                        query={{
+                          key: GooglePlacesApiKey,
+                          language: 'fr', // language of the results
+                        }}
+                        onPress={(data, details = null) => {
+                          setCurrAdresse(data.description);
                           //AddFilter();
                         }}
-                        data={SSCategroiesList}
-                        boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
-                        inputStyles={{ fontSize: 12, color: '#5a5959' }}
-                        dropdownStyles={styles.dropselectStyle}
-                        dropdownItemStyles={styles.itemdropselectStyle}
-                        defaultOption={{ key: 0, value: 'Sous Catégories' }}
+                        onFail={(error) => console.error(error)}
+                        requestUrl={{
+                          url: 'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api',
+                          useOnPlatform: 'web',
+                        }}
+                        getDefaultValue={() => currAdresse}
+                        styles={{
+                          textInputContainer: {
+                            backgroundColor: 'transparent',
+                            position: 'relative',
+                          },
+                          textInput: {
+                            color: '#5a5959',
+                            paddingLeft: 15,
+                            paddingRight: 15,
+                            borderWidth: 1,
+                            borderRadius: 30,
+                            borderColor: '#646363',
+                            backgroundColor: 'transparent',
+                            width: '65%',
+                            //height: 35,
+                            fontSize: 11
+                          },
+                          predefinedPlacesDescription: {
+                            color: '#1faadb',
+                          },
+                        }}
                       />
                     </View>
-                  )}
-                  {SousSSCategroiesList.length > 0 && (
+                  </View>
+
+                  <View style={styles.rowAC}>
+
+                    <View style={styles.row}>
+                      <TextInput
+                        selectedValue={titreF}
+                        value={titreF}
+                        style={styles.inputStyle}
+                        onChangeText={(titre) => {
+                          setTitreF(titre);
+                          //AddFilter();
+                        }}
+                        underlineColorAndroid="#f000"
+                        placeholder="Rechercher  "
+                        placeholderTextColor="#5a5959"
+                        autoCapitalize="sentences"
+                      />
+                    </View>
+                    <TouchableOpacity
+                      style={[styles.row, { position: 'relative' }]}
+                      onPress={onPressCalendar}>
+                      <TextInput
+                        value={selectedDate}
+                        style={styles.inputStyle}
+                        editable={false}
+                        underlineColorAndroid="#f000"
+                        placeholder="Choisir une Date  "
+                        placeholderTextColor="#5a5959"
+                        autoCapitalize="sentences"
+                      />
+
+                      <FontAwesome
+                        name="calendar"
+                        size={24}
+                        color="black"
+                        onPress={onPressCalendar}
+                        style={{ position: 'absolute', top: 10, right: 15 }}
+                      />
+                    </TouchableOpacity>
+                    {showCalendar && (
+                      <View style={styles.row}>
+                        <CalendarPicker
+                          startFromMonday={true}
+                          allowRangeSelection={true}
+                          minDate={minDate}
+                          maxDate={maxDate}
+                          todayBackgroundColor="#c4d63c"
+                          selectedDayColor="#c4d63c"
+                          selectedDayTextColor="#FFFFFF"
+                          onDateChange={onDateChange}
+                          width={windowWidth}
+                          initialDate={startDate}
+                        />
+                      </View>
+                    )}
+
+
+                    <View style={styles.row}>
+                      <SelectList
+                        setSelected={(val) => {
+                          setType(val)
+                        }}
+                        data={TypeList}
+
+                        boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5, zIndex: 1 }}
+                        inputStyles={{ fontSize: 12, color: '#5a5959', }}
+                        dropdownStyles={styles.dropselectStyle}
+                        dropdownItemStyles={styles.itemdropselectStyle}
+                        defaultOption={{ key: 0, value: 'Type' }}
+
+                      />
+                    </View>
+
+
+
                     <View style={styles.row}>
 
                       <SelectList
-                        //dropdownShown={false}
-                        setSelected={(val) => {
-                          setSousSSCatEgorie(val);
-                          // AddFilter();
-                        }}
-                        data={SousSSCategroiesList}
+                        ////dropdownShown={false}
+                        setSelected={(val) => { setCatEgorie(val); setSSCatEgorie(val); setSousSSCatEgorie(val); fetchSSCategorie(val); }}
+                        data={CategroiesList}
                         boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
                         inputStyles={{ fontSize: 12, color: '#5a5959' }}
                         dropdownStyles={styles.dropselectStyle}
                         dropdownItemStyles={styles.itemdropselectStyle}
-                        defaultOption={{ key: 0, value: 'Sous Sous Catégories' }}
+                        defaultOption={{ key: 0, value: 'Catégories' }}
+
                       />
                     </View>
-                  )}
+
+
+
+                    {SSCategroiesList.length > 0 && (
+                      <View style={styles.row}>
+
+                        <SelectList
+                          //dropdownShown={false}
+                          setSelected={(val) => {
+                            setSSCatEgorie(val);
+                            fetchSousSSCategorie(val);
+                            //AddFilter();
+                          }}
+                          data={SSCategroiesList}
+                          boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
+                          inputStyles={{ fontSize: 12, color: '#5a5959' }}
+                          dropdownStyles={styles.dropselectStyle}
+                          dropdownItemStyles={styles.itemdropselectStyle}
+                          defaultOption={{ key: 0, value: 'Sous Catégories' }}
+                        />
+                      </View>
+                    )}
+                    {SousSSCategroiesList.length > 0 && (
+                      <View style={styles.row}>
+
+                        <SelectList
+
+                          setSelected={(val) => {
+                            setSousSSCatEgorie(val);
+                            // AddFilter();
+                          }}
+                          data={SousSSCategroiesList}
+                          boxStyles={{ borderRadius: 30, padding: 8, marginBottom: 5 }}
+                          inputStyles={{ fontSize: 12, color: '#5a5959' }}
+                          dropdownStyles={styles.dropselectStyle}
+                          dropdownItemStyles={styles.itemdropselectStyle}
+                          defaultOption={{ key: 0, value: 'Sous Sous Catégories' }}
+                        />
+                      </View>
+                    )}
+
+
+                  </View>
                   <View style={styles.rowBT}>
                     <TouchableOpacity
                       style={styles.buttonStyle}
@@ -466,12 +445,10 @@ const FilterForm = ({ navigation, OnFilter, OnIndex }) => {
                     </TouchableOpacity>
 
                   </View>
-
-                </View>
-
-              </>
-            )}
-          </View>
+                </>
+              )}
+            </View>
+          </>
         </ScrollView>
       </ImageBackground>
     </View>
@@ -493,11 +470,12 @@ const styles = StyleSheet.create({
   },
   row: {
 
-    width: '100%',
+    width: '96%',
     paddingLeft: Platform.OS == 'web' ? 0 : 12,
+    marginVertical: 5,
     zIndex: 1
   },
-  rowF: {
+  rowTop: {
     // flex: 1,
     flexDirection: 'column',
     paddingVertical: 10,
@@ -511,12 +489,33 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    marginBottom: 20
+    //marginBottom: 20
+  },
+  rowF: {
+    // flex: 1,
+    flexDirection: 'column',
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    //backgroundColor: '#ffffff',
+    //backgroundColor: 'rgba(250, 250, 250 , 0.60)',
+    minHeight: Dimensions.get('window').height - 120,
+    width: '100%',
+    borderBottomEndRadius: 40,
+    borderBottomWidth: 5,
+    borderBottomColor: '#c4d63c',
+    shadowColor: '#000000',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    paddingBottom: 60
+    //marginBottom: 20
   },
   rowBT: {
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'flex-end',
+    alignContent: 'flex-end', position: 'absolute',
+    bottom: 10
   },
   rowAC: {
     flexDirection: 'row',
@@ -554,11 +553,12 @@ const styles = StyleSheet.create({
   inputStyle: {
     flex: 1,
     color: '#5a5959',
-    padding: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
     borderWidth: 1,
     borderRadius: 30,
     borderColor: '#646363',
-    height: 35,
+    //height: 35,
     width: '100%',
     backgroundColor: 'transparent',
     marginBottom: 5,
@@ -601,7 +601,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     justifyContent: 'flex-end',
   },
-  dropselectStyle: { backgroundColor: 'white', width: '100%', marginTop: -5 },
+  dropselectStyle: { backgroundColor: 'transparent', borderWidth: 0, width: '100%', marginTop: -5 },
   itemdropselectStyle: { borderBottomWidth: 1, borderBottomColor: '#efefef', zIndex: 100 }
 });
 export default FilterForm;

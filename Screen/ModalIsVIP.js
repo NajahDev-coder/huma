@@ -19,13 +19,15 @@ const ModalScreeniSVIP = ({ navigation, choix }) => {
 
 
                     <View style={styles.modalView}>
-                        <Text style={styles.titleModal}>Félicitations, vous  êtes un membre VIP!</Text>
-                        <Text style={styles.titleModal}>Pofitez {choix} mois pour :</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                            <Text style={styles.titleModal}>Félicitations, vous  êtes un membre VIP!</Text>
+                            <Text style={styles.titleModal}>Pofitez {choix} mois pour :</Text>
+                        </View>
                         <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des annonces. </Text>
                         <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
                         <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
                         <Text><Feather name="check" size={24} color="#c4d63c" />Vos Publicités Produits.</Text>
-                        <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
 
                             <Pressable
                                 style={styles.buttVIP}
@@ -46,7 +48,7 @@ const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
+        // alignItems: 'center',
         marginTop: 22,
 
     },
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 35,
-        alignItems: 'center',
+        // alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,

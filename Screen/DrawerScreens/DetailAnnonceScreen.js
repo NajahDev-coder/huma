@@ -161,7 +161,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
     const fetchUrl = `annonce/${Id_Annonce}`;
 
     const responseJson = await RequestOptionsGet(fetchUrl);
-    console.log(responseJson)
+    //console.log(responseJson)
     if (responseJson.data.length > 0) {
       setAnnonceDetails(responseJson.data[0]);
 
@@ -374,6 +374,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
                       id_auteur_annonce={AuteurUserId}
                       id_user={global.User_connecte}
                       navigation={navigation}
+                      typeAnnce={AnnonceType}
                     />
                   }
                 </View>

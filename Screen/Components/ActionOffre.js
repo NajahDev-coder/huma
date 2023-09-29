@@ -17,6 +17,7 @@ import { SelectList } from 'react-native-dropdown-select-list'
 
 import { Base_url, RequestOptionsPut, RequestOptionsGet, RequestOptionsPost } from '../utils/utils';
 import ModalAlert from '../ModalAlert';
+import ModalSuppression from '../ModalSuppression';
 const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user, id_auteur_annonce, etat, situation, onValider, onModifier, onUpdate }) => {
 
 
@@ -29,6 +30,7 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
   const [refreshKey, setRefreshKey] = useState(0);
 
   const [isAlert, setIsAlert] = useState(false);
+  const [isRetirer, setIsRetirer] = useState(false);
   const [MsgAlert, setMsgAlert] = useState('');
 
   const DataModifier = [{ key: '1', value: 'Modifier' }, { key: '3', value: 'Retirer' }]
@@ -36,14 +38,12 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
   const UpdateOffreAnnonce = async (id_offre, choix) => {
 
     if (choix === '3') {
-      const fetchUrl = `delete_offre/${id_offre}`;
-      responseJson = RequestOptionsGet(fetchUrl).then((response, erro) => {
-        //console.log(response.status)
-        if (response.status == 'suppression offre reussi!!') {
-          onUpdate()
-          setRefreshKey((oldKey) => oldKey + 1);
-        }
-      });
+
+
+      const msg = 'Êtes-vous sûr de vouloir retirer cette offre!';
+
+      setMsgAlert(msg);
+      setIsRetirer(true);
     }
     else {
       onModifier();
@@ -110,7 +110,7 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
       if (MsgAlert != '')
         console.log(MsgAlert)
     }
-  }, [isAlert])
+  }, [isAlert, isRetirer, refreshKey])
   return (
     <>
 
@@ -120,7 +120,7 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
         <Fontisto
           name="checkbox-active"
           size={16}
-          style={{ position: 'absolute', top: 0, right: 0 }}
+          style={{ position: 'absolute', top: 5, right: 0 }}
           color="#c4d63c"
           onPress={() => {
             ValidOffreAnnonce(
@@ -155,7 +155,7 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
             )
           }}
           search={false}
-          arrowicon={<AntDesign name="check" style={{ position: 'absolute', top: 0, right: 0 }} size={18} color="#c4d63c" />}
+          arrowicon={<AntDesign name="check" style={{ position: 'absolute', top: 5, right: 0 }} size={18} color="#c4d63c" />}
           boxStyles={styles.boxdropstyle}
           inputStyles={{ opacity: 0, padding: 0, height: 20, }}
           dropdownStyles={styles.dropstyle}
@@ -165,7 +165,7 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
       { /*offre annulé*/}
       {(OffreEtat === 3 && id_auteur_annonce == id_user) &&
         <MaterialCommunityIcons name="alert-circle-check-outline" size={22} color="grey"
-          style={{ position: 'absolute', top: 0, right: 0 }} />
+          style={{ position: 'absolute', top: 5, right: 0 }} />
       }
 
       {(OffreEtat === 3 && id_user_offre == id_user) &&
@@ -185,7 +185,7 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
           }}
           search={false}
           arrowicon={<MaterialCommunityIcons name="alert-circle-check-outline" size={22} color="grey"
-            style={{ position: 'absolute', top: 0, right: 0 }} />}
+            style={{ position: 'absolute', top: 5, right: 0 }} />}
           boxStyles={styles.boxdropstyle}
           inputStyles={{ opacity: 0, padding: 0, height: 20, }}
           dropdownStyles={styles.dropstyle}
@@ -197,7 +197,7 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
         <Fontisto
           name="checkbox-passive"
           size={16}
-          style={{ position: 'absolute', top: 0, right: 0 }}
+          style={{ position: 'absolute', top: 5, right: 0 }}
           color="black"
           onPress={() => {
             ValidOffreAnnonce(
@@ -230,7 +230,7 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
           }}
           search={false}
           arrowicon={<Ionicons name="checkmark-done"
-            style={{ position: 'absolute', top: 0, right: 0 }} size={18} color="#c4d63c" />}
+            style={{ position: 'absolute', top: 5, right: 0 }} size={18} color="#c4d63c" />}
           boxStyles={styles.boxdropstyle}
           inputStyles={{ opacity: 0, padding: 0, height: 20, }}
           dropdownStyles={styles.dropstyle}
@@ -260,6 +260,11 @@ const ActionOffre = ({ navigation, id_annonce, id_offre, id_user_offre, id_user,
       {isAlert && (
         <ModalAlert msgAlerte={MsgAlert} />
       )}
+      {isRetirer && (
+
+        <ModalSuppression navigation={navigation} msgAlerte={MsgAlert} id={id_offre} type='offre' onSupp={setRefreshKey((oldKey) => oldKey + 1)} />
+
+      )}
 
     </>
 
@@ -277,24 +282,29 @@ const styles = StyleSheet.create({
   dropstyle:
   {
 
-    margin: 0,
+    marginTop: -32,
     zIndex: 20,
-
-    marginTop: -20,
+    marginLeft: -5,
     padding: 0,
     paddingVertical: 0,
+    borderRadius: 0,
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    width: 100
 
-    borderRadius: 6,
-
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#909475'
   },
   itemdropstyle:
   {
     zIndex: 20,
     paddingVertical: 5,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    borderRadius: 6,
+    marginBottom: 2,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#909475',
+    width: 100
   },
+
 })
 export default ActionOffre;

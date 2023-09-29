@@ -37,7 +37,7 @@ import {
 } from 'react-native';
 
 import { GooglePlacesApiKey } from "./utils/env"
-import { Base_url, RequestOptionsGet, SaveImage, RequestOptionsPost, Add_historique } from './utils/utils';
+import { Base_url, RequestOptionsGet, SaveImage, RequestOptionsPost, Add_historique, ShowDetailAnnonce } from './utils/utils';
 import FileUpload from './Components/FileUpload';
 import Loader from './Components/Loader';
 import Modal from 'react-native-modal';
@@ -62,7 +62,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
   const [description, setDescription] = useState('');
   const [adresse, setAdresse] = useState('');
   const [LinkVedio, setLinkVedio] = useState('');
-  const [qty, setQty] = useState(0);
+  const [qty, setQty] = useState(1);
   const [proposLivraison, setProposLivraison] = useState(0);
   const [Photo, setPhoto] = useState('');
   const [PhotoNew, setPhotoNew] = useState('');
@@ -76,12 +76,13 @@ export default function EditAnnonceScreen({ navigation, route }) {
   const [type, setType] = useState(0);
   const [categorie, setCategorie] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [errortext, setErrortext] = useState('');
+
   const [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
   const [PreviewVisible1, setPreviewVisible1] = useState(false);
   const [PreviewVisible2, setPreviewVisible2] = useState(false);
   const [PreviewVisible3, setPreviewVisible3] = useState(false);
   const [isAlert, setIsAlert] = useState(false);
+  const [IsRedirect, setIsRedirect] = useState(false);
   const [MsgAlerte, setMsgAlert] = useState('');
   const titreInputRef = createRef();
   const link_vedioRef = createRef();
@@ -93,32 +94,23 @@ export default function EditAnnonceScreen({ navigation, route }) {
     const fetchUrl = `file_existe/${id_annonce}`;
 
     const responseJson = await RequestOptionsGet(fetchUrl);
-    // console.log('imgAnnonce', responseJson.data);
+
 
     if (responseJson.data.length > 0) {
 
-      /*let dataImg = [];
-      Object.entries(responseJson.data).map(([key, value]) => {
-        dataImg.push({
-          id: key,
-          img: value.url
-        });
-      });*/
       if (responseJson.data[0]) { setPhoto(responseJson.data[0].url); setPreviewVisible1(true); }
-      if (responseJson.data[1]) { setPhoto2(responseJson.date[1].url); setPreviewVisible2(true); }
+      if (responseJson.data[1]) { setPhoto2(responseJson.data[1].url); setPreviewVisible2(true); }
       if (responseJson.data[2]) { setPhoto3(responseJson.data[2].url); setPreviewVisible3(true); }
-      //console.log(dataImg)
-      //setImageAnnonce(dataImg);
+
     }
   }
   const fetchData = async () => {
     const fetchUrl = `annonce/${id_annonce}`;
 
     const responseJson = await RequestOptionsGet(fetchUrl);
-    //console.log(responseJson)
+
     if (responseJson.data.length > 0) {
-      //setAnnonceDetails(responseJson.data[0]);
-      //alert(responseJson.data[0].titre)
+
       setTitre(responseJson.data[0].titre);
       setCourtDescription(responseJson.data[0].court_description);
       setDescription(responseJson.data[0].description);
@@ -127,11 +119,10 @@ export default function EditAnnonceScreen({ navigation, route }) {
       setQty(responseJson.data[0].qty)
       setAdresse(responseJson.data[0].adresse)
 
-      // const defaultCoordinates = await Location.geocodeAsync(adresse);
 
       setType(responseJson.data[0].type);
       setCategorie(responseJson.data[0].categorie);
-      // fadeIn();
+
     }
     // setLoading(false);
   };
@@ -144,7 +135,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
       isExiteFile();
     }
     return () => { isMounted = false }
-  }, [id_annonce])
+  }, [])
 
   const AfficheDescrp = (description) => {
     const source = { html: description }
@@ -156,11 +147,10 @@ export default function EditAnnonceScreen({ navigation, route }) {
     )
   }
 
-  const handleSubmitButton = async (e) => {
-    e.preventDefault();
+  const handleSubmitButton = async () => {
 
+    setIsAlert(false);
 
-    setErrortext('');
     if (!titre) {
       const msg = 'Veuillez remplir le titre de votre annonce';
       setMsgAlert(msg);
@@ -180,12 +170,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
       setIsAlert(true);
       return;
     }
-    if (!qty || qty <= 0) {
-      const msg = "Veuillez entrer une quantité valide!";
-      setMsgAlert(msg);
-      setIsAlert(true);
-      return;
-    }
+
     //Show Loader
     const defaultCoordinates = await Location.geocodeAsync(adresse);
     const latitude = defaultCoordinates[0].latitude;
@@ -193,6 +178,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
 
     setLoading(true);
     var dataToSend1 = {
+      id_annonce,
       titre: titre,
       linkVedio: LinkVedio,
       court_description: court_description,
@@ -205,8 +191,8 @@ export default function EditAnnonceScreen({ navigation, route }) {
       qty: qty,
       propos_livraison: proposLivraison
     };
-    console.log('dfsdsdfsdf:', dataToSend1)
-    const fetchUrl = `annonce/update/:id_annonce`;
+
+    const fetchUrl = `annonce/update`;
     const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
 
     //console.log('responseJson create annonce:', responseJson)
@@ -223,9 +209,14 @@ export default function EditAnnonceScreen({ navigation, route }) {
 
       if (PhotoNew) {
         let update = false;
-        if (Photo) update = true
+        if (Photo) update = true;
+        var Imgsource;
+        if (typeof PhotoNew.assets != 'undefined')
+          Imgsource = PhotoNew.assets[0].base64;
+        else
+          Imgsource = PhotoNew.base64;
         var dataToSendPhoto = {
-          imgsource: PhotoNew.assets[0].base64,
+          imgsource: Imgsource,
           annonce_id: id_annonce,
           user_id: global.User_connecte,
           num: 1,
@@ -235,9 +226,14 @@ export default function EditAnnonceScreen({ navigation, route }) {
       }
       if (Photo2New) {
         let update = false;
-        if (Photo2) update = true
+        if (Photo2) update = true;
+        var Imgsource2;
+        if (typeof Photo2New.assets != 'undefined')
+          Imgsource2 = Photo2New.assets[0].base64;
+        else
+          Imgsource2 = Photo2New.base64;
         var dataToSendPhoto2 = {
-          imgsource: Photo2New.assets[0].base64,
+          imgsource: Imgsource2,
           annonce_id: id_annonce,
           user_id: global.User_connecte,
           num: 2,
@@ -247,9 +243,14 @@ export default function EditAnnonceScreen({ navigation, route }) {
       }
       if (Photo3New) {
         let update = false;
-        if (Photo3) update = true
+        if (Photo3) update = true;
+        var Imgsource3;
+        if (typeof Photo3New.assets != 'undefined')
+          Imgsource3 = Photo3New.assets[0].base64;
+        else
+          Imgsource3 = Photo3New.base64;
         var dataToSendPhoto3 = {
-          imgsource: Photo3New.assets[0].base64,
+          imgsource: Imgsource3,
           annonce_id: id_annonce,
           user_id: global.User_connecte,
           num: 3,
@@ -258,61 +259,20 @@ export default function EditAnnonceScreen({ navigation, route }) {
         SaveImage(dataToSendPhoto3);
       }
       // CameraImage.IdAnnonceImage(capturedImage,responseJson.ID)
-      setIsUpdateSuccess(true);
-      setTimeout(function () {
-        setIsUpdateSuccess(false);
-      }, 2000);
-      //console.log('Création annonce réussi!');
-      //console.log(responseJson.status)
+
+      const msg = "Annonce modifiée avec success!";
+      setMsgAlert(msg);
+      setIsAlert(true);
+      setIsRedirect(true)
     } else {
-      setErrortext('Modification annonce échouée!');
+      const msg = "Modification annonce échouée!";
+      setMsgAlert(msg);
+      setIsAlert(true);
     }
   };
-
-  if (isUpdateSuccess) {
-    return (
-      <View style={styles.mainBody}>
-        <ImageBackground
-          source={{ uri: Base_url + 'images/bg_screen.png' }}
-          resizeMode="cover"
-          style={styles.image}>
-          <Loader loading={loading} />
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              alignContent: 'center',
-            }}>
-
-            <View>
-              <KeyboardAvoidingView enabled>
-                <View style={{ alignItems: 'center', margin: 20 }}>
-                  <Image
-                    source={{ uri: `${Base_url}images/success.png` }}
-                    style={{
-                      height: 150,
-                      resizeMode: 'contain',
-                      alignSelf: 'center',
-                    }}
-                  />
-                  <Text style={styles.successTextStyle}>
-                    Annonce modifiée avec success!
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.buttonStyle}
-                    activeOpacity={0.5}
-                    onPress={() => navigation.navigate('Annonces')}>
-                    <Text style={styles.buttonTextStyle}>Liste Annonces</Text>
-                  </TouchableOpacity>
-                </View>
-              </KeyboardAvoidingView>
-            </View>
-          </ScrollView>
-        </ImageBackground>
-      </View>
-    );
-    //setIsCreationSuccess(false);
+  const RedirectOK = () => {
+    navigation.navigate('MesAnnonces', { id_user: global.User_connecte })
   }
-
   return (
     <View style={styles.mainBody}>
       <ImageBackground
@@ -336,48 +296,27 @@ export default function EditAnnonceScreen({ navigation, route }) {
                   source={{ uri: Photo && Photo }}
                   style={{ width: '100%', height: 150 }}>
                   <View>
-                    <AntDesign name="picture" size={24} color="black" onPress={() => setPreviewVisible1(false)} />
+                    <AntDesign name="picture" size={24} color="white" style={{ left: 5, top: 5 }} onPress={() => setPreviewVisible1(false)} />
                   </View>
 
                 </ImageBackground>
               ) : (
                 <CameraImage
                   captureImage={setPhotoNew}
-                  //style={{ height: 150, width: '100%' }}
                   PStyle={{ width: '100%', height: 150 }}
                   isinvisible={true}
                 />
               )}
             </View>
-            <View style={styles.section2Img}>
-              <View style={styles.sectionStyleImg2}>
-                {PreviewVisible3 && Photo3 ? (
-                  <ImageBackground
-                    source={{ uri: Photo3 }}
-                    style={{ width: 80, height: 80 }}>
-                    <View>
-                      <AntDesign name="picture" size={24} color="black" onPress={() => setPreviewVisible3(false)} />
-                    </View>
 
-                  </ImageBackground>
-                )
-                  : (
-                    <CameraImage
-                      captureImage={setPhoto3New}
-                      //style={{ height: 150, width: '100%' }}
-                      PStyle={{ width: 80, height: 80 }}
-                      isinvisible={true}
-                    />
-                  )}
-              </View>
-
-              <View style={styles.sectionStyleImg2}>
-                {PreviewVisible2 && Photo2 ? (
+            <View style={styles.sectionThumbImg}>
+              <View style={styles.sectionStyleThumbImg}>
+                {PreviewVisible2 && Photo2 != '' ? (
                   <ImageBackground
                     source={{ uri: Photo2 }}
-                    style={{ width: 80, height: 80 }}>
+                    style={styles.thumbSizeIMg}>
                     <View>
-                      <AntDesign name="picture" size={24} color="black" onPress={() => setPreviewVisible2(false)} />
+                      <AntDesign name="picture" size={24} color="white" style={{ left: 5, top: 5 }} onPress={() => setPreviewVisible2(false)} />
                     </View>
 
                   </ImageBackground>
@@ -385,15 +324,33 @@ export default function EditAnnonceScreen({ navigation, route }) {
                   : (
                     <CameraImage
                       captureImage={setPhoto2New}
-                      //style={{ height: 150, width: '100%' }}
-                      PStyle={{ width: 80, height: 80 }}
+                      PStyle={styles.thumbSizeIMg}
+                      isinvisible={true}
+                    />
+                  )}
+              </View>
+              <View style={styles.sectionStyleThumbImg}>
+                {PreviewVisible3 && Photo3 ? (
+                  <ImageBackground
+                    source={{ uri: Photo3 && Photo3 }}
+                    style={styles.thumbSizeIMg}>
+                    <View>
+                      <AntDesign name="picture" size={24} color="white" style={{ left: 5, top: 5 }} onPress={() => setPreviewVisible3(false)} />
+                    </View>
+
+                  </ImageBackground>
+                )
+                  : (
+                    <CameraImage
+                      captureImage={setPhoto3New}
+                      PStyle={styles.thumbSizeIMg}
                       isinvisible={true}
                     />
                   )}
               </View>
             </View>
             <View style={styles.sectionStyleSwitch}>
-              <Text style={styles.labelStyle}>Livraison </Text>
+              <Text style={styles.labelStyle}>Livraison Possible</Text>
               <Switch
 
                 trackColor={{ true: '#6cc5d5', false: '#6cc5d5' }}
@@ -411,7 +368,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
                 onChangeText={(titre) => setTitre(titre)}
                 value={titre}
                 // underlineColorAndroid="#f000"
-                placeholder="Entrez Le Titre  "
+                placeholder="Titre  "
                 placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
 
@@ -426,7 +383,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
                 }
                 value={court_description}
                 //underlineColorAndroid="#f000"
-                placeholder="Entrez votre courte description"
+                placeholder="Courte Description"
                 placeholderTextColor="#6cc5d5"
                 keyboardType="email-address"
 
@@ -510,26 +467,28 @@ export default function EditAnnonceScreen({ navigation, route }) {
                 keyboardType='url'
                 value={LinkVedio}
                 // underlineColorAndroid="#f000"
-                placeholder="Entrez le Lien vidéo sans http(s):// "
+                placeholder="Vidéo (sans http(s)://) "
                 placeholderTextColor="#6cc5d5"
                 autoCapitalize="sentences"
                 multiline={true}
               />
             </View>
-            <View style={styles.sectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(qty) => setQty(qty)}
-                keyboardType='numeric'
-                value={qty.toString()}
-                //underlineColorAndroid="#f000"
-                placeholder="quantité "
-                placeholderTextColor="#6cc5d5"
-                autoCapitalize="sentences"
-                multiline={false}
-              />
-            </View>
-            <Text style={styles.errorTextStyle}>{errortext}</Text>
+            {type != 6 && (
+              <View style={styles.sectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={(qty) => setQty(qty)}
+                  keyboardType='numeric'
+                  value={qty.toString()}
+                  //underlineColorAndroid="#f000"
+                  placeholder="quantité "
+                  placeholderTextColor="#6cc5d5"
+                  autoCapitalize="sentences"
+                  multiline={false}
+                />
+              </View>
+            )}
+
 
             <TouchableOpacity
               style={styles.buttonStyle}
@@ -537,9 +496,12 @@ export default function EditAnnonceScreen({ navigation, route }) {
               onPress={handleSubmitButton}>
               <Text style={styles.buttonTextStyle}>Valider</Text>
             </TouchableOpacity>
+
             {isAlert && (
-              <ModalAlert msgAlerte={MsgAlerte} />
+
+              <ModalAlert msgAlerte={MsgAlerte} action={() => (IsRedirect ? RedirectOK() : null)} />
             )}
+
           </KeyboardAvoidingView>
         </ScrollView>
       </ImageBackground>
@@ -565,22 +527,25 @@ const styles = StyleSheet.create({
     marginRight: 25,
     margin: 10,
   },
-  section2Img: {
+  sectionThumbImg: {
     flexDirection: 'row',
-    height: 80,
+    height: 100,
     marginTop: 10,
     marginBottom: 10,
     marginLeft: 25,
     marginRight: 25,
   },
-  sectionStyleImg2: {
+  sectionStyleThumbImg: {
     flexDirection: 'row',
-    height: 80,
-    width: 80,
+    height: 100,
+    width: 100,
     marginLeft: 5,
     marginRight: 5,
   },
-
+  thumbSizeIMg: {
+    height: 100,
+    width: 100,
+  },
   sectionStyle: {
     flexDirection: 'row',
     height: 40,
@@ -629,17 +594,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: '#D6ECF0',
   },
-  errorTextStyle: {
-    color: 'red',
-    textAlign: 'center',
-    fontSize: 14,
-  },
-  successTextStyle: {
-    color: '#c4d63c',
-    textAlign: 'center',
-    fontSize: 18,
-    padding: 30,
-  },
+
   richTextContainer: {
     display: 'flex',
     flexDirection: 'column-reverse',

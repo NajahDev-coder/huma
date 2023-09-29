@@ -67,6 +67,9 @@ const EditProfile = ({ navigation, route }) => {
 
   const [captureCouvertVisible, setCaptureCouvertVisible] = useState(false);
 
+  const [CouvertureVisible, setCouvertureVisible] = useState(false);
+  const [ProfilVisible, setProfilVisible] = useState(false);
+
   const [currentPosition, setCurrentPosition] = useState(null);
 
   const [refreshing, setRefreshing] = React.useState(false);
@@ -103,9 +106,11 @@ const EditProfile = ({ navigation, route }) => {
       const imgpf = responseJson.data[0].img_prof;
       const imgProfile = { uri: `${Base_url}images/${imgpf}` }
       setUserImageProfile(imgProfile);
+      setProfilVisible(true);
       const imgcv = responseJson.data[0].img_couverture;
       const imgCouv = { uri: `${Base_url}images/${imgcv}` };
       setUserImageCouvProfile(imgCouv);
+      setCouvertureVisible(true);
     }
   };
   const getCoordinates = async () => {
@@ -218,7 +223,7 @@ const EditProfile = ({ navigation, route }) => {
 
         // if (ImageProfile && ImageProfile.canceled == false) {
         if (ImageProfile) {
-          //console.log('ImageProfile:::', ImageProfile)
+
           var Imgsource1;
           if (typeof ImageProfile.assets != 'undefined')
             Imgsource1 = ImageProfile.assets[0].base64;
@@ -235,13 +240,13 @@ const EditProfile = ({ navigation, route }) => {
         }
         //  if (ImageCouvProfile && ImageCouvProfile.canceled == false) {
         if (ImageCouvProfile) {
+          //console.log('ImageCouvProfile', Imgsource);
           var Imgsource;
           if (typeof ImageCouvProfile.assets != 'undefined')
             Imgsource = ImageCouvProfile.assets[0].base64;
           else
             Imgsource = ImageCouvProfile.base64;
 
-          console.log('Image Couv Profile Bien mise!');
 
           dataToSend = {
             imgsource: Imgsource,
@@ -266,7 +271,7 @@ const EditProfile = ({ navigation, route }) => {
   }
   const UpdatePhotoProfile = (val) => {
 
-    setCaptureProfileVisible(!captureProfileVisible);
+    //setCaptureProfileVisible(!captureProfileVisible);
     if (val.assets && val.assets[0].uri) {
       setUriProfile(true);
       setUserImageProfile(val.assets[0].uri);
@@ -282,7 +287,7 @@ const EditProfile = ({ navigation, route }) => {
 
   const UpdatePhotoCouverture = (val) => {
 
-    setCaptureCouvertVisible(!captureCouvertVisible);
+    //  setCaptureCouvertVisible(!captureCouvertVisible);
     if (val.assets && val.assets[0].uri) {
       setUriCouverture(true);
       setUserImageCouvProfile(val.assets[0].uri);
@@ -311,48 +316,61 @@ const EditProfile = ({ navigation, route }) => {
           }>
           <View style={{ alignItems: 'center' }}>
             <TouchableOpacity style={styles.post}>
-              <ImageBackground
-                //ref={img_annonce_cv}
-                source={UriCouverture ? { uri: userImageCouvProfile } : userImageCouvProfile}
-                onError={(e) =>
-                  setUserImageCouvProfile(DefaultimageCouvProfile)
-                }
-                resizeMode="cover"
-                style={[styles.image, { minHeight: 185 }]}>
-                <View style={styles.bcBlockpf1}>
-                  <View
-                    style={styles.icoCamera}>
-                    <AntDesign
-                      name="camera"
-                      size={24}
-                      color="black"
-                      onPress={takePictureProfile}
-                    />
-                  </View>
-                  <View style={styles.bcProfile}>
+              {CouvertureVisible && userImageCouvProfile ? (
+                <ImageBackground
+                  //ref={img_annonce_cv}
+                  source={UriCouverture ? { uri: userImageCouvProfile } : userImageCouvProfile}
+                  onError={(e) =>
+                    setUserImageCouvProfile(DefaultimageCouvProfile)
+                  }
+                  resizeMode="cover"
+                  style={[styles.image, { minHeight: 185 }]}>
+                  <View style={styles.bcBlockpf1}>
+                    <View
+                      style={styles.icoCamera}>
+                      <AntDesign name="picture" size={24} color="white" style={{ left: 5, top: 5 }} onPress={() => setCouvertureVisible = (false)} />
 
-                    <Image
+                    </View>
+
+                    <View style={styles.bcProfile}>
+
+                      {/*<Image
                       source={UriProfile ? { uri: userImageProfile } : userImageProfile}
                       onError={(e) => setUserImageProfile(DefaultimageProfile)}
                       style={styles.imgbcProfile}
-                    />
+                    />*/}
+
+
+                      {ProfilVisible && userImageProfile ? (
+                        <ImageBackground
+                          source={UriProfile ? { uri: userImageProfile } : userImageProfile}
+                          style={styles.imgbcProfile}>
+                          <View>
+                            <AntDesign name="picture" size={24} color="white" style={{ left: 5, top: 5 }} onPress={() => setProfilVisible(false)} />
+                          </View>
+
+                        </ImageBackground>
+                      ) : (
+                        <CameraImage
+                          captureImage={(val) => UpdatePhotoProfile()}
+                          style={styles.imgbcProfile}
+                          isinvisible={true}
+                        />
+                      )}
+                    </View>
+
+
 
                   </View>
 
-
-                </View>
-
-                <View
-                  style={{ position: 'absolute', bottom: 5, right: 5 }}>
-                  <AntDesign
-                    name="camera"
-                    size={30}
-                    color="white"
-                    onPress={takePictureCouverture}
-                  />
-                </View>
-              </ImageBackground>
-
+                </ImageBackground>
+              ) : (
+                <CameraImage
+                  captureImage={(val) => UpdatePhotoCouverture()}
+                  style={[styles.image, { minHeight: 185 }]}
+                  isinvisible={true}
+                />
+              )}
             </TouchableOpacity>
           </View>
           <View style={styles.SectionStyle}>
@@ -499,19 +517,19 @@ const EditProfile = ({ navigation, route }) => {
               <Modal
                 animationType="slide"
                 transparent={true}
-                //presentationStyle="formSheet"
-                visible={captureProfileVisible}>
+                presentationStyle="formSheet"
+                visible={captureProfileVisible}
+                onRequestClose={() => {
+
+                  setCaptureProfileVisible(!captureProfileVisible);
+                }}>
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
-                    <>
-
-                      <AntDesign name="closecircleo" onPress={() => setCaptureProfileVisible(false)} size={24} color="black" style={{ position: 'absolute', top: 5, right: 5 }} />
-                      <CameraImage
-                        captureImage={(val) => UpdatePhotoProfile(val)}
-                        PStyle={{ width: 200, height: 200 }}
-                        isinvisible={true}
-                      />
-                    </>
+                    <CameraImage
+                      captureImage={(val) => UpdatePhotoProfile(val)}
+                      PStyle={{ width: 150, height: 150 }}
+                      isinvisible={true}
+                    />
                   </View>
                 </View>
               </Modal>
@@ -530,15 +548,11 @@ const EditProfile = ({ navigation, route }) => {
                 }}>
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
-                    <>
-                      <AntDesign name="closecircleo" onPress={() => setCaptureCouvertVisible(false)} size={24} color="black" style={{ position: 'absolute', top: 5, right: 5 }} />
-
-                      <CameraImage
-                        captureImage={(val) => UpdatePhotoCouverture(val)}
-                        PStyle={{ width: 200, height: 200 }}
-                        isinvisible={true}
-                      />
-                    </>
+                    <CameraImage
+                      captureImage={(val) => UpdatePhotoCouverture(val)}
+                      PStyle={{ width: 150, height: 150 }}
+                      isinvisible={true}
+                    />
                   </View>
                 </View>
               </Modal>
@@ -691,8 +705,8 @@ const styles = StyleSheet.create({
 
   },
   modalView: {
-    width: 250,
-    height: 270,
+    width: 200,
+    height: 220,
     //margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,

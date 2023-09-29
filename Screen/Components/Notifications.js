@@ -26,30 +26,6 @@ const Notifications = ({ navigation, widthIcone }) => {
 
 
 
-  const showListNotif = () => {
-
-    setEnable(!Enable);
-    // alert(Enable);
-    /*Animated.timing(fadeAnimation, {
-      toValue: 1,
-      duration: 500,
-      nativeEvent: { contentOffset: { y: fadeAnimation } },
-      useNativeDriver: true,
-    }).start();*/
-
-  };
-  const hideListNotif = () => {
-
-    setEnable(!Enable);
-    /*Animated.timing(hideAnimation, {
-      toValue: 0,
-      duration: 500,
-      nativeEvent: { contentOffset: { y: hideAnimation } },
-      useNativeDriver: true,
-    }).start();*/
-
-  };
-
 
 
   const getDate = (date) => {
@@ -58,18 +34,7 @@ const Notifications = ({ navigation, widthIcone }) => {
       <Text style={styles.bcSmText}>{dateDiff(dateA, today)}  </Text>
     )
   }
-  const getNotification = async () => {
-    //alert(id_user)
-    const fetchUrl = `getNotif/${global.User_connecte}`;
 
-    const responseJson = await RequestOptionsGet(fetchUrl)
-    if (responseJson.data.length > 0) {
-      // console.log('notif', responseJson.data)
-      setNbreNotif(responseJson.data.length);
-
-      setNotifList(responseJson.data)
-    }
-  }
 
   const MaxHeight = Dimensions.get('window').height - 100
   const today = new Date();
@@ -85,80 +50,34 @@ const Notifications = ({ navigation, widthIcone }) => {
 
     if (isSubscribed) {
 
-      getNotification();
+      console.log('NbreNotifNonLU::', global.NbreNotifNonLU)
     }
 
     return () => (isSubscribed = false);
-  }, [Enable]);
+  }, [global.NbreNotifNonLU]);
 
 
   return (
     <View style={styles.bc_notif}>
-      {Enable ? (
 
-        <View style={{ position: 'absolute', top: 10, right: 20, zIndex: 2 }}>
-          <TouchableOpacity onPress={() => hideListNotif()}>
-            {NbreNotif > 0 && (<Text style={styles.isnotif}></Text>)}
-            <Text><Ionicons name="md-notifications" size={20} color="black" /></Text>
+      <View style={{ position: 'absolute', top: 10, right: 20, zIndex: 2 }}>
+        {/* <TouchableOpacity onPress={() => { showListNotif() }}>*/}
+        <TouchableOpacity onPress={() => { navigation.push('ListNotifications') }}>
+          {global.NbreNotifNonLU > 0 ? (
+            <>
+              <Text style={styles.isnotif}></Text>
 
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View style={{ position: 'absolute', top: 10, right: 20, zIndex: 2 }}>
-          <TouchableOpacity onPress={() => { showListNotif() }}>
-            {NbreNotif > 0 && (<Text style={styles.isnotif}></Text>)}
-            <Text><Ionicons name="md-notifications" size={20} color="black" /></Text>
+              <Text><Ionicons name="md-notifications" size={20} color="black" /></Text>
+              {global.NbreNotifNonLU > 100 ? (<Text style={styles.nbreNOTIF}>+99</Text>) : (<Text style={styles.nbreNOTIF}>{global.NbreNotifNonLU}</Text>)}
+            </>
+          ) : (
+            <Text><Ionicons name="md-notifications" size={20} color="black" /></Text>)}
 
-          </TouchableOpacity>
-        </View>
-
-      )
-      }
-
-      <Animated.View style={[styles.shownotif, { opacity: !Enable ? fadeAnimation : hideAnimation, maxHeight: !Enable ? 20 : MaxHeight }]}>
-        {NbreNotif > 0 ? (
-          <ScrollView
-            keyboardShouldPersistTaps="handled">
-            <View style={[styles.lisnotif, { justifyContent: 'center', alignItems: 'center' }]}>
-              <Text style={{ fontSize: 16, fontWeight: 'bold', padding: 5 }}>Notifications - </Text>
-              <TouchableOpacity onPress={() => { hideListNotif(); navigation.navigate({ name: 'ListNotifications' }) }}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold', padding: 5 }}>Voir tout</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View>
-              {NotifList.map((value, key) => (
-                <View key={key} style={styles.lisnotif}>
-                  <TouchableOpacity key={key} onPress={() => { hideListNotif(0); NaVIG(value.id_activite, value.type_activite, navigation) }} >
-
-                    <View style={styles.bcBlock} key={value.key} >
-                      <GetProfile user_id={value.id_user1} navigation={navigation} img_prof={value.img_prof} />
-
-                      <View style={styles.bcDetaille}>
-                        <Text style={styles.postLabel}>{value.nom} </Text>
-                        <Text style={styles.bcText}>{value.notification}</Text>
-
-                        <View
-                          style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingRight: 40 }}>
-                          {getDate(value.date)}
-                          {/*<Text style={styles.bcSmText}>{dateDiff(getDate(value.date), today)}  </Text>*/}
-                        </View>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-          </ScrollView>
-        ) : (
-          <View style={[styles.lisnotif, { maxHeight: !Enable ? 20 : 200, justifyContent: 'center' }]}>
-            <Text style={{ fontSize: 16, textAlign: 'center', fontWeight: 'bold' }}>Pas de Notifications</Text>
-          </View>
-        )
-        }
+        </TouchableOpacity>
+      </View>
 
 
-      </Animated.View>
+
     </View>
 
   );
@@ -188,68 +107,8 @@ const styles = StyleSheet.create({
     shadowRadius: 5.46,
     elevation: 9,
   },
-  hideNotif: {
-    right: -200,
-  },
-  shownotif: {
-    //flexDirection: 'row',
-    //flexWrap: 'wrap',
-    //width: Platform.OS == 'web' ? 250 : 200,
-    width: 250,
-    padding: 5,
-    position: 'relative',
-    top: 35,
-    zIndex: 0,
-    backgroundColor: 'white',
-    right: 20,
-    borderRadius: 6,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.32,
-    shadowRadius: 5.46,
-    elevation: 9,
+  nbreNOTIF:
+    { position: 'absolute', top: -5, right: 5, width: 35, color: 'rgb(140, 153, 44)', fontWeight: 'bold' }
 
-  },
-  lisnotif: {
-    flexDirection: 'row',
-
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 7,
-    paddingVertical: 4,
-    // paddingRight: 10,
-    zIndex: 20,
-    borderRadius: 10,
-    borderWidth: 0,
-    /*position: 'absolute',
-    right: 20,
-    top: 40,*/
-    marginTop: 0,
-    width: '100%',
-    // minHeight: 300,
-  },
-  bcBlock: {
-    flexDirection: 'row',
-    width: '100%'
-  },
-  postLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#c4d63c',
-  },
-  bcDetaille: {
-    alignSelf: 'flex-start',
-    margin: 7,
-    width: '80%',
-  },
-  bcText: {
-    width: '100%',
-  },
-  bcSmText: {
-    fontSize: 11,
-    color: '#6cc5d5'
-  },
 });
 export default Notifications;

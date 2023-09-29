@@ -44,17 +44,17 @@ const MonAbonnementScreen = ({ navigation }) => {
       //console.log('isvip?', response)
       if (response.data.length > 0) {
         const MmebreisVIP = response.data[0].VIP;
-        console.log('jjj : ', response.data[0].date_abonnement)
+
         let Date_abonnement = new Date(response.data[0].date_abonnement)
         Date_abonnement = moment(Date_abonnement, 'DD-MM-YYYY')
         // const ToDay = new Date();
-        console.log(Date_abonnement);
+
         let endDateAbnmt
         if (global.User_VIP < 4)
           endDateAbnmt = moment(Date_abonnement).add(global.User_VIP, 'M');
         else
           endDateAbnmt = moment(Date_abonnement).add(12, 'M');
-        console.log(endDateAbnmt)
+
         const restDay = endDateAbnmt.diff(Date_abonnement, 'days');
         //const diffDuration = moment.duration(diff);
         //const duration = durationInMonths(Date_abonnement, ToDay);

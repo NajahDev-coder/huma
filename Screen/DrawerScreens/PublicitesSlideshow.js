@@ -10,8 +10,8 @@ const PublicitesSlideshow = ({ navigation, rang }) => {
   const [listPublicite, setListpublicite] = useState([]);
   const [position, setPosition] = useState(1);
 
-  const getPublicite = async () => {
-    const fetchUrl = `publicites`;
+  const getPublicite = async (userId) => {
+    const fetchUrl = `publicites/${userId}`;
 
     const responseJson = await RequestOptionsGet(fetchUrl);
 
@@ -25,7 +25,7 @@ const PublicitesSlideshow = ({ navigation, rang }) => {
         if (value.image == '')
           url_img = `${Base_url}images/publicite.jpg`
         else
-          url_img = `${Base_url}images/${value.image}.jpeg`
+          url_img = `${Base_url}images/${value.image}`
         if (key == id_pub) {
           datas.push({ title: value.titre, caption: value.lien, url: url_img });
         }
@@ -43,7 +43,7 @@ const PublicitesSlideshow = ({ navigation, rang }) => {
   useEffect(() => {
     let isMounted = true;
     if (isMounted) {
-      getPublicite();
+      getPublicite('all');
       /* setInterval(() => {
          setPosition(position === listPublicite.length ? 0 : position + 1);
  
@@ -66,7 +66,7 @@ const PublicitesSlideshow = ({ navigation, rang }) => {
             style={styles.bcImageBlock}>
 
             <View style={styles.bcCaption}>
-              <Text style={{ fontWeight: 'bold', color: '#562b05' }}>#{value.title}</Text>
+              <Text style={{ fontWeight: 'bold', color: '#000000' }}>#{value.title}</Text>
               <Text style={{ textDecorationLine: 'underline', color: '#039be5' }}><Entypo name="video-camera" size={16} color="#039be5" /> {value.caption}</Text>
             </View>
           </ImageBackground>
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     width: '100%',
-    backgroundColor: 'rgba(140, 153, 44 , 0.60)'
+    backgroundColor: 'rgba(255, 255, 255 , 0.60)'
   }
 })
 export default PublicitesSlideshow;

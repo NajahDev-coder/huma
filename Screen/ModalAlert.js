@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Modal, StyleSheet, Platform, Text, Pressable, View, Linking, TouchableOpacity } from 'react-native';
 import { deleteAction } from './utils/utils';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
-const ModalAlert = ({ navigation, msgAlerte }) => {
+const ModalAlert = ({ navigation, msgAlerte, action }) => {
     const [modalVisible, setModalVisible] = useState(true);
     return (
         <View style={styles.centeredView}>
@@ -18,10 +18,10 @@ const ModalAlert = ({ navigation, msgAlerte }) => {
 
                     <View style={styles.modalView}>
                         <Text style={styles.titleModal}>{msgAlerte}</Text>
-                        <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                             <Pressable
                                 style={styles.butt}
-                                onPress={() => setModalVisible(!modalVisible)}>
+                                onPress={() => { setModalVisible(!modalVisible); action(); }}>
                                 <Text style={styles.txtbutt}>OK</Text>
                             </Pressable>
 
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
+        // alignItems: 'center',
         marginTop: 22,
 
     },
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 35,
-        alignItems: 'center',
+        //alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,

@@ -6,17 +6,13 @@ import {
     GooglePlacesAutocomplete,
     Geolocation,
 } from 'react-native-google-places-autocomplete';
-
 const BarFilter = ({ navigation }) => {
     return (
         <View style={styles.rowF}>
-            <TouchableOpacity onPress={() => navigation.replace('Filter')}>
-
+            <TouchableOpacity onPress={() => navigation.push('Filter')}>
                 <View style={styles.rowAC}>
                     <GooglePlacesAutocomplete
-                        placeholder="Localisation "
-
-
+                        placeholder="Localisation"
                         styles={{
                             textInputContainer: {
                                 backgroundColor: 'transparent',
@@ -44,7 +40,7 @@ const BarFilter = ({ navigation }) => {
                     name="filter-variant-plus"
                     size={35}
                     color="black"
-                    onPress={() => navigation.replace('Filter')}
+                    onPress={() => navigation.push('Filter')}
                     style={{ position: 'absolute', right: 5 }}
                 />
             </TouchableOpacity>

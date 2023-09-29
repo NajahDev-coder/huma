@@ -146,7 +146,7 @@ const MembresScreen = ({ navigation }) => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <View style={{ position: 'absolute', top: 0, right: 0, height: 70, width: '100%', zIndex: 100 }}>
+          <View style={{ position: 'absolute', top: 0, right: 0, width: '100%', zIndex: 100 }}>
 
             <FilterMembreForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
           </View>

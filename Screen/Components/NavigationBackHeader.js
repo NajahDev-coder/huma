@@ -4,22 +4,20 @@
 // Import React and Component
 import React, { version } from 'react';
 import { View, Image, TouchableOpacity } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
+import { Base_url } from '../utils/utils';
+const NavigationBackHeader = ({ navigationProps, Screen }) => {
 
-const url = "https://huma.bzh/";
-const NavigationBackHeader = (props) => {
-    const toggleDrawer = () => {
-        props.navigationProps.toggleDrawer();
-    };
 
     return (
 
         <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity onPress={toggleDrawer}>
+            <TouchableOpacity onPress={() => navigationProps.goBack(Screen)} >
                 <Image
                     source={
-                        { uri: url + 'images/back.png' }
+                        { uri: `${Base_url}images/back.png` }
                     }
-                    style={{ width: 25, height: 25, marginLeft: 15 }}
+                    style={{ width: 25, height: 25, marginLeft: 20, marginTop: 0 }}
                 />
             </TouchableOpacity>
         </View>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Modal, StyleSheet, Platform, Text, Pressable, View, Linking, TouchableOpacity } from 'react-native';
 import { deleteAction } from './utils/utils';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
-const ModalSuppression = ({ navigation, id, type, msgAlerte }) => {
+const ModalSuppression = ({ navigation, id, type, msgAlerte, onSupp }) => {
     const [modalVisible, setModalVisible] = useState(true);
     return (
         <View style={styles.centeredView}>
@@ -18,7 +18,7 @@ const ModalSuppression = ({ navigation, id, type, msgAlerte }) => {
 
                     <View style={styles.modalView}>
                         <Text style={styles.titleModal}>{msgAlerte}</Text>
-                        <View style={{ flexDirection: 'row' }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                             <Pressable
                                 style={styles.butt}
                                 onPress={() => setModalVisible(!modalVisible)}>
@@ -26,7 +26,7 @@ const ModalSuppression = ({ navigation, id, type, msgAlerte }) => {
                             </Pressable>
                             <Pressable
                                 style={styles.buttVIP}
-                                onPress={() => { deleteAction(id, type); setModalVisible(!modalVisible) }}>
+                                onPress={() => { deleteAction(id, type); setModalVisible(!modalVisible); onSupp(); }}>
                                 <Text style={styles.txtbutt}>Confirmer</Text>
                             </Pressable>
                         </View>
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
+        //alignItems: 'center',
         marginTop: 22,
 
     },
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 35,
-        alignItems: 'center',
+        //alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
     titleModal:
     {
         fontSize: 15,
-        color: 'rgba(140, 153, 44 , 0.80)',
+        //color: 'rgba(140, 153, 44 , 0.80)',
+        color: '#222222',
         borderBottomColor: '#c4d63c',
         borderBottomWidth: 5,
         paddingBottom: 20,

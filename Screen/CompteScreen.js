@@ -30,6 +30,7 @@ import {
   Octicons,
   Fontisto,
   Ionicons,
+  MaterialCommunityIcons
 } from '@expo/vector-icons';
 
 import GetProfile from './Components/GetProfile';
@@ -274,7 +275,7 @@ const CompteScreen = ({ navigation, route }) => {
                     <Text>&nbsp;</Text>
                   </View>
                   <View style={CacheValue === 1 && styles.cache}>
-                    <MaterialIcons name="alternate-email" size={22} color="#823a14" style={styles.icone} />
+                    <MaterialIcons name="alternate-email" size={22} color="#222222" style={styles.icone} />
                     <Text style={styles.txtdtl}>Email : {EmailProfile}</Text>
                   </View>
                   <View style={CacheValue === 1 && styles.cache}>
@@ -282,7 +283,7 @@ const CompteScreen = ({ navigation, route }) => {
                     <Text style={styles.txtdtl}>Tèl : {TelProfile}</Text>
                   </View>
                   <View>
-                    <MaterialIcons name="perm-contact-calendar" size={24} color="#823a14" style={styles.icone} />
+                    <MaterialIcons name="perm-contact-calendar" size={24} color="#222222" style={styles.icone} />
                     <Text style={styles.txtdtl}>Age : {AgeProfile}</Text>
                   </View>
                   <View>
@@ -290,12 +291,12 @@ const CompteScreen = ({ navigation, route }) => {
                     <Text style={styles.txtdtl}>Adresse : {AdresseProfile}</Text>
                   </View>
                   <View>
-                    <MaterialIcons name="emoji-transportation" size={24} color="#823a14" style={styles.icone1} />
+                    <MaterialIcons name="emoji-transportation" size={24} color="#222222" style={styles.icone1} />
                     <Text style={styles.txtdtl}>Transporteur : {TransporteurProfile === 0 ? 'Non' : 'Oui'}
                     </Text>
                   </View>
                   <View>
-                    <FontAwesome5 name="map-marked-alt" size={24} color="#823a14" style={styles.icone1} />
+                    <FontAwesome5 name="map-marked-alt" size={24} color="#222222" style={styles.icone1} />
                     <Text style={styles.txtdtl}>Dolmen : {DolmenProfile === 0 ? 'Non' : 'Oui'}</Text>
                   </View>
                 </Animated.View>
@@ -315,7 +316,7 @@ const CompteScreen = ({ navigation, route }) => {
                     <Text>&nbsp;</Text>
                   </View>
                   <View>
-                    <MaterialIcons name="article" size={24} color="#823a14" style={styles.icone} />
+                    <MaterialIcons name="article" size={24} color="#222222" style={styles.icone} />
                     <Text
                       style={styles.linkdtl}
                       onPress={() => navigation.navigate('MesAnnonces', { id_user: UserId })}>{Mes}Annonces
@@ -332,13 +333,15 @@ const CompteScreen = ({ navigation, route }) => {
                     </View>
 
                   )}
-                  {/*MyUserId === UserId && (
-                    <Text
-                      style={styles.linkdtl}
-                      onPress={() => navigation.replace('OffresMemebreScreen')}>
-                      <MaterialIcons name="format-list-bulleted" size={24} color="#823a14" style={{ paddingRight: 5 }} /> {Mes}Offres
-                    </Text>
-                  )*/}
+                  {(global.User_VIP != null && global.User_VIP > 0) && (
+                    <View>
+                      <MaterialCommunityIcons name="advertisements" size={24} color="#6cc5d5" style={styles.icone} />
+                      <Text
+                        style={styles.linkdtl}
+                        onPress={() => navigation.navigate('MesPublicites')}>Mes Publicités
+                      </Text>
+                    </View>
+                  )}
                   <View>
                     <MaterialIcons name="star-rate" size={24} color="#c4d63c" style={styles.icone} />
                     <Text
@@ -355,39 +358,40 @@ const CompteScreen = ({ navigation, route }) => {
                   </View>
                 </Animated.View>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.post}>
-                <Animated.View
-                  style={{
-                    width: '100%',
-                    opacity: fadeAnimation,
-                    paddingBottom: 10,
-                  }}>
-                  <View>
-                    <Text style={styles.titreOff}> Action </Text>
-                  </View>
-                  <View style={styles.hrbc}>
-                    <Text>&nbsp;</Text>
-                  </View>
-                  {MyUserId === UserId && (
+
+              {MyUserId === UserId && (
+                <TouchableOpacity style={styles.post}>
+                  <Animated.View
+                    style={{
+                      width: '100%',
+                      opacity: fadeAnimation,
+                      paddingBottom: 10,
+                    }}>
                     <View>
-                      <FontAwesome5 name="plus-circle" size={24} color="#823a14" style={styles.icone} />
+                      <Text style={styles.titreOff}> Action </Text>
+                    </View>
+                    <View style={styles.hrbc}>
+                      <Text>&nbsp;</Text>
+                    </View>
+                    <View>
+                      <FontAwesome5 name="plus-circle" size={24} color="#222222" style={styles.icone} />
                       <Text
                         style={styles.linkdtl}
                         onPress={() => navigation.navigate('Type')}>Ajout Annonce
                       </Text>
                     </View>
-                  )}
-                  {MyUserId === UserId && (
+
                     <View>
                       <FontAwesome5 name="donate" size={24} color="#97ab00" style={styles.icone} />
                       <Text
                         style={[styles.linkdtl, { color: '#97ab00' }]}
-                        onPress={() => navigation.navigate('Don')}>Fait Don
+                        onPress={() => navigation.navigate('Don')}>Faire un Don
                       </Text>
                     </View>
-                  )}
-                </Animated.View>
-              </TouchableOpacity>
+
+                  </Animated.View>
+                </TouchableOpacity>
+              )}
               {MyUserId === UserId && (
                 <TouchableOpacity style={styles.post}>
                   <Animated.View
@@ -405,19 +409,20 @@ const CompteScreen = ({ navigation, route }) => {
 
 
                     <View>
-                      <MaterialIcons name="history-edu" size={24} color="#823a14" style={styles.icone} />
+                      <MaterialIcons name="history-edu" size={24} color="#222222" style={styles.icone} />
                       <Text
                         style={styles.linkdtl}
                         onPress={() => navigation.navigate('Historique')}>Mon Historique
                       </Text>
                     </View>
                     <View>
-                      <MaterialIcons name="payments" size={24} color="#823a14" style={styles.icone} />
+                      <MaterialIcons name="payments" size={24} color="#222222" style={styles.icone} />
                       <Text
                         style={styles.linkdtl}
                         onPress={() => { (global.User_VIP != null && global.User_VIP > 0) ? navigation.navigate('MonAbonnement', { id_user: MyUserId }) : navigation.navigate('Abonnement') }}>Mon Abonnement
                       </Text>
                     </View>
+
                     <View>
                       <AntDesign name="login" size={20} color="#c4d63c" style={styles.icone} />
                       <Text
@@ -442,7 +447,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center',
-    color: '#823a14'
+    color: '#222222'
   },
   post: {
     paddingVertical: 8,
@@ -485,7 +490,7 @@ const styles = StyleSheet.create({
     //alignContent: 'flex-center',
     width: '100%',
     justifyContent: 'center',
-    color: '823a14',
+    color: '222222',
     fontWeight: 'bold',
     padding: 10,
     paddingTop: 35,
@@ -497,7 +502,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     textAlign: 'center',
-    color: '#823a14'
+    color: '#222222'
   },
   emailAuteurProfile: {
     paddingLeft: 13,
@@ -515,7 +520,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     padding: 10,
     paddingLeft: 15,
-    color: '#823a14',
+    color: '#222222',
   },
   titreOff2: {
     fontSize: 18,
@@ -537,9 +542,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     marginLeft: 15,
     marginRight: 15,
-    borderBottomColor: '#823a14',
+    borderBottomColor: '#222222',
     borderBottomWidth: 1,
-    color: '#823a14',
+    color: '#222222',
   },
   linkdtl: {
     paddingVertical: 5,
@@ -547,9 +552,9 @@ const styles = StyleSheet.create({
     //paddingLeft: 30,
     marginLeft: 15,
     marginRight: 15,
-    borderBottomColor: '#823a14',
+    borderBottomColor: '#222222',
     borderBottomWidth: 1,
-    color: '#823a14',
+    color: '#222222',
     fontSize: 16,
     fontWeight: '500',
 

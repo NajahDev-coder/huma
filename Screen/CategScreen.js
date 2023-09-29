@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from 'react';
+import React, { useState, useRef, createRef, useEffect } from 'react';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +16,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
+  Animated
 } from 'react-native';
 
 
@@ -25,6 +26,9 @@ let SousCateg;
 
 import { Base_url, RequestOptionsGet } from './utils/utils'
 const CategScreen = ({ navigation }) => {
+
+  const scrollX = useRef(new Animated.Value(0)).current;
+
   const [CategroiesList, setCategroiesList] = useState([]);
   const [CategSelected, setCategSelected] = useState('1');
   const [PcategID, setPcategID] = useState(1);
@@ -101,7 +105,7 @@ const CategScreen = ({ navigation }) => {
             alignContent: 'center',
           }}>
           <View style={{ padding: 10, flex: 1, width: '100%' }}>
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
 
               <FlatList
                 columnWrapperStyle={{ justifyContent: 'space-between' }}
@@ -137,6 +141,59 @@ const CategScreen = ({ navigation }) => {
                 numColumns={3}
                 keyExtractor={(item, index) => index}
               />
+            </View>*/}
+            <View style={styles.row}>
+
+
+              <ScrollView
+                horizontal={true}
+
+                showsHorizontalScrollIndicator={false}
+                onScroll={Animated.event([
+                  {
+                    nativeEvent: {
+                      contentOffset: {
+                        x: scrollX,
+                      },
+                    },
+                  },
+                ],
+                  { useNativeDriver: false }
+                )}>
+                <FlatList
+                  data={CategroiesList}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      onPress={() => {
+                        displaySCateg(item.id);
+                        setSelectedValue(item.id);
+                      }}
+                      style={[
+                        styles.button,
+                        //selectedValue == item.id && styles.selected,
+                        (item.id == 1 || item.id == 3 || item.id == 5) && styles.selected,
+                      ]}>
+
+
+                      <ImageBackground source={getBeerImageCateg(item.id)}  >
+                        <Text
+                          style={[
+                            styles.buttonLabel,
+                            selectedValue == item.id && styles.selectedLabel,
+                          ]}>
+                          {item.titre}
+                        </Text>
+
+                      </ImageBackground>
+
+                    </TouchableOpacity>
+                  )}
+
+                  horizontal={true}
+                  keyExtractor={(item, index) => index}
+                />
+              </ScrollView>
             </View>
           </View>
 
@@ -167,7 +224,7 @@ const CategScreen = ({ navigation }) => {
           </SafeAreaView>
         </ScrollView>
       </ImageBackground>
-    </View >
+    </View>
   );
 };
 /*function PreviewLayout({
@@ -231,14 +288,12 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#bed61e',
-    //backgroundColor: 'rgba(140, 153, 44 , 0.80)',
     alignItems: 'center',
-    // justifyContent: 'center',
     marginHorizontal: 5,
     marginVertical: 6,
     borderRadius: 30,
     height: 110,
-    width: 120,
+    width: 110,
 
     //padding: 10
     //justifyContent: 'center',
@@ -246,7 +301,6 @@ const styles = StyleSheet.create({
     //textAlign: 'center',
   },
   selected: {
-    //backgroundColor: 'rgba(115, 126, 29, 0.88)',
     backgroundColor: '#4c362b',
     borderWidth: 0,
   },
@@ -257,7 +311,7 @@ const styles = StyleSheet.create({
     //padding: 20,
     paddingTop: 40,
     height: 110,
-    width: 100,
+    width: 90,
     fontWeight: 'bold',
     textAlign: 'center',
     justifyContent: 'center'

@@ -8,7 +8,9 @@ import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-lis
 import moment from 'moment';
 
 import GetProfile from '../Components/GetProfile';
-import { Base_url, RequestOptionsGet, ShowDetailAnnonce } from '../utils/utils'
+import {
+    Base_url, RequestOptionsGet, ShowDetailAnnonce, UpdateReadNotification, NaVIG
+} from '../utils/utils'
 import { dateDiff } from '../includes/functions';
 //import { ScrollView } from 'react-native-gesture-handler';
 
@@ -27,11 +29,7 @@ const ListNotifications = ({ navigation }) => {
 
 
 
-    const NaVIG = (idNotif) => {
-        //console.log(idNotif);
-        ShowDetailAnnonce(idNotif, navigation);
 
-    }
     const today = new Date();
     useEffect(() => {
 
@@ -50,11 +48,19 @@ const ListNotifications = ({ navigation }) => {
         }
 
         if (isSubscribed) {
+            // global.NbreNotifNonLU = 0;
             getNotification();
         }
         return () => (isSubscribed = false);
-    }, []);
+    });
+    const checklu = (item) => {
+        const IdUserIn = ',' + String(global.User_connecte);
+        if (item.includes(IdUserIn))
+            return false;
 
+        else
+            return true;
+    }
     return (
         <View style={styles.mainBody}>
             <ImageBackground
@@ -74,7 +80,8 @@ const ListNotifications = ({ navigation }) => {
                                 data={NotifList}
                                 renderItem={({ item }) => (
                                     <View style={styles.lisnotif}>
-                                        <TouchableOpacity key={item.id} onPress={() => NaVIG(item.id_activite)} style={styles.bcBlock}>
+                                        <TouchableOpacity key={item.ID_notif} onPress={() => { UpdateReadNotification(item.type_activite, item.ID_notif); NaVIG(item.id_activite, item.type_activite, navigation); }} style={styles.bcBlock}>
+
                                             <GetProfile user_id={item.id_user1} navigation={navigation} img_prof={item.img_prof} />
 
                                             <View style={styles.bcDetaille}>
@@ -84,6 +91,8 @@ const ListNotifications = ({ navigation }) => {
                                                 <View
                                                     style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                                                     <Text style={styles.bcSmText}>{dateDiff(new Date(item.date), today)}  </Text>
+                                                    {(item.etat == 0 && checklu(item.id_users_lu)) && (<Text style={styles.NonLu}></Text>)}
+
                                                 </View>
                                             </View>
                                         </TouchableOpacity>
@@ -189,6 +198,24 @@ const styles = StyleSheet.create({
     bcSmText: {
         fontSize: 11,
         color: '#6cc5d5'
+    },
+    NonLu: {
+        backgroundColor: '#6cc5d5',
+        width: 10,
+        height: 10,
+        borderRadius: 10,
+        position: 'absolute',
+        top: -20,
+        right: 0,
+        zIndex: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.32,
+        shadowRadius: 5.46,
+        elevation: 9,
     },
 });
 export default ListNotifications;

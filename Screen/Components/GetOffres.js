@@ -15,7 +15,7 @@ import {
   FlatList,
   ActivityIndicator
 } from 'react-native';
-import { RequestOptionsPut, RequestOptionsGet, RequestOptionsPost, Add_historique } from '../utils/utils';
+import { RequestOptionsPut, RequestOptionsGet, RequestOptionsPost, Add_historique, ViewProfile } from '../utils/utils';
 import { SelectList } from 'react-native-dropdown-select-list';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -30,7 +30,7 @@ import DetailleOffre from './DetailleOffre';
 import { Base_url } from '../utils/utils';
 import RatingScreen from './RatingScreen';
 import ModalAlert from '../ModalAlert';
-const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user }) => {
+const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user, typeAnnce }) => {
 
 
   const [isAlert, setIsAlert] = useState(false);
@@ -132,7 +132,7 @@ const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user }) => {
     return () => { isSubscribed = false; }
   }, [refreshKey, fetchData]);
 
-
+  const placeholderTXT = (typeAnnce == 6 ? "Donnez une Réponse ..." : "Faites une Offre ...");
   return (
     <>
       {animating ? (
@@ -162,23 +162,31 @@ const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user }) => {
                           <View style={{ zIndex: 20, position: 'absolute', top: 0, right: 0, padding: 0, width: 100 }}>
 
                             <FavorisOffre id_annonce={id_annonce} id_offre={value.ID_offre} id_user_offre={value.id} id_user={id_user} id_auteur_annonce={id_auteur_annonce} favoris={value.favoris} />
+                            {typeAnnce != 6 && (
+                              <ActionOffre navigation={navigation} id_annonce={id_annonce} id_offre={value.ID_offre} id_user_offre={value.id} id_user={id_user} id_auteur_annonce={id_auteur_annonce} etat={value.etat_acc} situation={traitementAnnonce} onValider={() => { UpValider(!value.etat_acc) }} onModifier={() => { UpModifier(value.ID_offre) }} onUpdate={() => { setRefreshKey((oldKey) => oldKey + 1); }} />
 
-                            <ActionOffre navigation={navigation} id_annonce={id_annonce} id_offre={value.ID_offre} id_user_offre={value.id} id_user={id_user} id_auteur_annonce={id_auteur_annonce} etat={value.etat_acc} situation={traitementAnnonce} onValider={() => { UpValider(!value.etat_acc) }} onModifier={() => { UpModifier(value.ID_offre) }} onUpdate={() => { setRefreshKey((oldKey) => oldKey + 1); }} />
+                            )}
                           </View>
                           <View style={{ zIndex: 1 }}>
-                            <Text style={styles.postLabel}>{value.nom}</Text>
-                            <RatingScreen user_id1={value.id} user_id2={0} />
+                            <TouchableOpacity
 
-                            {(id_auteur_annonce == id_user || value.id_user == id_user) ?
-                              <DetailleOffre id_offre={value.ID_offre} offre={value.detaille} etat={etatDetailsOffre} />
-                              : (
-                                <Text style={styles.bcText}>A proposé une offre.</Text>
-                              )}
-                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                              <Text style={styles.bcSmText}>
-                                publiée le {moment(value.date).format('MM-DD-YYYY')} à  {moment(value.date).format('hh:mm')}
-                              </Text>
-                            </View>
+                              onPress={() => {
+                                ViewProfile(value.id, navigation);
+                              }}>
+                              <Text style={styles.postLabel}>{value.nom}</Text>
+                              <RatingScreen user_id1={value.id} user_id2={0} />
+
+                              {(typeAnnce == 6 || id_auteur_annonce == id_user || value.id_user == id_user) ?
+                                <DetailleOffre id_offre={value.ID_offre} offre={value.detaille} etat={etatDetailsOffre} />
+                                : (
+                                  <Text style={styles.bcText}>A fait une Offre.</Text>
+                                )}
+                              <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                                <Text style={styles.bcSmText}>
+                                  publiée le {moment(value.date).format('MM-DD-YYYY')} à  {moment(value.date).format('hh:mm')}
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
                           </View>
 
                         </View>
@@ -203,7 +211,7 @@ const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user }) => {
               UserOffre === '' ? setOffFocus(false) : setOffFocus(true);
             }}
             value={UserOffre}
-            placeholder="Donner votre offre..."
+            placeholder={placeholderTXT}
             placeholderTextColor="#8b9cb5"
             numberOfLines={4}
           />

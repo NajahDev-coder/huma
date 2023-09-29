@@ -16,7 +16,6 @@ const Marge = parseInt(Dimensions.get('screen').width / 4) + 28;
 const NavigationLogoNotifHeader = ({ navigationProps }) => {
 
 
-
   return (
     <View style={{ flexDirection: 'row', marginTop: -40 }}>
 
