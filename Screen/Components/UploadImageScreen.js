@@ -60,7 +60,7 @@ const UploadImageScreen = () => {
 
         //console.log(result);
 
-        if (!result.cancelled) {
+        if (!result.canceled) {
             setShow(false);
             setImage(result.uri);
             // let path = getPlatformPath(result).value;

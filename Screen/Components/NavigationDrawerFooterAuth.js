@@ -38,12 +38,23 @@ export default function NavigationBottomTabsAuth(props) {
 
   return (
     <Tab.Navigator initialRouteName="AccueilScreen"
-      tabBarOptions={{
-        activeTintColor: '#a7b730',
-        inactiveTintColor: '#49382f'
+      /* tabBarOptions={{
+         activeTintColor: '#a7b730',
+         inactiveTintColor: '#49382f'
+       }}*/
+      screenOptions=
+      {{
+        "tabBarActiveTintColor": "#a7b730",
+        "tabBarInactiveTintColor": "#49382f",
+        "tabBarStyle": [
+          {
+            "display": "flex"
+          },
+          null
+        ]
       }}>
       <Tab.Screen
-        name="Accueil"
+        name="AccueilFooter"
         component={AccueilScreen}
         options={{
           headerShown: false,
@@ -87,7 +98,7 @@ export default function NavigationBottomTabsAuth(props) {
           headerShown: false,
           tabBarLabel: '',
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="plus-circle" size={35} color='#9cb100' style={{ position: 'absolute', top: -10 }} />
+            <FontAwesome5 name="plus-circle" size={25} color='#9cb100' style={{ top: -10 }} />
           ),
           tabBarActiveTintColor: '#a7b730',
           tabBarColor: '#9cb100',

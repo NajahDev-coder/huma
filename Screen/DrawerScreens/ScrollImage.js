@@ -8,13 +8,15 @@ import {
     ImageBackground,
     Animated,
     useWindowDimensions,
-    FlatList
+    FlatList,
+    Platform
 } from 'react-native';
 
 /*const images = new Array(6).fill(
   'https://images.unsplash.com/photo-1556740749-887f6717d7e4',
 );*/
 
+const useNativeDriver = Platform.OS === 'ios' || Platform.OS === 'android';
 const ScrollImage = ({ images }) => {
     const scrollX = useRef(new Animated.Value(0)).current;
 
@@ -72,7 +74,7 @@ const ScrollImage = ({ images }) => {
                 })}
             </View>
 
-        </SafeAreaView>
+        </SafeAreaView >
 
     );
 };

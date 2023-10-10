@@ -11,10 +11,9 @@ import {
 import { Camera } from 'expo-camera';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-//import ImagePicker from 'react-native-image-crop-picker';
-//import UploadImageScreen from './UploadImageScreen';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 export default function CameraImage({ captureImage, isinvisible, PStyle }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -57,9 +56,9 @@ export default function CameraImage({ captureImage, isinvisible, PStyle }) {
     if (!photo.canceled) {
 
       setPreviewVisible(true);
-      setCapturedImage(photo);
+      setCapturedImage(photo.assets[0]);
+
       captureImage(photo);
-      //SaveImage(photo);
     }
   };
   const takePicture = async () => {
@@ -72,9 +71,9 @@ export default function CameraImage({ captureImage, isinvisible, PStyle }) {
         quality: 0.5,
         fixOrientation: true,
         forceUpOrientation: true,
-        // base64: true
+        base64: true
       });
-      //let photo = await cameraRef.current.takePictureAsync(options);
+      //let photo = await cameraRef.current.takePictureAsync(options);  
 
       if (photo) {
         setPreviewVisible(true);
@@ -84,13 +83,7 @@ export default function CameraImage({ captureImage, isinvisible, PStyle }) {
       }
     }
   };
-  /*const IdAnnonceImage = (id_annonce) => {
-    console.id('id_annonce', id_annonce);
-    console.id('capturedImage', capturedImage);
 
-    SaveImage(capturedImage, id_annonce);
-  };*/
-  ////console.log('UserID', UserID);
 
   const switchCamera = () => {
     if (previewVisible) {
@@ -109,9 +102,9 @@ export default function CameraImage({ captureImage, isinvisible, PStyle }) {
 
         borderRadius: 10,
       }}>
-      {previewVisible ? (
+      {previewVisible && capturedImage ? (
         <ImageBackground
-          source={{ uri: capturedImage && capturedImage.uri }}
+          source={{ uri: capturedImage.uri }}
           style={styles.rowCamera, PStyle || styles.StCamera}>
           <View>
             <AntDesign name="picture" size={24} color="black" onPress={() => setPreviewVisible(false)} />

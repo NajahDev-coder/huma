@@ -100,35 +100,21 @@ const EditProfile = ({ navigation, route }) => {
       setUserTransporteur(responseJson.data[0].Transporteur);
       setUserPointDolmen(responseJson.data[0].PointDolmen);
       setUserCache(responseJson.data[0].cache);
-      const imgpf = responseJson.data[0].img_prof;
-      const imgProfile = { uri: `${Base_url}images/${imgpf}` }
-      setUserImageProfile(imgProfile);
-      const imgcv = responseJson.data[0].img_couverture;
-      const imgCouv = { uri: `${Base_url}images/${imgcv}` };
-      setUserImageCouvProfile(imgCouv);
+      if (responseJson.data[0].img_prof != '') {
+        const imgpf = responseJson.data[0].img_prof;
+        const imgProfile = `${Base_url}images/${imgpf}`
+        setUserImageProfile(imgProfile);
+        setUriProfile(true);
+      }
+      if (responseJson.data[0].img_couverture != '') {
+        const imgcv = responseJson.data[0].img_couverture;
+        const imgCouv = `${Base_url}images/${imgcv}`;
+        setUserImageCouvProfile(imgCouv);
+        setUriCouverture(true);
+      }
     }
   };
-  const getCoordinates = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      setTxtError('Veuillez activer votre poisition!');
-      return;
-    }
-    const userLocation = await Location.getCurrentPositionAsync();
-    // setcCULocation(userLocation);
 
-    setCurrentPosition(userLocation);
-    //  setCurrAdresse(userLocation.description);
-  };
-  const currentPlace = {
-    description: 'Position',
-    geometry: {
-      location: {
-        lat: currentPosition ? currentPosition.coords.latitude : '',
-        lng: currentPosition ? currentPosition.coords.longitude : '',
-      },
-    },
-  };
   useEffect(() => {
     let isSubscribed = true;
 
@@ -157,125 +143,139 @@ const EditProfile = ({ navigation, route }) => {
       setIsAlert(true);
       return;
     }
-    if (!userEmail) {
+    else if (!userEmail) {
       const msg = "Veuillez remplir votre Email!";
       setMsgAlert(msg);
       setIsAlert(true);
       return;
     }
-    if (!userAge) {
+    else if (!userAge) {
       const msg = "Veuillez remplir votre Age!";
       setMsgAlert(msg);
       setIsAlert(true);
       return;
     }
-    if (!userTel) {
+    else if (!userTel) {
       const msg = "Veuillez remplir votre Tél!";
       setMsgAlert(msg);
       setIsAlert(true);
       return;
     }
-    if (!userAddress) {
+    else if (!userAddress) {
       const msg = "Veuillez remplir votre Addresse!";
       setMsgAlert(msg);
       setIsAlert(true);
       return;
     }
-    const defaultCoordinates = await Location.geocodeAsync(userAddress);
-    const latitude = defaultCoordinates[0].latitude;
-    const longitude = defaultCoordinates[0].longitude;
-    //Show Loader
-    setLoading(true);
-    var dataToSend1 = {
-      id_user: id_user,
-      nom: userName,
-      email: userEmail,
-      age: userAge,
-      tel: userTel,
-      adresse: userAddress,
-      longitude: longitude,
-      latitude: latitude,
-      transporteur: userTransporteur,
-      point_dolmen: userPointDolmen,
-      cache: userCache,
-    };
+    else {
 
+      //check if image profile is updated 
+      if (ImageProfile) {
+        //console.log('ImageProfile:::', ImageProfile)
+        const ImgsourceP = ImageProfile.base64;
 
-    //console.log("dataToSend1", dataToSend1)
-    const fetchUrl = 'user/update';
-    const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
-    var dataToSend;
-    if (responseJson.status) {
-      //console.log('Photo', responseJson);  
-
-      //Hide Loader
-      setLoading(false);
-      //console.log(responseJson.status);
-      // If server response message same as Data Matched
-      if (responseJson.status === 'success') {
-        const activite = "Vous avez modifié votre profil!"
-        Add_historique(global.User_connecte, activite, global.User_connecte);
-
-        // if (ImageProfile && ImageProfile.canceled == false) {
-        if (ImageProfile) {
-          //console.log('ImageProfile:::', ImageProfile)
-          var Imgsource1;
-          if (typeof ImageProfile.assets != 'undefined')
-            Imgsource1 = ImageProfile.assets[0].base64;
-          else
-            Imgsource1 = ImageProfile.base64;
-
-          dataToSend1 = {
-            imgsource: Imgsource1,
-            img_prof: 1,
-            user_id: global.User_connecte,
-            num: 1
-          }
-          SaveImage(dataToSend1);
+        let dataToSendP = {
+          imgsource: ImgsourceP,
+          img_prof: 1,
+          user_id: global.User_connecte,
+          num: 1
         }
-        //  if (ImageCouvProfile && ImageCouvProfile.canceled == false) {
-        if (ImageCouvProfile) {
-          var Imgsource;
-          if (typeof ImageCouvProfile.assets != 'undefined')
-            Imgsource = ImageCouvProfile.assets[0].base64;
-          else
-            Imgsource = ImageCouvProfile.base64;
-
-          console.log('Image Couv Profile Bien mise!');
-
-          dataToSend = {
-            imgsource: Imgsource,
-            img_couverture: 1,
-            user_id: global.User_connecte,
-            num: 1
-          }
-          SaveImage(dataToSend);
+        //SaveImage(dataToSend1);
+        const fetchUrl = 'upload';
+        const response = await RequestOptionsPost(dataToSendP, fetchUrl);
+        if (typeof response == 'undefined' || response.status != 'success') {
+          const msg = "Modification image de profile échouée !";
+          setMsgAlert(msg);
+          return;
         }
-        // console.log('Edit profile réussi!.');
+      }
+      //  check if  Image CouvProfile is updated
+      if (ImageCouvProfile) {
+        const ImgsourceC = ImageCouvProfile.base64;
 
-        const msg = "Modification Profil réussie!";
-        setMsgAlert(msg);
-        setIsAlert(true);
-        setIsRedirect(true);
-      } else {
-        const msg = "Modification Profil  échouée!!!";
-        setMsgAlert(msg);
-        setIsAlert(true);
+        let dataToSendC = {
+          imgsource: ImgsourceC,
+          img_couverture: 1,
+          user_id: global.User_connecte,
+          num: 1
+        }
+        //SaveImage(dataToSend);
+        const fetchUrl = 'upload';
+        const response = await RequestOptionsPost(dataToSendC, fetchUrl);
+        if (typeof response == 'undefined' || response.status != 'success') {
+          const msg = "Modification image de Couverture échouée !";
+          setMsgAlert(msg);
+          return;
+        }
+      }
+
+      const defaultCoordinates = await Location.geocodeAsync(userAddress);
+      let latitude = '';
+      let longitude = '';
+      if (typeof defaultCoordinates != 'undefined') {
+        latitude = defaultCoordinates[0].latitude;
+        longitude = defaultCoordinates[0].longitude;
+      }
+      //Show Loader
+      setLoading(true);
+      var dataToSend1 = {
+        id_user: id_user,
+        nom: userName,
+        email: userEmail,
+        age: userAge,
+        tel: userTel,
+        adresse: userAddress,
+        longitude: longitude,
+        latitude: latitude,
+        transporteur: userTransporteur,
+        point_dolmen: userPointDolmen,
+        cache: userCache,
+      };
+
+
+      //console.log("dataToSend1", dataToSend1)
+      const fetchUrl = 'user/update';
+      const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
+      var dataToSend;
+      if (responseJson.status) {
+        //console.log('Photo', responseJson);  
+
+        //Hide Loader
+        setLoading(false);
+        //console.log(responseJson.status);
+        // If server response message same as Data Matched
+        if (responseJson.status === 'success') {
+          const activite = "Vous avez modifié votre profil!"
+          Add_historique(global.User_connecte, activite, global.User_connecte);
+
+          // if (ImageProfile && ImageProfile.canceled == false) {
+
+          // console.log('Edit profile réussi!.');
+
+          const msg = "Modification Profil réussie!";
+          setMsgAlert(msg);
+          setIsAlert(true);
+          setIsRedirect(true);
+        } else {
+          const msg = "Modification Profil  échouée!!!";
+          setMsgAlert(msg);
+          setIsAlert(true);
+        }
       }
     }
   }
   const UpdatePhotoProfile = (val) => {
-
+    //console.log('photo val just after captured::', val)
     setCaptureProfileVisible(!captureProfileVisible);
     if (val.assets && val.assets[0].uri) {
       setUriProfile(true);
       setUserImageProfile(val.assets[0].uri);
-      setImageProfile(val)
+      setImageProfile(val.assets[0])
     }
     else {
 
-      setUriProfile(false);
-      setUserImageProfile(val)
+      setUriProfile(true);
+      setUserImageProfile(val.uri)
       setImageProfile(val)
     }
   }
@@ -283,14 +283,15 @@ const EditProfile = ({ navigation, route }) => {
   const UpdatePhotoCouverture = (val) => {
 
     setCaptureCouvertVisible(!captureCouvertVisible);
+    //console.log('photo couverture::::::', val)
     if (val.assets && val.assets[0].uri) {
       setUriCouverture(true);
       setUserImageCouvProfile(val.assets[0].uri);
-      setImageCouvProfile(val)
+      setImageCouvProfile(val.assets[0])
     }
     else {
-      setUriCouverture(false);
-      setUserImageCouvProfile(val)
+      setUriCouverture(true);
+      setUserImageCouvProfile(val.uri)
       setImageCouvProfile(val)
     }
   }
@@ -313,7 +314,7 @@ const EditProfile = ({ navigation, route }) => {
             <TouchableOpacity style={styles.post}>
               <ImageBackground
                 //ref={img_annonce_cv}
-                source={UriCouverture ? { uri: userImageCouvProfile } : userImageCouvProfile}
+                source={UriCouverture ? { uri: userImageCouvProfile } : null}
                 onError={(e) =>
                   setUserImageCouvProfile(DefaultimageCouvProfile)
                 }
@@ -332,7 +333,7 @@ const EditProfile = ({ navigation, route }) => {
                   <View style={styles.bcProfile}>
 
                     <Image
-                      source={UriProfile ? { uri: userImageProfile } : userImageProfile}
+                      source={UriProfile ? { uri: userImageProfile } : null}
                       onError={(e) => setUserImageProfile(DefaultimageProfile)}
                       style={styles.imgbcProfile}
                     />
@@ -441,7 +442,7 @@ const EditProfile = ({ navigation, route }) => {
                   color: '#6cc5d5',
                 },
               }}
-              predefinedPlaces={[currentPlace]}
+
             />
           </View>
           <View style={styles.SectionStyle}>

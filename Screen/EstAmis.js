@@ -25,7 +25,8 @@ import {
   MaterialCommunityIcons
 } from '@expo/vector-icons';
 import { Base_url, RequestOptionsGet, RequestOptionsPost, Add_historique } from './utils/utils'
-
+import ModalAlert from './ModalAlert';
+import ModalSuppression from './ModalSuppression';
 import { SelectList } from 'react-native-dropdown-select-list'
 export default EstAmis = ({ id_user1, id_user2, navigation }) => {
   const [estAmis, setEstAmis] = useState(0);
@@ -33,6 +34,8 @@ export default EstAmis = ({ id_user1, id_user2, navigation }) => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [UserInvited, setUserInvited] = useState(0);
 
+  const [isAlert, setIsAlert] = useState(false);
+  const [MsgAlerte, setMsgAlert] = useState('');
   /*CHECK IF AMI*/
 
   useEffect(() => {
@@ -57,9 +60,14 @@ export default EstAmis = ({ id_user1, id_user2, navigation }) => {
       isAmis(id_user1, id_user2);
     }
     return () => (isSubscribed = false);
-  }, [estAmis]);
+  }, [estAmis, isAlert]);
 
   //add /delete liste amis
+  const deleteAmis = async () => {
+    let msg = "Vous êtes sûr de vouloir supprimer cette personne de votre liste d'amis!"
+    setMsgAlert(msg);
+    setIsAlert(true);
+  }
   const listeAmis = async (MyUserId, UserId, etatAmis) => {
 
     const fetchUrl = `update_liste_amis`;
@@ -81,6 +89,10 @@ export default EstAmis = ({ id_user1, id_user2, navigation }) => {
       activite = `Vous avez refusé une invitation de ${UserId}`;
     if (etatAmis == 0)
       activite = `Vous avez annulé une invitation de ${UserId}`;
+    if (etatAmis == -1) {
+      etatAmis = 0;
+      activite = `Vous avez supprimé une amitié de ${UserId}`;
+    }
     //console.log(activite)
     const responseJson = await RequestOptionsPost(dataToSend, fetchUrl)
     //console.log(responseJson)
@@ -117,9 +129,15 @@ export default EstAmis = ({ id_user1, id_user2, navigation }) => {
             style={{ margin: 4 }}
             color="#c4d63c"
             onPress={() => {
-              listeAmis(id_user1, id_user2, 0);
+              deleteAmis();
             }}
           />
+          {isAlert && (
+            <ModalSuppression navigation={navigation} msgAlerte={MsgAlerte} id='' type='' onSupp={() => { listeAmis(id_user1, id_user2, -1) }} />
+
+          )}
+
+
         </>
       )}
 
@@ -132,7 +150,7 @@ export default EstAmis = ({ id_user1, id_user2, navigation }) => {
             listeAmis(id_user1, id_user2, selected);
           }}
           search={false}
-          arrowicon={<Text style={[styles.txtbutt, { marginRight: -17 }]}><MaterialCommunityIcons name="account-question" size={20} color="white" /> Répondre</Text>}
+          arrowicon={<View style={styles.viewBT}><Text style={styles.txtbutt}><MaterialCommunityIcons name="account-question" size={20} color="white" /> Répondre</Text></View>}
 
           boxStyles={styles.boxdropstyle}
           inputStyles={{ opacity: 0 }}
@@ -183,7 +201,7 @@ const styles = StyleSheet.create({
   dropstyle:
   {
 
-    marginTop: -32,
+    marginTop: -12,
     zIndex: 20,
     marginLeft: 70,
     padding: 0,
@@ -203,7 +221,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#909475',
-    width: 120
+    width: 100
   },
   viewBT:
   {

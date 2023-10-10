@@ -210,53 +210,53 @@ export default function EditAnnonceScreen({ navigation, route }) {
       if (PhotoNew) {
         let update = false;
         if (Photo) update = true;
-        var Imgsource;
+        let Imgsource;
         if (typeof PhotoNew.assets != 'undefined')
           Imgsource = PhotoNew.assets[0].base64;
         else
           Imgsource = PhotoNew.base64;
-        var dataToSendPhoto = {
+        let dataToSendPhoto = {
           imgsource: Imgsource,
           annonce_id: id_annonce,
           user_id: global.User_connecte,
           num: 1,
           update: update
         }
-        SaveImage(dataToSendPhoto);
+        await SaveImage(dataToSendPhoto);
       }
       if (Photo2New) {
         let update = false;
         if (Photo2) update = true;
-        var Imgsource2;
+        let Imgsource2;
         if (typeof Photo2New.assets != 'undefined')
           Imgsource2 = Photo2New.assets[0].base64;
         else
           Imgsource2 = Photo2New.base64;
-        var dataToSendPhoto2 = {
+        let dataToSendPhoto2 = {
           imgsource: Imgsource2,
           annonce_id: id_annonce,
           user_id: global.User_connecte,
           num: 2,
           update: update
         }
-        SaveImage(dataToSendPhoto2);
+        await SaveImage(dataToSendPhoto2);
       }
       if (Photo3New) {
         let update = false;
         if (Photo3) update = true;
-        var Imgsource3;
+        let Imgsource3;
         if (typeof Photo3New.assets != 'undefined')
           Imgsource3 = Photo3New.assets[0].base64;
         else
           Imgsource3 = Photo3New.base64;
-        var dataToSendPhoto3 = {
+        let dataToSendPhoto3 = {
           imgsource: Imgsource3,
           annonce_id: id_annonce,
           user_id: global.User_connecte,
           num: 3,
           update: update
         }
-        SaveImage(dataToSendPhoto3);
+        await SaveImage(dataToSendPhoto3);
       }
       // CameraImage.IdAnnonceImage(capturedImage,responseJson.ID)
 

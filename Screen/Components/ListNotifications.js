@@ -31,28 +31,29 @@ const ListNotifications = ({ navigation }) => {
 
 
     const today = new Date();
+    const getNotification = async () => {
+        //alert(id_user)
+        const fetchUrl = `getAllNotif/${global.User_connecte}`;
+
+        const responseJson = await RequestOptionsGet(fetchUrl)
+        if (responseJson.data) {
+
+            setNotifList(responseJson.data);
+        }
+        //setRefreshKey((oldKey) => oldKey + 1); 
+
+    }
     useEffect(() => {
 
         let isSubscribed = true;
-        const getNotification = async () => {
-            //alert(id_user)
-            const fetchUrl = `getAllNotif/${global.User_connecte}`;
 
-            const responseJson = await RequestOptionsGet(fetchUrl)
-            if (responseJson.data) {
-
-                setNotifList(responseJson.data);
-            }
-            //setRefreshKey((oldKey) => oldKey + 1); 
-
-        }
 
         if (isSubscribed) {
             // global.NbreNotifNonLU = 0;
             getNotification();
         }
         return () => (isSubscribed = false);
-    });
+    }, []);
     const checklu = (item) => {
         const IdUserIn = ',' + String(global.User_connecte);
         if (item.includes(IdUserIn))

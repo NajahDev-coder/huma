@@ -85,12 +85,14 @@ const MembresScreen = ({ navigation }) => {
 
     });
   }, [filter])
+
+  const useNativeDriver = Platform.OS === 'ios' || Platform.OS === 'android';
   const fadeIn = useCallback(() => {
     Animated.timing(fadeAnimation, {
       toValue: 1,
       duration: 500,
       nativeEvent: { contentOffset: { y: fadeAnimation } },
-      useNativeDriver: true,
+      useNativeDriver,
     }).start();
   }, [fadeAnimation]);
 

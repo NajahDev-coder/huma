@@ -1,10 +1,11 @@
 {
   "scripts": {
-    "start:staging": "APP_ENV=staging npx  expo start ",
-    "android:staging": "APP_ENV=staging npx expo run:android",
-    "ios:staging": "APP_ENV=staging npx expo run:ios",
-    "web:staging": "APP_ENV=staging npx expo start --web"
+    "start:staging": "APP_ENV=staging/production npx  expo start ",
+    "android:staging": "APP_ENV=staging/production npx expo run:android",
+    "ios:staging": "APP_ENV=staging/production npx expo run:ios",
+    "web:staging": "APP_ENV=staging/production npx expo start --web"
   },
+  "homepage": "https://huma.bzh/",
   "dependencies": {
     "@expo/config-plugins": "~6.0.0",
     "@expo/vector-icons": "^13.0.0",
@@ -29,6 +30,7 @@
     "eject": "^0.0.4",
     "expo": "~48.0.18",
     "expo-camera": "~13.2.1",
+    "expo-cli": "^6.3.10",
     "expo-constants": "~14.2.1",
     "expo-device": "~5.2.1",
     "expo-font": "~11.1.1",
@@ -38,12 +40,12 @@
     "expo-notifications": "~0.18.1",
     "expo-permissions": "~14.1.1",
     "expo-screen-orientation": "~5.1.1",
+    "expo-sensors": "~12.1.1",
     "expo-splash-screen": "~0.18.2",
     "expo-status-bar": "~1.4.4",
     "expo-updates": "~0.16.4",
     "jdk11": "^2.0.0",
     "markdown-it": "*",
-    "metro-minify-uglify": "^0.76.5",
     "moment": "*",
     "prop-types": "*",
     "react": "18.2.0",
@@ -79,13 +81,14 @@
     "react-native-screens": "~3.20.0",
     "react-native-slideshow-improved": "*",
     "react-native-vector-icons": "*",
-    "react-native-web": "~0.18.11",
     "react-native-webview": "11.26.0",
     "react-redux": "*",
     "react-router": "*",
     "react-router-dom": "*",
     "react-simple-star-rating": "^3.0.0",
-    "redux": "4.0.0"
+    "redux": "4.0.0",
+    "vercel": "^27.3.4",
+    "react-native-web": "~0.18.10"
   },
   "engines": {
     "npm": ">=9.6.4"

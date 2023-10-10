@@ -11,8 +11,7 @@
     ],
     "version": "1.0.3",
     "runtimeVersion": "1.4",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon_notif.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -53,13 +52,13 @@
       [
         "expo-screen-orientation",
         {
-          "initialOrientation": "DEFAULT"
+          "initialOrientation": "ALL"
         }
       ],
       [
         "expo-notifications",
         {
-          "icon": "./assets/icon.png",
+          "icon": "./assets/icon_notif.png",
           "color": "#ffffff",
           "sounds": [
             "./assets/mySound.wav",

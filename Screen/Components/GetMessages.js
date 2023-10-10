@@ -179,44 +179,52 @@ const GetMessages = ({ navigation, route }) => {
         >
           <View >
 
-            <View style={{ padding: 10, flex: 1, width: '100%', paddingBottom: 100 }}>
+            <View style={{
+              padding: 10, width: '100%', height: minHeight1
+            }}>
 
               <View style={styles.row}>
-                {Messages.map((item) => (
+                <ScrollView
 
-                  <View style={{ flex: 1, width: '100%' }} key={item.id}>
-
-                    <TouchableOpacity
-                      key={item.id}
-                      style={
-                        global.User_connecte != item.id_user1 ? styles.post : styles.post2
-                      }>
-                      {global.User_connecte != item.id_user1 ? (
-                        <View style={styles.leftpost}><Text></Text></View>
-                      ) : (
-                        <View style={styles.rightpost}><Text></Text></View>
-                      )
-                      }
-                      <View style={styles.bcBlock}>
+                  keyboardShouldPersistTaps="handled"
 
 
+                >
+                  {Messages.map((item) => (
 
-                        <GetProfile user_id={item.id_user1} navigation={navigation} img_prof={item.img_prof} />
+                    <View style={{ width: '100%' }} key={item.id}>
+
+                      <TouchableOpacity
+                        key={item.id}
+                        style={
+                          global.User_connecte != item.id_user1 ? styles.post : styles.post2
+                        }>
+                        {global.User_connecte != item.id_user1 ? (
+                          <View style={styles.leftpost}><Text></Text></View>
+                        ) : (
+                          <View style={styles.rightpost}><Text></Text></View>
+                        )
+                        }
+                        <View style={styles.bcBlock}>
 
 
-                        <View style={styles.bcDetaille}>
-                          <GetUser id_user={item.id_user1} />
 
-                          <Text style={styles.postLabel2}>{item.message}</Text>
+                          <GetProfile user_id={item.id_user1} navigation={navigation} img_prof={item.img_prof} />
+
+
+                          <View style={styles.bcDetaille}>
+                            <GetUser id_user={item.id_user1} />
+
+                            <Text style={styles.postLabel2}>{item.message}</Text>
+                          </View>
                         </View>
-                      </View>
-                    </TouchableOpacity>
+                      </TouchableOpacity>
 
-                  </View>
+                    </View>
 
-                ))
-                }
-
+                  ))
+                  }
+                </ScrollView>
               </View>
               {/*Vu != '' && (
                 <View style={{ alignSelf: 'flex-end', padding: 15, marginRight: 5 }}>
@@ -225,40 +233,39 @@ const GetMessages = ({ navigation, route }) => {
               )*/}
 
             </View>
-            <View style={{ flex: 1 }}>
-              <View style={{ width: '95%', padding: 3, position: 'absolute', bottom: 0, left: 4, right: 4 }}>
-                <TextInput
-                  multiline={true}
-                  style={styles.inputStyle}
-                  onChangeText={(val) => { setUserMessage(val); setOffFocus(true); }}
-                  ref={msgInput}
-                  onKeyPress={(e) => {
-                    !UserMessage ? setOffFocus(false) : setOffFocus(true);
-                  }}
-                  value={UserMessage}
-                  placeholder="Ecrire votre message..."
-                  placeholderTextColor="#8b9cb5"
-                  numberOfLines={4}
-                />
-                {errortext && <Text style={styles.errorTextStyle}>{errortext}</Text>}
-                {OffFocus === true ? (
-                  <TouchableOpacity
-                    style={{ position: 'absolute', right: 14, bottom: 14 }}
-                    activeOpacity={0.5}
-                    onPress={() => handleSubmitPress()}>
+            <View style={{ width: '95%', padding: 3, position: 'absolute', bottom: 0, left: 4, right: 4 }}>
+              <TextInput
+                multiline={true}
+                style={styles.inputStyle}
+                onChangeText={(val) => { setUserMessage(val); setOffFocus(true); }}
+                ref={msgInput}
+                onKeyPress={(e) => {
+                  !UserMessage ? setOffFocus(false) : setOffFocus(true);
+                }}
+                value={UserMessage}
+                placeholder="Ecrire votre message..."
+                placeholderTextColor="#8b9cb5"
+                numberOfLines={4}
+              />
+              {errortext && <Text style={styles.errorTextStyle}>{errortext}</Text>}
+              {OffFocus === true ? (
+                <TouchableOpacity
+                  style={{ position: 'absolute', right: 14, bottom: 14 }}
+                  activeOpacity={0.5}
+                  onPress={() => handleSubmitPress()}>
 
-                    <Ionicons name="send-sharp" size={24} color="#c4d63c" />
+                  <Ionicons name="send-sharp" size={24} color="#c4d63c" />
 
-                  </TouchableOpacity>
-                ) : (
-                  <Text
-                    style={{ position: 'absolute', right: 14, bottom: 14 }}>
-                    <Ionicons name="send-outline" size={24} color="grey" />
-                  </Text>
-                )
-                }
-              </View>
+                </TouchableOpacity>
+              ) : (
+                <Text
+                  style={{ position: 'absolute', right: 14, bottom: 14 }}>
+                  <Ionicons name="send-outline" size={24} color="grey" />
+                </Text>
+              )
+              }
             </View>
+
             {isAlert && (
               <ModalAlert msgAlerte={MsgAlerte} />
             )}
@@ -268,7 +275,8 @@ const GetMessages = ({ navigation, route }) => {
     </View>
   );
 };
-const minHeight = parseInt(Dimensions.get('window').height - 50)
+const minHeight1 = parseInt(Dimensions.get('window').height - 70)
+const minHeight = parseInt(Dimensions.get('window').height - 200)
 
 const styles = StyleSheet.create({
   mainBody: {
@@ -282,8 +290,7 @@ const styles = StyleSheet.create({
   },
   row: {
     width: '100%',
-    // height: minHeight,
-
+    height: minHeight
   },
   post: {
     paddingHorizontal: 8,

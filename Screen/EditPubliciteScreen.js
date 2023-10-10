@@ -109,82 +109,93 @@ export default function EditPubliciteScreen({ navigation, route }) {
       return;
     }
 
-    if (!LinkPublicite) {
+    else if (!LinkPublicite) {
       const msg = "Veuillez remplir le lien de votre publicite";
       setMsgAlert(msg);
       setIsAlert(true);
       return;
     }
 
-    if (!Photo && !PhotoNew) {
-      const msg = "Veuillez ajouter une photo pour votre publicite";
-      setMsgAlert(msg);
-      setIsAlert(true);
-      return;
-    }
-    setLoading(true);
-    //Show Loader
-    const lien = LinkPublicite.toString();
-
-    const lient = lien.split('://');
-    var lienPub;
-    if (typeof lient[1] != 'undefined') {
-      lienPub = lient[1];
-    }
+    /* else if (!Photo && !PhotoNew) {
+       const msg = "Veuillez ajouter une photo pour votre publicite";
+       setMsgAlert(msg);
+       setIsAlert(true);
+       return;
+     }*/
     else {
-      lienPub = lien;
-    }
-
-    var dataToSend1 = {
-      id_publicite: id_publicite,
-      titre: Titre,
-      lien: lienPub
-    };
-
-    const fetchUrl = `publicite/update`;
-    const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
-
-
-    //Hide Loader
-    setLoading(false);
-
-    if (responseJson.status === 'success') {
-
-      const activite = "Votre Publicité est bien modifiée!"
-      Add_historique(global.User_connecte, activite, global.User_connecte);
-
 
       if (PhotoNew) {
         let update = false;
         if (Photo) update = true;
-        var Imgsource;
+        let Imgsource;
         if (typeof PhotoNew.assets != 'undefined')
           Imgsource = PhotoNew.assets[0].base64;
         else
           Imgsource = PhotoNew.base64;
 
-        var dataToSendPhoto = {
-          imgsource: Imgsource,
+        let dataToSendPhoto = {
           pub_id: id_publicite,
           user_id: global.User_connecte,
           num: 1,
-          update: update
-        }
+          update: update,
+          imgsource: Imgsource,
 
-        SaveImage(dataToSendPhoto);
+        }
+        const fetchUrlPhoto = 'upload';
+        //console.log('response update publi::', dataToSendPhoto)
+        const response = await RequestOptionsPost(dataToSendPhoto, fetchUrlPhoto);
+
+        if (typeof response == 'undefined' || response.status != 'success') {
+          const msg = "Modification image de Publicité échouée !";
+          setMsgAlert(msg);
+          return;
+        }
+      }
+      setLoading(true);
+      //Show Loader
+      const lien = LinkPublicite.toString();
+
+      const lient = lien.split('://');
+      let lienPub;
+      if (typeof lient[1] != 'undefined') {
+        lienPub = lient[1];
+      }
+      else {
+        lienPub = lien;
       }
 
-      const msg = "Publicité Modifiée avec success!";
-      setMsgAlert(msg);
-      setIsAlert(true);
-      setIsRedirect(true);
+      let dataToSend1 = {
+        id_publicite: id_publicite,
+        titre: Titre,
+        lien: lienPub
+      };
 
-    } else {
+      const fetchUrl = `publicite/update`;
+      const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
 
 
-      const msg = "Modification publicite échouée!";
-      setMsgAlert(msg);
-      setIsAlert(true);
+      //Hide Loader
+      setLoading(false);
+
+      if (responseJson.status === 'success') {
+
+        const activite = "Votre Publicité est bien modifiée!"
+        Add_historique(global.User_connecte, activite, global.User_connecte);
+
+
+
+        const msg = "Publicité Modifiée avec success!";
+        setMsgAlert(msg);
+        setIsAlert(true);
+        setIsRedirect(true);
+
+      } else {
+
+
+        const msg = "Modification publicite échouée!";
+        setMsgAlert(msg);
+        setIsAlert(true);
+      }
     }
   };
 

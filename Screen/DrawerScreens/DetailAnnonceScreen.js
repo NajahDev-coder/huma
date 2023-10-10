@@ -125,12 +125,14 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
     }
 
   }
+
+  const useNativeDriver = Platform.OS === 'ios' || Platform.OS === 'android';
   const fadeIn = () => {
     Animated.timing(fadeAnimation, {
       toValue: 1,
       duration: 200,
       nativeEvent: { contentOffset: { y: fadeAnimation } },
-      useNativeDriver: true,
+      useNativeDriver,
     }).start();
   };
 

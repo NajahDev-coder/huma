@@ -50,7 +50,7 @@ const Notifications = ({ navigation, widthIcone }) => {
 
     if (isSubscribed) {
 
-      console.log('NbreNotifNonLU::', global.NbreNotifNonLU)
+      console.log('NbreNotifNonLU::::', global.NbreNotifNonLU)
     }
 
     return () => (isSubscribed = false);

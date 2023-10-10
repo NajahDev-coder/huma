@@ -1,27 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, View, Alert } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
-    FontAwesome,
-    FontAwesome5,
-    AntDesign,
-    MaterialIcons,
-    Octicons,
-    Fontisto,
-    MaterialCommunityIcons,
-    Ionicons,
-    Feather,
-
+    Feather
 } from '@expo/vector-icons';
 
 import { SelectList } from 'react-native-dropdown-select-list'
 import ModalSuppression from '../ModalSuppression';
-import { Base_url, RequestOptionsPut, RequestOptionsGet, RequestOptionsPost } from '../utils/utils';
 
 const ActionGestion = ({ navigation, id, type, msgAlerte, id_user, onAction }) => {
     const [isAlerte, setIsAlerte] = useState(false);
 
     const [choix, setChoix] = useState(0);
-    const [dropStatus, setDropStatus] = useState(false);
+
 
     const GererAnnonce = async () => {
 
@@ -55,10 +45,10 @@ const ActionGestion = ({ navigation, id, type, msgAlerte, id_user, onAction }) =
         let isMounted = true;
         if (isMounted) {
             setIsAlerte(false);
-            console.log('setSelected1::', choix)
+            // console.log('setSelected1::', choix)
             setChoix(0)
-            console.log('setSelected2::', choix)
-            console.log('setSelected ID::', id)
+            // console.log('setSelected2::', choix)
+            //console.log('setSelected ID::', id)
         }
         return () => { isMounted = false }
     }, []);

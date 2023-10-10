@@ -22,13 +22,24 @@ export default function NavigationBottomTabs(props) {
   //export default function NavigationBottomTabs() {
   return (
     <Tab.Navigator initialRouteName="AccueilScreen"
-      tabBarOptions={{
+      /*tabBarOptions={{
 
         activeTintColor: '#a7b730',
         inactiveTintColor: '#49382f'
+      }}*/
+      screenOptions=
+      {{
+        "tabBarActiveTintColor": "#a7b730",
+        "tabBarInactiveTintColor": "#49382f",
+        "tabBarStyle": [
+          {
+            "display": "flex"
+          },
+          null
+        ]
       }}>
       <Tab.Screen
-        name="AccueilB"
+        name="AccueilFooter"
         component={AccueilScreen}
         options={{
           headerShown: false,
@@ -120,6 +131,6 @@ export default function NavigationBottomTabs(props) {
           ],
         }}
       />
-    </Tab.Navigator>
+    </Tab.Navigator >
   );
 }

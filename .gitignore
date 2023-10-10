@@ -123,3 +123,4 @@ dist/
 /utils/env.js
 
 # @end expo-cli
+.vercel

@@ -21,6 +21,7 @@ import {
 
 
 
+const useNativeDriver = Platform.OS === 'ios' || Platform.OS === 'android';
 
 let SousCateg;
 
@@ -224,7 +225,7 @@ const CategScreen = ({ navigation }) => {
           </SafeAreaView>
         </ScrollView>
       </ImageBackground>
-    </View>
+    </View >
   );
 };
 /*function PreviewLayout({

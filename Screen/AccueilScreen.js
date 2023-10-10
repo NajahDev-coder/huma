@@ -40,10 +40,15 @@ import FilterForm from './DrawerScreens/FilterForm';
 import CategCarousel from './CategCarousel';
 import MapGeoScreen from './MapGeoScreen';
 import BarFilter from './DrawerScreens/BarFilter';
-//import Constants from 'expo-constants';
-//const { manifest } = Constants;
+import * as Notifications from 'expo-notifications';
 
-//let PCategID ;
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 var sizeButtonIcone = 95
 if (Platform.OS != 'web') {
@@ -87,7 +92,26 @@ const AccueilScreen = ({ navigation }) => {
     fetchData();
     // }, 2000);
   }, []);
-
+  async function CustomschedulePushNotification(title, body) {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+        body: body,
+        data: { data: 'goes here' },
+      },
+      trigger: { seconds: 2 },
+    });
+  }
+  async function schedulePushNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "You've got mail! 📬",
+        body: 'Here is the notification body',
+        data: { data: 'goes here' },
+      },
+      trigger: { seconds: 2 },
+    });
+  }
   const FindAnnoncePosition = async () => {
     //const  status  = await Location.requestForegroundPermissionsAsync();   
     //console.log('status:::',status);
@@ -109,13 +133,13 @@ const AccueilScreen = ({ navigation }) => {
 
   }
 
-
+  const useNativeDriver = Platform.OS === 'ios' || Platform.OS === 'android';
   const fadeIn = () => {
     Animated.timing(fadeAnimation, {
       toValue: 1,
       duration: 500,
       nativeEvent: { contentOffset: { y: fadeAnimation } },
-      useNativeDriver: true,
+      useNativeDriver,
     }).start();
   };
 
@@ -137,9 +161,10 @@ const AccueilScreen = ({ navigation }) => {
       //   isVIP();
       fetchData();
       fadeIn();
-      setTimeout(() => {
+      setTimeout(async () => {
         setTimeShow(true);
-      }, 5000)
+      }, 3000)
+
     }
     return () => (isSubscribed = false);
   }, [selectedValue, refreshing, global.User_VIP]);
@@ -256,6 +281,7 @@ const AccueilScreen = ({ navigation }) => {
                   keyExtractor={(item, index) => index}
                 />
               </ScrollView>
+
             </View>
 
             {Platform.OS != 'web' && UserLocation !== null && (

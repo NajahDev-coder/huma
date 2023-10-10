@@ -1,35 +1,30 @@
 // Import React and Component
-import React, { useState, createRef, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Animated,
   ImageBackground,
   StyleSheet,
-  TextInput,
+
   View,
   Text,
   ScrollView,
   RefreshControl,
-  Image,
-  Keyboard,
+
   TouchableOpacity,
-  KeyboardAvoidingView,
   Platform,
   Pressable
 } from 'react-native';
 
-import moment from 'moment';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import GetMessages from './Components/GetMessages';
-import Loader from './Components/Loader';
-import NavigationBackHeader from './Components/NavigationBackHeader';
+
+
 import {
   FontAwesome,
   FontAwesome5,
   AntDesign,
   MaterialIcons,
-  Octicons,
-  Fontisto,
-  Ionicons,
+
   MaterialCommunityIcons
 } from '@expo/vector-icons';
 
@@ -53,7 +48,7 @@ const CompteScreen = ({ navigation, route }) => {
   const [MyUserId, setMyUserId] = useState(null);
   const [NbreVisiteProfile, setNbreVisiteProfile] = useState(null);
   const [UserId, setUserId] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0);
+
   const [Mes, setMes] = useState('Mes ');
 
   const image = { uri: Base_url + 'images/bg_screen.png' };
@@ -90,17 +85,16 @@ const CompteScreen = ({ navigation, route }) => {
       .then((response) => response.json())
       .then((responseJson) => {
         setMes('');
-        // setMon('');
-        //console.log('update nbre view avec success!');
       });
   };
 
+  const useNativeDriver = Platform.OS === 'ios' || Platform.OS === 'android';
   const fadeIn = () => {
     Animated.timing(fadeAnimation, {
       toValue: 1,
       duration: 300,
       nativeEvent: { contentOffset: { y: fadeAnimation } },
-      useNativeDriver: true,
+      useNativeDriver,
     }).start();
   };
 
@@ -119,11 +113,15 @@ const CompteScreen = ({ navigation, route }) => {
         setDolmenProfile(responseJson.data[0].dolmen);
         setAdresseProfile(responseJson.data[0].adresse);
         const imgpf = responseJson.data[0].img_prof;
-        //const imgProfile = {uri:  `${Base_url}images/${imgpf}` }
-        setImageProfile(imgpf);
+        if (imgpf != '') {
+
+          setImageProfile(imgpf);
+        }
         const imgcv = responseJson.data[0].img_couverture;
-        const imgCouv = { uri: `${Base_url}images/${imgcv}` };
-        setImageCouvProfile(imgCouv);
+        if (imgcv != '') {
+          const imgCouv = { uri: `${Base_url}images/${imgcv}` };
+          setImageCouvProfile(imgCouv);
+        }
         setNbreVisiteProfile(responseJson.data[0].nbre_visite);
       });
   };
@@ -141,13 +139,13 @@ const CompteScreen = ({ navigation, route }) => {
 
     (async () => {
       /* id de user connecté*/
-      //const my_user_id = await AsyncStorage.getItem('user_id');
+
       const my_user_id = global.User_connecte;
       setMyUserId(my_user_id);
       const id_user = route.params?.id_userp
         ? route.params?.id_userp
         : my_user_id ? my_user_id : notConnecte();
-      //console.log('profile', id_user);
+
       setUserId(id_user);
     })();
 
@@ -182,7 +180,7 @@ const CompteScreen = ({ navigation, route }) => {
               <TouchableOpacity style={styles.post}>
                 <ImageBackground
                   //ref={img_annonce_cv}  
-                  source={ImageCouvProfile}
+                  source={ImageCouvProfile ? ImageCouvProfile : DefaultimageCouvProfile}
                   onError={(e) => setImageCouvProfile(DefaultimageCouvProfile)}
                   resizeMode="cover"
                   style={[styles.image, { minHeight: 185 }]}>

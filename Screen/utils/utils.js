@@ -5,6 +5,7 @@ import { GooglePlacesApiKey } from './env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export const Base_url = 'https://huma.bzh/';
 
+import * as Notifications from 'expo-notifications';
 import { durationInMonths } from '@progress/kendo-date-math';
 
 export const deleteAction = async (id, type) => {
@@ -203,7 +204,6 @@ export const RequestOptionsPost = async (dataToSend, Api) => {
   var formBody = [];
 
 
-  //console.log('post abnmt:::', dataToSend)
   for (var key in dataToSend) {
     var encodedKey = encodeURIComponent(key);
     var encodedValue = encodeURIComponent(dataToSend[key]);
@@ -317,9 +317,27 @@ export const getNbreNotifications = async () => {
 
   const responseJson = await RequestOptionsGet(fetchUrl)
   if (responseJson.data.length > 0) {
+    let length = Number(responseJson.data.length) - 1;
 
+    console.log('lenght notfi:::', length)
+    while (length > global.NbreNotifNonLU) {
+      const Auteur = (responseJson.data[length].nom != null) ? responseJson.data[length].nom : 'Un Inconnu';
+      const message = Auteur + ' ' + responseJson.data[length].notification;
+      CustomschedulePushNotification(message);
+      length--;
+    }
     global.NbreNotifNonLU = responseJson.data.length;
   }
+}
+export async function CustomschedulePushNotification(message) {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'HüMA',
+      body: message,
+      data: { data: 'goes here' },
+    },
+    trigger: { seconds: 2 },
+  });
 }
 export const UpdateReadNotification = async (type_activite, idNotif) => {
   var fetchUrl;
@@ -332,15 +350,15 @@ export const UpdateReadNotification = async (type_activite, idNotif) => {
     fetchUrl = `setReadNotifGeneral/${global.User_connecte}/${idNotif}`;
   }
 
-  const responseJson = await RequestOptionsGet(fetchUrl);
+  await RequestOptionsGet(fetchUrl);
 };
 export const SaveImage = async (dataToSend) => {
 
   const fetchUrl = 'upload';
 
+  //console.log('SaveImage dataToSend :::', dataToSend);
 
-  const response = await RequestOptionsPost(dataToSend, fetchUrl);
-  console.log('SaveImage response', response)
+  await RequestOptionsPost(dataToSend, fetchUrl);
 
 
 };
@@ -348,10 +366,10 @@ export const DeleteSession = async (navigation) => {
   const baseUrl2 = Base_url + 'api/api/session';
 
   let dataToSend = { id_user: global.User_connecte };
-  var formBody = [];
-  for (var key in dataToSend) {
-    var encodedKey = encodeURIComponent(key);
-    var encodedValue = encodeURIComponent(dataToSend[key]);
+  let formBody = [];
+  for (let key in dataToSend) {
+    let encodedKey = encodeURIComponent(key);
+    let encodedValue = encodeURIComponent(dataToSend[key]);
     formBody.push(encodedKey + '=' + encodedValue);
   }
   formBody = formBody.join('&');
@@ -364,15 +382,15 @@ export const DeleteSession = async (navigation) => {
   })
     .then((response) => response.json())
     .then((responseJson) => {
-      //setRefreshKey((oldKey) => oldKey + 1);
 
       AsyncStorage.clear();
 
       AsyncStorage.getAllKeys()
         .then(keys => AsyncStorage.multiRemove(keys))
-      //.then(() => alert('success'));   
+
       global.User_connecte = null
       global.User_VIP = null
+      global.NbreNotifNonLU = null
       navigation.replace('DrawerNavigationRoutes');
     })
     .catch((error) => {
@@ -383,7 +401,7 @@ export const DeleteSession = async (navigation) => {
 export const fetchDistanceBetweenPoints = async (lat1, lng1, lat2, lng2) => { // Pass Latitude & Longitude of both points as a parameter
   //maison=(lat2,lng2) 36.8572011,10.275799
   //travail=(lat1,lng1) 36.8135979,10.1783812
-  var urlToFetchDistance = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + lat1 + ',' + lng1 + '&destinations=' + lat2 + '%2C' + lng2 + '&key=' + "GooglePlacesApiKey";
+  let urlToFetchDistance = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + lat1 + ',' + lng1 + '&destinations=' + lat2 + '%2C' + lng2 + '&key=' + "GooglePlacesApiKey";
 
   fetch(urlToFetchDistance)
     .then(res => {

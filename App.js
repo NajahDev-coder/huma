@@ -16,7 +16,7 @@ import {
 import * as ScreenOrientation from 'expo-screen-orientation';
 import PropTypes from 'prop-types';
 import Constants from 'expo-constants';
-//import { Map, GoogleApiWrapper } from 'google-maps-react';
+
 
 // Import Navigators from React Navigation 
 import { NavigationContainer } from '@react-navigation/native';
@@ -36,8 +36,8 @@ import * as Notifications from 'expo-notifications';
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
   }),
 });
 // Ignore log notification by message:
@@ -52,6 +52,45 @@ const Stack = createStackNavigator();
 
 const Auth = () => {
 
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  useEffect(() => {
+
+    isVIP();
+    const intervalId1 = setInterval(() => {
+      isVIP();
+    }, 2000);
+    getNbreNotifications();
+    getTotalMsgNnLu();
+
+    const intervalId = setInterval(() => {
+      getNbreNotifications();
+      getTotalMsgNnLu();
+    }, 1000 * 30);
+
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log('Notifications rspListener :::', response);
+    });
+
+    return () => {
+
+      clearInterval(intervalId1);
+      clearInterval(intervalId);
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+
+
+    };
+  }, [])
 
   // Stack Navigator for Login and Sign up Screen
   return (
@@ -61,14 +100,14 @@ const Auth = () => {
         name="SplashScreen"
         component={SplashScreen}
         // Hiding header for Splash Screen
-        options={{ headerShown: false }}
+        options={{ headerShown: false, screenOrientation: 'all' }}
       />
 
       <Stack.Screen
         name="DrawerNavigationAuthRoutes"
         component={DrawerNavigationAuthRoutes}
         // Hiding header for Navigation Drawer
-        options={{ headerShown: false }}
+        options={{ headerShown: false, screenOrientation: 'all' }}
       />
 
     </Stack.Navigator>
@@ -76,66 +115,49 @@ const Auth = () => {
 };
 
 const App = () => {
-  /*const [fontsLoaded] = await Font.loadAsync({
-   'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
- });*/
-  /*useEffect(() => {
-    makeAPICall();
-  }, [])*/
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
+
+
+  const [orientation, setOrientation] = useState(
+    ScreenOrientation.Orientation.PORTRAIT_UP
+  );
+
   useEffect(() => {
-
-    isVIP();
-    const intervalId1 = setInterval(() => {
-
-      isVIP();
-
-
-    }, 4000)
-    getNbreNotifications();
-    getTotalMsgNnLu();
-
-    const intervalId = setInterval(() => {
-      getTotalMsgNnLu();
-    }, 1000 * 30)
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
+    ScreenOrientation.getOrientationAsync().then((info) => {
+      console.log('info orientation :: ', info);
+      setOrientation(info.orientation);
     });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
+    // subscribe to future changes
+    const subscription = ScreenOrientation.addOrientationChangeListener((evt) => {
+      console.log('event orientation :: ', evt);
+      setOrientation(evt.orientationInfo.orientation);
     });
-    async () => {
-      await schedulePushNotification();
-    }
+
+
     return () => {
-      clearInterval(intervalId1);
-      clearInterval(intervalId);
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
+
+
+      ScreenOrientation.removeOrientationChangeListener(subscription);
+
     };
   }, [])
+
   return (
     <>
-      <NavigationContainer style={{ paddingTop: Constants.statusBarHeight }}>
+      <NavigationContainer style={{ paddingTop: Constants.statusBarHeight }} >
         <Stack.Navigator initialRouteName="SplashScreen">
           {/* SplashScreen which will come once for 5 Seconds */}
           <Stack.Screen
             name="SplashScreen"
             component={SplashScreen}
             // Hiding header for Splash Screen
-            options={{ headerShown: false }}
+            options={{ headerShown: false, screenOrientation: 'all' }}
           />
           {/* Auth Navigator: Include Login and Signup */}
           <Stack.Screen
             name="DrawerNavigationRoutes"
             component={DrawerNavigationRoutes}
-            options={{ headerShown: false }}
+            options={{ headerShown: false, screenOrientation: 'all' }}
           />
 
           {/* Navigation Drawer as a landing page */}
@@ -143,7 +165,7 @@ const App = () => {
             name="Auth"
             component={Auth}
             // Hiding header for Navigation Drawer
-            options={{ headerShown: false }}
+            options={{ headerShown: false, screenOrientation: 'all' }}
           />
         </Stack.Navigator>
       </NavigationContainer>
@@ -151,16 +173,7 @@ const App = () => {
     </>
   );
 };
-async function schedulePushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "You've got mail! 📬",
-      body: 'Here is the notification body',
-      data: { data: 'goes here' },
-    },
-    trigger: { seconds: 2 },
-  });
-}
+
 
 async function registerForPushNotificationsAsync() {
   let token;
@@ -187,8 +200,9 @@ async function registerForPushNotificationsAsync() {
     }
     // Learn more about projectId:
     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
-    token = (await Notifications.getExpoPushTokenAsync({ projectId: 'your-project-id' })).data;
-    console.log(token);
+    //token = (await Notifications.getExpoPushTokenAsync({ projectId: 'your-project-id' })).data;
+    token = (await Notifications.getDevicePushTokenAsync({ projectId: 'your-project-id' })).data;
+    console.log('token notification :: ', token);
   } else {
     alert('Must use physical device for Push Notifications');
   }
