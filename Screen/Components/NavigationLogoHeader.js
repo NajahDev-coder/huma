@@ -3,7 +3,8 @@
 
 // Import React and Component
 import React, { useEffect, useState } from 'react';
-import { View, Image, TouchableOpacity, Platform, StyleSheet, Dimensions } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
+
 import Notifications from './Notifications';
 import { Base_url } from '../utils/utils';
 

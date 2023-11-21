@@ -9,12 +9,9 @@ import {
   Text,
   ScrollView,
   RefreshControl,
-
+  Pressable, Platform,
   TouchableOpacity,
-  Platform,
-  Pressable
 } from 'react-native';
-
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

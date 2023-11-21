@@ -30,7 +30,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Button,
-  Platform,
+
   SafeAreaView,
   TouchableHighlight,
   Switch
@@ -101,74 +101,90 @@ export default function CreatePubliciteScreen(props) {
       return;
     }
 
-    if (!LinkPublicite) {
+    else if (!LinkPublicite) {
       const msg = "Veuillez remplir le lien de votre publicite";
       setMsgAlert(msg);
       setIsAlert(true);
       return;
     }
 
-    if (!Photo) {
+    else if (!Photo) {
       const msg = "Veuillez ajouter une photo pour votre publicite";
       setMsgAlert(msg);
       setIsAlert(true);
       return;
     }
-    setLoading(true);
-    //Show Loader
-    const lien = LinkPublicite.toString();
-
-    const lient = lien.split('://');
-    var lienPub;
-    if (typeof lient[1] != 'undefined') {
-      lienPub = lient[1];
-    }
     else {
-      lienPub = lien;
-    }
+      setLoading(true);
+      //Show Loader
+      const lien = LinkPublicite.toString();
 
-    var dataToSend1 = {
-      id_user: global.User_connecte,
-      titre: titre,
-      lien: lienPub
-    };
-    const fetchUrl = `publicite/create`;
-    const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
-
-    //Hide Loader
-    setLoading(false);
-    var dataToSend;
-
-    if (responseJson.status) {
-      const idPub = responseJson.data.insertId;
-      console.log('idPub:', idPub)
-      if (Photo != '') {
-        // console.log('photo::::', Photo.base64)
-        var urlPhoto;
-        if (typeof Photo.assets != 'undefined')
-          urlPhoto = Photo.assets[0].base64;
-        else
-          urlPhoto = Photo.base64;
-
-        dataToSend = {
-          imgsource: urlPhoto,
-          pub_id: responseJson.data.insertId,
-          user_id: global.User_connecte,
-          num: 1
-        }
-        SaveImage(dataToSend);
+      const lient = lien.split('://');
+      var lienPub;
+      if (typeof lient[1] != 'undefined') {
+        lienPub = lient[1];
       }
-      // CameraImage.IdAnnonceImage(capturedImage,responseJson.ID)
-      const msg = "Publicité crée avec success!";
-      setMsgAlert(msg);
-      setIsAlert(true);
-      setIsRedirect(true);
+      else {
+        lienPub = lien;
+      }
 
-    } else {
+      var dataToSend1 = {
+        id_user: global.User_connecte,
+        titre: titre,
+        lien: lienPub
+      };
+      const fetchUrl = `publicite/create`;
+      const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
 
-      const msg = "Création publicité échouée!!";
-      setMsgAlert(msg);
-      setIsAlert(true);
+      //Hide Loader
+
+      var dataToSend;
+      var msg = '';
+      if (responseJson.status) {
+        const idPub = responseJson.data.insertId;
+
+        console.log('idPub:', idPub)
+        if (Photo != '') {
+          // console.log('photo::::', Photo.base64)
+          var urlPhoto;
+          if (typeof Photo.assets != 'undefined')
+            urlPhoto = Photo.assets[0].base64;
+          else
+            urlPhoto = Photo.base64;
+
+          dataToSend = {
+            imgsource: urlPhoto,
+            pub_id: idPub,
+            user_id: global.User_connecte,
+            num: 1
+          }
+
+          const fetchUrl = 'upload';
+          const response = await RequestOptionsPost(dataToSend, fetchUrl);
+          if (typeof response == 'undefined' || response.status != 'success') {
+
+            setLoading(false);
+            msg = +"Upload Photo  échouée !";
+            setMsgAlert(msg);
+            //return;
+          }
+        }
+        // CameraImage.IdAnnonceImage(capturedImage,responseJson.ID)
+
+        const activite = "Vous avez ajouté une nouvelle publicité!"
+        Add_historique(global.User_connecte, activite, idPub);
+        setLoading(false);
+        msg += "Publicité crée avec success!";
+        setMsgAlert(msg);
+        setIsAlert(true);
+        setIsRedirect(true);
+
+      } else {
+
+        const msg = "Création publicité échouée!!";
+        setMsgAlert(msg);
+        setIsAlert(true);
+      }
     }
   };
 

@@ -11,7 +11,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   Button
 } from 'react-native';
 import {
@@ -82,16 +82,16 @@ export default EstAmis = ({ id_user1, id_user2, navigation }) => {
 
     var activite;
     if (etatAmis == 1)
-      activite = `Vous avez envoyé une invitation à ${UserId}`;
+      activite = `Vous avez envoyé une invitation à `;
     if (etatAmis == 2)
-      activite = `Vous avez accepté une invitation de ${UserId}`;
+      activite = `Vous avez accepté une invitation de `;
     if (etatAmis == 3)
-      activite = `Vous avez refusé une invitation de ${UserId}`;
+      activite = `Vous avez refusé une invitation de `;
     if (etatAmis == 0)
-      activite = `Vous avez annulé une invitation de ${UserId}`;
+      activite = `Vous avez annulé une invitation de `;
     if (etatAmis == -1) {
       etatAmis = 0;
-      activite = `Vous avez supprimé une amitié de ${UserId}`;
+      activite = `Vous avez supprimé une amitié de `;
     }
     //console.log(activite)
     const responseJson = await RequestOptionsPost(dataToSend, fetchUrl)

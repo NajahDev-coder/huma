@@ -69,7 +69,7 @@ const Auth = () => {
     const intervalId = setInterval(() => {
       getNbreNotifications();
       getTotalMsgNnLu();
-    }, 1000 * 30);
+    }, 1000 * 10);
 
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
@@ -90,7 +90,7 @@ const Auth = () => {
 
 
     };
-  }, [])
+  }, [global.TotalMsgNonLU, global.NbreNotifNonLU])
 
   // Stack Navigator for Login and Sign up Screen
   return (
@@ -122,6 +122,8 @@ const App = () => {
   );
 
   useEffect(() => {
+
+
     ScreenOrientation.getOrientationAsync().then((info) => {
       console.log('info orientation :: ', info);
       setOrientation(info.orientation);
@@ -140,7 +142,7 @@ const App = () => {
       ScreenOrientation.removeOrientationChangeListener(subscription);
 
     };
-  }, [])
+  }, [global.TotalMsgNonLU, global.NbreNotifNonLU])
 
   return (
     <>

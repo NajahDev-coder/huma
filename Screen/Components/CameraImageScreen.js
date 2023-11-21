@@ -5,7 +5,7 @@ import {
   View,
   TouchableOpacity,
   ImageBackground,
-  Platform,
+
   Alert
 } from 'react-native';
 import { Camera } from 'expo-camera';
@@ -140,7 +140,7 @@ export default function CameraImage({ captureImage, isinvisible, PStyle }) {
         </Camera>
       )
       }
-    </View >
+    </View>
   );
 }
 const styles = StyleSheet.create({

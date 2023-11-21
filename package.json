@@ -1,15 +1,16 @@
 {
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start:staging": "APP_ENV=staging/production npx  expo start ",
-    "android:staging": "APP_ENV=staging/production npx expo run:android",
-    "ios:staging": "APP_ENV=staging/production npx expo run:ios",
-    "web:staging": "APP_ENV=staging/production npx expo start --web"
+    "start": "npx expo start",
+    "android": "npx expo start --android",
+    "ios": "npx expo start --ios",
+    "web": "npx expo start --web"
   },
   "homepage": "https://huma.bzh/",
   "dependencies": {
+    "@babel/plugin-transform-export-namespace-from": "^7.23.3",
     "@expo/config-plugins": "~6.0.0",
     "@expo/vector-icons": "^13.0.0",
-    "@expo/webpack-config": "^18.0.1",
     "@gorhom/bottom-sheet": "4.4.1",
     "@mapbox/polyline": "*",
     "@progress/kendo-date-math": "^1.5.11",
@@ -27,6 +28,8 @@
     "@types/react": "~18.0.27",
     "@types/react-dom": "~18.0.10",
     "axios": "*",
+    "babel-plugin-react-native-web": "^0.19.9",
+    "babel-preset-expo": "^9.5.2",
     "eject": "^0.0.4",
     "expo": "~48.0.18",
     "expo-camera": "~13.2.1",
@@ -46,11 +49,13 @@
     "expo-updates": "~0.16.4",
     "jdk11": "^2.0.0",
     "markdown-it": "*",
+    "metro-minify-terser": "^0.64.0",
+    "metro-react-native-babel-preset": "^0.77.0",
     "moment": "*",
     "prop-types": "*",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.71.8",
+    "react-native": "0.71.14",
     "react-native-anchor-carousel": "*",
     "react-native-calendar-picker": "*",
     "react-native-carousel-image-slider": "^1.0.1",
@@ -81,14 +86,14 @@
     "react-native-screens": "~3.20.0",
     "react-native-slideshow-improved": "*",
     "react-native-vector-icons": "*",
+    "react-native-web": "^0.18.12",
     "react-native-webview": "11.26.0",
     "react-redux": "*",
     "react-router": "*",
     "react-router-dom": "*",
     "react-simple-star-rating": "^3.0.0",
     "redux": "4.0.0",
-    "vercel": "^27.3.4",
-    "react-native-web": "~0.18.10"
+    "vercel": "^27.3.4"
   },
   "engines": {
     "npm": ">=9.6.4"
@@ -98,10 +103,11 @@
     "react-dom": "18.2.0"
   },
   "private": true,
-  "name": "huma_ex_vf",
+  "name": "huma",
   "version": "1.0.0",
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/preset-typescript": "^7.23.2",
     "sharp-cli": "^4.1.1"
   }
 }

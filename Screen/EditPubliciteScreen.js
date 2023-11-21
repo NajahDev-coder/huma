@@ -30,7 +30,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Button,
-  Platform,
+
   SafeAreaView,
   TouchableHighlight,
   Switch
@@ -180,7 +180,7 @@ export default function EditPubliciteScreen({ navigation, route }) {
       if (responseJson.status === 'success') {
 
         const activite = "Votre Publicité est bien modifiée!"
-        Add_historique(global.User_connecte, activite, global.User_connecte);
+        Add_historique(global.User_connecte, activite, id_publicite);
 
 
 

@@ -1,5 +1,5 @@
 import React, { useState, createRef, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Animated, Dimensions, ImageBackground, ScrollView, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Platform, Animated, Dimensions, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -49,7 +49,7 @@ const ListNotifications = ({ navigation }) => {
 
 
         if (isSubscribed) {
-            // global.NbreNotifNonLU = 0;
+
             getNotification();
         }
         return () => (isSubscribed = false);

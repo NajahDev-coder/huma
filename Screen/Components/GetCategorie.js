@@ -12,7 +12,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
 } from 'react-native';
 import { Base_url, RequestOptionsGet } from '../utils/utils';
@@ -47,6 +47,7 @@ const GetCategorie = ({ id_annonce }) => {
   }, [id_annonce]);
   return (
     <Text
+      accessibilityLabel="getCateg-Bloc"
       style={{
         color: '#FFFFFF',
         fontSize: 11,

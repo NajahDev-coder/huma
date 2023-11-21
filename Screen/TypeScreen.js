@@ -15,7 +15,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
 } from 'react-native';
 import { Link } from 'react-router-dom';
@@ -185,8 +185,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   buttonLabel: {
-    //bottom: Platform.OS != 'web' ? 10 : 8,
-    //position: 'absolute',
+
     fontSize: 18,
     color: '#ffffff',
     padding: 20,

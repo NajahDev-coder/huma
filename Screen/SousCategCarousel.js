@@ -6,7 +6,7 @@ import {
     View,
     Dimensions,
     ImageBackground,
-    Platform
+
 } from 'react-native';
 import Carousel from 'react-native-anchor-carousel';
 
@@ -36,8 +36,7 @@ export default class SousCategCarousel extends Component {
     /*let isSubscribed = true*/
     displaySCateg = () => {
         const PCategID = this.state.PCategID;
-        const baseUrl = Platform.OS === 'android' ?
-            url + `api/api/categories/${PCategID}` : `api/api/categories/${PCategID}`;
+        const baseUrl = `api/api/categories/${PCategID}`;
 
         fetch(baseUrl)
             .then((response) => response.json())

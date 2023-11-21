@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Alert, Modal, StyleSheet, Platform, Text, Pressable, View, Linking, TouchableOpacity } from 'react-native';
+import { Alert, Modal, StyleSheet, Text, View, Linking, Pressable, TouchableOpacity } from 'react-native';
+
 import { deleteAction } from './utils/utils';
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
 const ModalSuppression = ({ navigation, id, type, msgAlerte, onSupp }) => {
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         borderRadius: 10,
         backgroundColor: 'rgba(140, 153, 44 , 0.80)',
-        padding: 10,
+        padding: 15,
     },
     txtbutt:
     {
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         borderRadius: 10,
         backgroundColor: '#c4d63c',
-        padding: 10,
+        padding: 15,
     },
     txtbuttVIP:
     {
@@ -102,6 +103,7 @@ const styles = StyleSheet.create({
         color: '#222222',
         borderBottomColor: '#c4d63c',
         borderBottomWidth: 5,
+        paddingTop: 10,
         paddingBottom: 20,
         marginBottom: 10
     }

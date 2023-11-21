@@ -13,9 +13,10 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
-  RefreshControl
+  RefreshControl,
+  Platform
 } from 'react-native';
 import EstAmis from '../EstAmis';
 import { Base_url, RequestOptionsGet, RequestOptionsPut, RequestOptionsPost, ViewProfile } from '../utils/utils';

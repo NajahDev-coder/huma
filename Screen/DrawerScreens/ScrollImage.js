@@ -11,7 +11,6 @@ import {
     FlatList,
     Platform
 } from 'react-native';
-
 /*const images = new Array(6).fill(
   'https://images.unsplash.com/photo-1556740749-887f6717d7e4',
 );*/
@@ -25,6 +24,7 @@ const ScrollImage = ({ images }) => {
     return (
         <SafeAreaView >
             <ScrollView
+                accessibilityLabel="image_slider"
                 horizontal={true}
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}

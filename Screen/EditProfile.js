@@ -169,6 +169,7 @@ const EditProfile = ({ navigation, route }) => {
     }
     else {
 
+      setLoading(true);
       //check if image profile is updated 
       if (ImageProfile) {
         //console.log('ImageProfile:::', ImageProfile)
@@ -185,6 +186,8 @@ const EditProfile = ({ navigation, route }) => {
         const response = await RequestOptionsPost(dataToSendP, fetchUrl);
         if (typeof response == 'undefined' || response.status != 'success') {
           const msg = "Modification image de profile échouée !";
+
+          setLoading(false);
           setMsgAlert(msg);
           return;
         }
@@ -204,6 +207,8 @@ const EditProfile = ({ navigation, route }) => {
         const response = await RequestOptionsPost(dataToSendC, fetchUrl);
         if (typeof response == 'undefined' || response.status != 'success') {
           const msg = "Modification image de Couverture échouée !";
+
+          setLoading(false);
           setMsgAlert(msg);
           return;
         }
@@ -217,7 +222,6 @@ const EditProfile = ({ navigation, route }) => {
         longitude = defaultCoordinates[0].longitude;
       }
       //Show Loader
-      setLoading(true);
       var dataToSend1 = {
         id_user: id_user,
         nom: userName,

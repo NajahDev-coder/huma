@@ -210,6 +210,8 @@ export const RequestOptionsPost = async (dataToSend, Api) => {
     formBody.push(encodedKey + '=' + encodedValue);
   }
   formBody = formBody.join('&');
+
+
   const options = {
     method: 'POST',
     headers: {
@@ -250,7 +252,7 @@ export const getTotalMsgNnLu = async () => {
     global.TotalMsgNonLU = responseJson.data[0].TotalMsgNonLU
   }
   else global.TotalMsgNonLU = 0;
-
+  console.log('global.TotalMsgNonLU::::', global.TotalMsgNonLU)
 };
 export const isVIP = async () => {
 
@@ -319,14 +321,24 @@ export const getNbreNotifications = async () => {
   if (responseJson.data.length > 0) {
     let length = Number(responseJson.data.length) - 1;
 
-    console.log('lenght notfi:::', length)
-    while (length > global.NbreNotifNonLU) {
+    console.log('global.NbreNotifNonLU1 :::', global.NbreNotifNonLU)
+    console.log('lenght notfi:::', length);
+    let NbreNotifAlreadynonlu;
+    if (global.NbreNotifNonLU == null)
+      NbreNotifAlreadynonlu = 0
+    else
+      NbreNotifAlreadynonlu = global.NbreNotifNonLU
+
+    console.log('NbreNotifAlreadynonlu :::', NbreNotifAlreadynonlu)
+    while (length > NbreNotifAlreadynonlu) {
       const Auteur = (responseJson.data[length].nom != null) ? responseJson.data[length].nom : 'Un Inconnu';
       const message = Auteur + ' ' + responseJson.data[length].notification;
       CustomschedulePushNotification(message);
       length--;
     }
-    global.NbreNotifNonLU = responseJson.data.length;
+
+    global.NbreNotifNonLU = Number(responseJson.data.length) - 1;
+    console.log('global.NbreNotifNonLU :::', global.NbreNotifNonLU)
   }
 }
 export async function CustomschedulePushNotification(message) {
@@ -391,6 +403,7 @@ export const DeleteSession = async (navigation) => {
       global.User_connecte = null
       global.User_VIP = null
       global.NbreNotifNonLU = null
+      global.TotalMsgNonLU = null
       navigation.replace('DrawerNavigationRoutes');
     })
     .catch((error) => {

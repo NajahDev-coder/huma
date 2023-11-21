@@ -198,13 +198,12 @@ export default function EditAnnonceScreen({ navigation, route }) {
     //console.log('responseJson create annonce:', responseJson)
 
     //Hide Loader
-    setLoading(false);
     //var dataToSend;
     //if (responseJson.status) {
     if (responseJson.status === 'success') {
       //console.log('Photo:::', Photo);
       const activite = "Votre annonce est bien modifiée!"
-      Add_historique(global.User_connecte, activite, global.User_connecte);
+      Add_historique(global.User_connecte, activite, id_annonce);
 
 
       if (PhotoNew) {
@@ -222,7 +221,15 @@ export default function EditAnnonceScreen({ navigation, route }) {
           num: 1,
           update: update
         }
-        await SaveImage(dataToSendPhoto);
+        const fetchUrl = 'upload';
+        const response = await RequestOptionsPost(dataToSendPhoto, fetchUrl);
+        if (typeof response == 'undefined' || response.status != 'success') {
+          const msg = "Modification Photo  échouée !";
+
+          setLoading(false);
+          setMsgAlert(msg);
+          return;
+        }
       }
       if (Photo2New) {
         let update = false;
@@ -239,7 +246,15 @@ export default function EditAnnonceScreen({ navigation, route }) {
           num: 2,
           update: update
         }
-        await SaveImage(dataToSendPhoto2);
+        const fetchUrl = 'upload';
+        const response = await RequestOptionsPost(dataToSendPhoto2, fetchUrl);
+        if (typeof response == 'undefined' || response.status != 'success') {
+          const msg = "Modification Photo 2 échouée !";
+
+          setLoading(false);
+          setMsgAlert(msg);
+          return;
+        }
       }
       if (Photo3New) {
         let update = false;
@@ -256,11 +271,20 @@ export default function EditAnnonceScreen({ navigation, route }) {
           num: 3,
           update: update
         }
-        await SaveImage(dataToSendPhoto3);
+        const fetchUrl = 'upload';
+        const response = await RequestOptionsPost(dataToSendPhoto3, fetchUrl);
+        if (typeof response == 'undefined' || response.status != 'success') {
+          const msg = "Modification Photo 3 échouée !";
+
+          setLoading(false);
+          setMsgAlert(msg);
+          return;
+        }
       }
       // CameraImage.IdAnnonceImage(capturedImage,responseJson.ID)
 
-      const msg = "Annonce modifiée avec success!";
+      setLoading(false);
+      const msg = "Annonce modifiée avec success !";
       setMsgAlert(msg);
       setIsAlert(true);
       setIsRedirect(true)

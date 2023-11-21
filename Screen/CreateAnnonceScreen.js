@@ -29,14 +29,13 @@ import {
   TouchableOpacity,
   ScrollView,
   Button,
-  Platform,
+
   SafeAreaView,
   TouchableHighlight,
   StatusBar,
-  Switch
-
+  Switch,
+  Platform
 } from 'react-native';
-
 import { GooglePlacesApiKey } from "./utils/env"
 import { Base_url, SaveImage, RequestOptionsPost, Add_historique } from './utils/utils';
 import FileUpload from './Components/FileUpload';
@@ -114,112 +113,142 @@ export default function CreateAnnonceScreen(props) {
       setIsAlert(true);
       return;
     }
-    if (!court_description && !description) {
+    else if (!court_description && !description) {
       const msg = 'Veuillez remplir la courte description et/ou la description de votre annonce';
       setMsgAlert(msg);
       setIsAlert(true);
       return;
     }
     //if (!adresse && !Ville && !codePostal) {  
-    if (!adresse) {
+    else if (!adresse) {
       const msg = "Veuillez remplir l'adresse complète";
       setMsgAlert(msg);
       setIsAlert(true);
       return;
     }
-    if (!qty || qty <= 0) {
+    else if (!qty || qty <= 0) {
       const msg = "Veuillez entrer une quantité valide!";
       setMsgAlert(msg);
       setIsAlert(true);
       return;
     }
-    //Show Loader
-    const defaultCoordinates = await Location.geocodeAsync(adresse);
-    const latitude = defaultCoordinates[0].latitude;
-    const longitude = defaultCoordinates[0].longitude;
+    else {
+      //Show Loader
+      const defaultCoordinates = await Location.geocodeAsync(adresse);
+      const latitude = defaultCoordinates[0].latitude;
+      const longitude = defaultCoordinates[0].longitude;
 
-    setLoading(true);
-    var dataToSend1 = {
-      user_id: global.User_connecte,
-      titre: titre,
-      linkVedio: LinkVedio,
-      court_description: court_description,
-      description: description,
-      auteur: Auteur,
-      adresse: adresse,
-      latitude: latitude,
-      longitude: longitude,
-      type: Type,
-      categorie: Categ,
-      propos_livraison: proposLivraison,
-      qty: qty
-    };
-    //console.log('dataToSend', dataToSend)
-    const fetchUrl = `annonce/create`;
-    const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
+      setLoading(true);
+      var dataToSend1 = {
+        user_id: global.User_connecte,
+        titre: titre,
+        linkVedio: LinkVedio,
+        court_description: court_description,
+        description: description,
+        auteur: Auteur,
+        adresse: adresse,
+        latitude: latitude,
+        longitude: longitude,
+        type: Type,
+        categorie: Categ,
+        propos_livraison: proposLivraison,
+        qty: qty
+      };
+      //console.log('dataToSend', dataToSend)
+      const fetchUrl = `annonce/create`;
+      const responseJson = await RequestOptionsPost(dataToSend1, fetchUrl);
 
-    //console.log('responseJson create annonce:', responseJson)
+      //console.log('responseJson create annonce:', responseJson)
 
-    //Hide Loader
-    setLoading(false);
-    //var dataToSend;
-    //if (responseJson.status) {
-    if (responseJson.status === 'success') {
-      //console.log('Photo:::', Photo);
-      const activite = "Vous avez ajouté une nouvelle annonce!"
-      Add_historique(global.User_connecte, activite, global.User_connecte);
+      //Hide Loader
+      //var dataToSend;
+      //if (responseJson.status) {
+      var msg = '';
+      if (responseJson.status === 'success') {
+        //console.log('Photo:::', Photo);
+        const id_annce_insert = responseJson.data.insertId;
 
-      if (Photo) {
-        var Imgsource;
-        if (typeof Photo.assets != 'undefined')
-          Imgsource = Photo.assets[0].base64;
-        else
-          Imgsource = Photo.base64;
-        var dataToSendPhoto = {
-          imgsource: Imgsource,
-          annonce_id: responseJson.data.insertId,
-          user_id: global.User_connecte,
-          num: 1
+        if (Photo) {
+          var Imgsource;
+          if (typeof Photo.assets != 'undefined')
+            Imgsource = Photo.assets[0].base64;
+          else
+            Imgsource = Photo.base64;
+          var dataToSendPhoto = {
+            imgsource: Imgsource,
+            annonce_id: id_annce_insert,
+            user_id: global.User_connecte,
+            num: 1
+          }
+          const fetchUrl = 'upload';
+          const response = await RequestOptionsPost(dataToSendPhoto, fetchUrl);
+          if (typeof response == 'undefined' || response.status != 'success') {
+
+            msg += "Upload Photo  échouée ! ";
+            setLoading(false);
+            setMsgAlert(msg);
+            // return;
+          }
         }
-        SaveImage(dataToSendPhoto);
-      }
-      if (Photo2) {
-        var Imgsource2;
-        if (typeof Photo2.assets != 'undefined')
-          Imgsource2 = Photo2.assets[0].base64;
-        else
-          Imgsource2 = Photo2.base64;
-        var dataToSendPhoto2 = {
-          imgsource: Imgsource2,
-          annonce_id: responseJson.data.insertId,
-          user_id: global.User_connecte,
-          num: 2
-        }
-        SaveImage(dataToSendPhoto2);
-      }
-      if (Photo3) {
-        var Imgsource3;
-        if (typeof Photo3.assets != 'undefined')
-          Imgsource3 = Photo3.assets[0].base64;
-        else
-          Imgsource3 = Photo3.base64;
-        var dataToSendPhoto3 = {
-          imgsource: Imgsource3,
-          annonce_id: responseJson.data.insertId,
-          user_id: global.User_connecte,
-          num: 3
-        }
-        SaveImage(dataToSendPhoto3);
-      }
+        if (Photo2) {
+          var Imgsource2;
+          if (typeof Photo2.assets != 'undefined')
+            Imgsource2 = Photo2.assets[0].base64;
+          else
+            Imgsource2 = Photo2.base64;
+          var dataToSendPhoto2 = {
+            imgsource: Imgsource2,
+            annonce_id: id_annce_insert,
+            user_id: global.User_connecte,
+            num: 2
+          }
+          const fetchUrl = 'upload';
+          const response = await RequestOptionsPost(dataToSendPhoto2, fetchUrl);
+          if (typeof response == 'undefined' || response.status != 'success') {
 
-      const msg = "Création annonce réussie!";
-      setMsgAlert(msg);
-      setIsAlert(true);
-      setIsRedirect(true);
-    } else {
-      const msg = "Création annonce échouée!!";
-      setMsgAlert(msg);
-      setIsAlert(true);
+            msg += "Upload Photo 2  échouée ! ";
+            setLoading(false);
+            setMsgAlert(msg);
+            //return;
+          }
+
+        }
+        if (Photo3) {
+
+          var Imgsource3;
+          if (typeof Photo3.assets != 'undefined')
+            Imgsource3 = Photo3.assets[0].base64;
+          else
+            Imgsource3 = Photo3.base64;
+          var dataToSendPhoto3 = {
+            imgsource: Imgsource3,
+            annonce_id: id_annce_insert,
+            user_id: global.User_connecte,
+            num: 3
+          }
+          const fetchUrl = 'upload';
+          const response = await RequestOptionsPost(dataToSendPhoto3, fetchUrl);
+          if (typeof response == 'undefined' || response.status != 'success') {
+
+            msg += "Upload Photo 3  échouée ! ";
+            setLoading(false);
+            setMsgAlert(msg);
+            //return;
+          }
+        }
+
+        const activite = "Vous avez ajouté une nouvelle annonce!"
+        Add_historique(global.User_connecte, activite, id_annce_insert);
+        setLoading(false);
+        msg += "Création annonce réussie! ";
+        setMsgAlert(msg);
+        setIsAlert(true);
+        setIsRedirect(true);
+      } else {
+        msg += "Création annonce échouée!! ";
+        setMsgAlert(msg);
+        setIsAlert(true);
+      }
     }
   };
 

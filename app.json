@@ -1,6 +1,7 @@
 {
   "name": "HüMA",
   "displayName": "HüMA",
+  "appName": "HüMA",
   "expo": {
     "name": "HüMA",
     "slug": "HuMA",
@@ -9,7 +10,7 @@
       "android",
       "web"
     ],
-    "version": "1.0.3",
+    "version": "1.0.1",
     "runtimeVersion": "1.4",
     "icon": "./assets/icon_notif.png",
     "splash": {
@@ -36,8 +37,13 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.devnajah.HuMA",
+      "bundleIdentifier": "HüMA",
       "requireFullScreen": true
+    },
+    "android": {
+      "package": "HüMA",
+      "versionCode": 9,
+      "config": {}
     },
     "web": {
       "bundler": "metro"
@@ -52,7 +58,7 @@
       [
         "expo-screen-orientation",
         {
-          "initialOrientation": "ALL"
+          "initialOrientation": "DEFAULT"
         }
       ],
       [
@@ -71,11 +77,6 @@
       "eas": {
         "projectId": "5e3e1641-a3b7-4c08-a955-23c9b9e1ba09"
       }
-    },
-    "android": {
-      "package": "com.devnajah.HuMA",
-      "versionCode": 1,
-      "config": {}
     }
   }
 }

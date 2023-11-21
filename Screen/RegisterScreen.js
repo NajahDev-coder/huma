@@ -13,7 +13,8 @@ import {
   Keyboard,
   TouchableOpacity,
   ScrollView,
-  Pressable
+  Pressable,
+  Alert
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Loader from './Components/Loader';
@@ -22,6 +23,9 @@ import { useTogglePasswordVisibility } from './Components/useTogglePasswordVisib
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { GooglePlacesApiKey } from "./utils/env"
 import { Base_url, RequestOptionsPost } from './utils/utils';
+
+import * as Location from 'expo-location';
+
 export default function RegisterScreen(props) {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -31,10 +35,9 @@ export default function RegisterScreen(props) {
   const [userPassword, setUserPassword] = useState('');
   const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
   const [loading, setLoading] = useState(false);
-  const [errortext, setErrortext] = useState('');
   const [isAlert, setIsAlert] = useState(false);
+  const [IsRedirect, setIsRedirect] = useState(false);
   const [MsgAlerte, setMsgAlert] = useState('');
-  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
 
 
   const emailInputRef = createRef();
@@ -44,11 +47,14 @@ export default function RegisterScreen(props) {
   const passwordInputRef = createRef();
 
 
-  //const handleSubmitButton = () => {
-  const handleSubmitButton = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
 
-    setErrortext('');
+  }, [isAlert])
+
+  //const handleSubmitButton = () => {
+  const handleSubmitButton = async () => {
+
+
     if (!userName) {
       const msg = "Veuillez remplir votre Pseudo!";
       setMsgAlert(msg);
@@ -87,7 +93,7 @@ export default function RegisterScreen(props) {
     }
     //Show Loader
     setLoading(true);
-    const defaultCoordinates = await Location.geocodeAsync(adresse);
+    const defaultCoordinates = await Location.geocodeAsync(userAddress);
     const latitude = defaultCoordinates[0].latitude;
     const longitude = defaultCoordinates[0].longitude;
     var dataToSend = {
@@ -108,57 +114,20 @@ export default function RegisterScreen(props) {
     //console.log(responseJson);
     // If server response message same as Data Matched
     if (responseJson.status == 'success') {
-      setIsRegistraionSuccess(true);
-      console.log('Inscription Réussie . Veuillez vous connecter pour continuer.'
-      );
-      setErrortext('')
+
+      const msg = 'Inscription Réussie . Veuillez vous connecter pour continuer.';
+
+      setMsgAlert(msg);
+      setIsAlert(true);
+      setIsRedirect(true);
+
     } else {
-      setErrortext('Inscription échouée!');
+      const msg = responseJson.status;
+      setMsgAlert(msg);
+      setIsAlert(true);
     }
   };
-  if (isRegistraionSuccess) {
-    return (
-      <View style={styles.mainBody}>
-        <ImageBackground
-          source={{ uri: Base_url + 'images/bg_screen.png' }}
-          resizeMode="cover"
-          style={styles.image}>
-          <Loader loading={loading} />
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              alignContent: 'center',
-            }}>
 
-            <View>
-              <KeyboardAvoidingView enabled>
-                <View style={{ alignItems: 'center', margin: 20 }}>
-                  <Image
-                    source={{ uri: `${Base_url}images/success.png` }}
-                    style={{
-                      height: 150,
-                      resizeMode: 'contain',
-                      alignSelf: 'center',
-                    }}
-                  />
-                  <Text style={styles.successTextStyle}>Inscription réussi. Veuillez vous connecter pour continuer!</Text>
-                  <TouchableOpacity
-                    style={styles.buttonStyle}
-                    activeOpacity={0.5}
-                    onPress={() => props.navigation.navigate('Login')}>
-                    <Text style={styles.buttonTextStyle}>Se Connecter</Text>
-                  </TouchableOpacity>
-                </View>
-                {isAlert && (
-                  <ModalAlert msgAlerte={MsgAlerte} />
-                )}
-              </KeyboardAvoidingView>
-            </View>
-          </ScrollView>
-        </ImageBackground>
-      </View>
-    );
-  }
   return (
     <View style={styles.mainBody}>
       <ImageBackground
@@ -307,9 +276,7 @@ export default function RegisterScreen(props) {
                   ref={addressInputRef}
                 />
               </View>
-              {errortext != '' ? (
-                <Text style={styles.errorTextStyle}>{errortext}</Text>
-              ) : null}
+
               <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
@@ -321,15 +288,18 @@ export default function RegisterScreen(props) {
 
               <View style={{ flexDirection: 'row', width: '100%', textAlign: 'center', justifyContent: 'center' }}>
                 <Text
-                  style={styles.reginavigationsterTextStyle}> <MaterialCommunityIcons onPress={() => props.navigation.navigate('Accueil')} name="home-export-outline" size={24} color="#c4d63c" />
+                  style={styles.reginavigationsterTextStyle}> <MaterialCommunityIcons onPress={() => props.navigation.push('Accueil')} name="home-export-outline" size={24} color="#c4d63c" />
                 </Text>
                 <Text
                   style={styles.reginavigationsterTextStyle}
-                  onPress={() => props.navigation.navigate('Login')}>
+                  onPress={() => props.navigation.push('Login')}>
                   Se connecter
                 </Text>
               </View>
+              {isAlert && (
+                <ModalAlert msgAlerte={MsgAlerte} action={() => (IsRedirect ? props.navigation.push('Login') : setIsAlert(false))} />
 
+              )}
             </KeyboardAvoidingView>
           </View>
         </ScrollView>

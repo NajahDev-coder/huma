@@ -11,10 +11,11 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   FlatList,
-  Platform,
+  Linking,
   StatusBar,
   Alert,
-  Pressable
+  Pressable,
+  Platform
 } from 'react-native';
 import ModalAlert from '../ModalAlert';
 import RadioGroup from 'react-native-radio-buttons-group';
@@ -210,88 +211,87 @@ const DonateScreen = ({ navigation }) => {
   }, [isAlert])
 
   return (
-    <>
-      {Platform.OS != 'web' &&
-        <View style={styles.mainBody}>
-          <ImageBackground
-            source={{ uri: Base_url + 'images/bg_screen.png' }}
-            resizeMode="cover"
-            style={styles.image}>
-            <ScrollView
-              keyboardShouldPersistTaps="handled"
-            >
-              <View>
-                <KeyboardAvoidingView enabled>
 
-                  <View style={styles.threeBloc}>
+    <View style={styles.mainBody}>
+      <ImageBackground
+        source={{ uri: Base_url + 'images/bg_screen.png' }}
+        resizeMode="cover"
+        style={styles.image}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+        >
+          <View>
+            <KeyboardAvoidingView enabled>
 
-                    <View style={styles.blocAbnmt}>
-                      <View>
-                        <Text style={{ fontSize: 16, color: '#533627', paddingBottom: 10 }}>HüMA, bien plus que des échanges.</Text>
-                        <Text style={styles.titleModal}>Dons</Text>
+              <View style={styles.threeBloc}>
 
-                        <Text style={styles.paragraph}>
-                          Soutenez HüMA et ses efforts pour développer et fluidifier les échanges entre Humains, chaque don, grand ou petit, nous permet d'aller plus loin. Donnez aujourd'hui et faites partie de la solution de Solidarité entre les Membres !
-                        </Text>
-                        <Text style={styles.paragraph}>
-                          Nous avons besoin de vous afin de créer une Plateforme qui facilite les échanges, Trocs, Dons de biens et services
-                          entre Membres de notre Communauté, en cette période où chacun de nous pense qu'il pourrait lui aussi se retrouver demain dans le besoin.
-                        </Text>
+                <View style={styles.blocAbnmt}>
+                  <View>
+                    <Text style={{ fontSize: 16, color: '#533627', paddingBottom: 10 }}>HüMA, bien plus que des échanges.</Text>
+                    <Text style={styles.titleModal}>Dons</Text>
 
-                        <Text style={styles.titleModal}>Faire un Don à HüMA</Text>
-                        <Text style={styles.paragraph}>Montant</Text>
+                    <Text style={styles.paragraph}>
+                      Soutenez HüMA et ses efforts pour développer et fluidifier les échanges entre Humains, chaque don, grand ou petit, nous permet d'aller plus loin. Donnez aujourd'hui et faites partie de la solution de Solidarité entre les Membres !
+                    </Text>
+                    <Text style={styles.paragraph}>
+                      Nous avons besoin de vous afin de créer une Plateforme qui facilite les échanges, Trocs, Dons de biens et services
+                      entre Membres de notre Communauté, en cette période où chacun de nous pense qu'il pourrait lui aussi se retrouver demain dans le besoin.
+                    </Text>
 
-                      </View>
+                    <Text style={styles.titleModal}>Faire un Don à HüMA</Text>
+                    <Text style={styles.paragraph}>Montant</Text>
 
-                      <View style={styles.row}>
-                        <FlatList
-                          data={DataTarifs}
-                          renderItem={({ item }) => (
-                            <TouchableOpacity
-                              key={item.id}
-                              onPress={() => {
-                                setDonateAmount(item.value);
-                              }}
-                              style={[styles.btAmount, item.value == DonateAmount &&
-                                { backgroundColor: '#4c362b' }
-                              ]}>
-                              <Text style={{ color: 'white' }
-                              } > {item.title} </Text>
-                            </TouchableOpacity>
-                          )}
-                          horizontal={true}
-                          keyExtractor={item => item.id}
-                        />
-                      </View>
-                      <View style={{ padding: 0, margin: 5 }}>
-                        <RadioGroup
-                          radioButtons={dureeButtons}
-                          onPress={choixDON}
-                          selectedId={NbreDuree}
-                          borderColor='#c4d63c'
-                          layout='column'
-                          containerStyle={{ alignContent: 'flex-start', alignItems: 'flex-start' }}
-                        />
-                      </View>
-
-                      <View style={{ flex: 1, alignContent: 'center', width: '100%' }}>
-
-                        <Button style={styles.buttVIP} title={`Donner ${DonateAmount}€ ${choixDuree}`} onPress={() => { openPaymentSheet(DonateDuree, DonateAmount) }} disabled={loading} />
-                      </View>
-
-                    </View>
                   </View>
 
-                  {isAlert && (
-                    <ModalAlert msgAlerte={MsgAlerte} action={() => { navigation.navigate('Accueil'); }} />
-                  )}
-                </KeyboardAvoidingView>
+                  <View style={styles.row}>
+                    <FlatList
+                      data={DataTarifs}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          key={item.id}
+                          onPress={() => {
+                            setDonateAmount(item.value);
+                          }}
+                          style={[styles.btAmount, item.value == DonateAmount &&
+                            { backgroundColor: '#4c362b' }
+                          ]}>
+                          <Text style={{ color: 'white' }
+                          } > {item.title} </Text>
+                        </TouchableOpacity>
+                      )}
+                      horizontal={true}
+                      keyExtractor={item => item.id}
+                    />
+                  </View>
+                  <View style={{ padding: 0, margin: 5 }}>
+                    <RadioGroup
+                      radioButtons={dureeButtons}
+                      onPress={choixDON}
+                      selectedId={NbreDuree}
+                      borderColor='#c4d63c'
+                      layout='column'
+                      containerStyle={{ alignContent: 'flex-start', alignItems: 'flex-start' }}
+                    />
+                  </View>
+
+                  <View style={{ flex: 1, alignContent: 'center', width: '100%' }}>
+
+                    <Button style={styles.buttVIP} title={`Donner ${DonateAmount}€ ${choixDuree}`} onPress={() => { Platform.OS == 'web' ? Linking.openURL('https://play.google.com/store/search?q=huma&c=apps') : openPaymentSheet(DonateDuree, DonateAmount) }} disabled={loading} />
+
+                  </View>
+
+                </View>
               </View>
-            </ScrollView>
-          </ImageBackground>
-        </View>
-      }
-    </>
+
+              {isAlert && (
+                <ModalAlert msgAlerte={MsgAlerte} action={() => { navigation.navigate('Accueil'); }} />
+              )}
+            </KeyboardAvoidingView>
+          </View>
+        </ScrollView>
+      </ImageBackground>
+    </View>
+
   )
 }
 const styles = StyleSheet.create({
@@ -341,13 +341,14 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 10,
     backgroundColor: '#c4d63c',
-    padding: 10,
+    padding: 15,
   },
   titleModal: {
     fontSize: 15,
     color: 'rgba(140, 153, 44 , 0.80)',
     borderBottomColor: '#c4d63c',
     borderBottomWidth: 5,
+    paddingTop: 10,
     paddingBottom: 20,
     marginBottom: 10
   },

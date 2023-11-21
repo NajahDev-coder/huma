@@ -4,17 +4,14 @@
 // Import React
 import React, { useEffect, useState, useCallback, createRef } from 'react';
 // Import required components
-import { SafeAreaView, StyleSheet, View, Platform, Dimensions, Text, Image } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Dimensions, Text, Image, Platform } from 'react-native';
+
 //import {Geocoder} from 'react-native-geocoder';
 // Import Map and Marker
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import * as Location from 'expo-location';
-/*if (Platform.OS != 'web') {
-  var MapView = require('react-native-maps');
-  var PROVIDER_GOOGLE = require('react-native-maps');
-  var Marker = require('react-native-maps');
-}*/
+
 
 import { Base_url, RequestOptionsGet, ShowDetailAnnonce } from './utils/utils';
 

@@ -3,7 +3,8 @@
 
 // Import React and Component
 import React, { useEffect, useState } from 'react';
-import { View, Image, TouchableOpacity, Platform, StyleSheet, Dimensions } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
+
 import Notifications from './Notifications';
 import { Base_url } from '../utils/utils';
 
@@ -19,10 +20,13 @@ const NavigationLogoNotifHeader = ({ navigationProps }) => {
   return (
     <View style={{ flexDirection: 'row', marginTop: -40 }}>
 
-      <TouchableOpacity onPress={() => navigationProps.navigate('Accueil')} style={{
-        position: 'absolute', height: 50,
-        right: Platform.OS === 'web' ? (global.User_connecte != null ? 100 : 10) : (global.User_connecte != null ? Marge : 10),
-      }}>
+      <TouchableOpacity
+        accessibilityLabel="logo_block"
+        onPress={() => navigationProps.navigate('Accueil')}
+        style={{
+          position: 'absolute', height: 50,
+          right: Platform.OS === 'web' ? (global.User_connecte != null ? '30%' : 10) : (global.User_connecte != null ? Marge : 10),
+        }}>
         <Image
 
           source={{

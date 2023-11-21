@@ -15,12 +15,12 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList, Linking,
   useWindowDimensions,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native';
-
 import { Entypo } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
 import ScrollImage from './ScrollImage';
@@ -445,10 +445,10 @@ const styles = StyleSheet.create({
   titreOff: {
     fontSize: 18,
     padding: 10,
-    color: '#000000',
+    color: '#6cc5d5',
   },
   hrbc: {
-    borderBottomColor: 'black',
+    borderBottomColor: '#6cc5d5',
     borderBottomWidth: 5,
     width: '50%',
     //height: 10,

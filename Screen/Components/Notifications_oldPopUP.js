@@ -1,5 +1,5 @@
 import React, { useState, createRef, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions, Platform, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Animated, Dimensions, TouchableOpacity, ScrollView, Platform } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';

@@ -22,12 +22,13 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
   Button,
   Modal,
   Alert,
   useWindowDimensions,
+  Pressable, Platform
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Carousel from 'react-native-anchor-carousel';

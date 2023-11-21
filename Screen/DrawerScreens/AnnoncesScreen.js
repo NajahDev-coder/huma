@@ -16,7 +16,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
   Dimensions,
 } from 'react-native';

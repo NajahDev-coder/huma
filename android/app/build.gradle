@@ -118,12 +118,12 @@ android {
         applicationId 'com.devnajah.HuMA'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 9
         versionName "1.0.3"
     }
 
     splits {
-        abi {
+        abi {   
             reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK

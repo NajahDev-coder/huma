@@ -14,7 +14,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
 } from 'react-native';
 import {
@@ -56,7 +56,12 @@ const MesAnnonces = ({ navigation, route }) => {
 
   const msgAlerte = 'Êtes-vous sûr de vouloir supprimer cette annonce!';
   const [result, setResultat] = useState('');
-  const id_user = route.params.id_user;
+  var id_user;
+  if (route && route.params) {
+    id_user = route.params.id_user;
+  }
+  else
+    id_user = global.User_connecte;
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);

@@ -11,7 +11,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -165,7 +165,10 @@ const LoginScreen = ({ navigation, connecte }) => {
                   }}
                 />
               </View>
-              <View style={styles.SectionTextStyle}>
+              <View
+                style={styles.SectionTextStyle}
+                accessibilityLabel="Msg_Login_zone"
+              >
                 <Text style={styles.titre}>{message}</Text>
               </View>
               <View style={styles.SectionStyle}>
@@ -210,16 +213,16 @@ const LoginScreen = ({ navigation, connecte }) => {
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', width: '100%', textAlign: 'center', justifyContent: 'center' }}>
                 <Text
-                  style={styles.reginavigationsterTextStyle}> <MaterialCommunityIcons onPress={() => navigation.navigate('Accueil')} name="home-export-outline" size={24} color="#c4d63c" />
+                  style={styles.reginavigationsterTextStyle}> <MaterialCommunityIcons onPress={() => navigation.push('Accueil')} name="home-export-outline" size={24} color="#c4d63c" />
                 </Text>
                 <Text
                   style={styles.reginavigationsterTextStyle}
-                  onPress={() => navigation.navigate('Register')}>
+                  onPress={() => navigation.push('Register')}>
                   Inscription
                 </Text>
               </View>
               {isAlert && (
-                <ModalAlert msgAlerte={MsgAlerte} />
+                <ModalAlert msgAlerte={MsgAlerte} action={() => (null)} />
               )}
             </KeyboardAvoidingView>
           </View>

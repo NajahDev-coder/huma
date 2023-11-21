@@ -14,7 +14,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
   // DeviceEventEmitter
 } from 'react-native';

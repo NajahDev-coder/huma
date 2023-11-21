@@ -1,5 +1,5 @@
 import React, { useState, createRef, useEffect } from 'react';
-import { View, FlatList, Text, RefreshControl, StyleSheet, Animated, Dimensions, Platform, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
+import { View, FlatList, Text, RefreshControl, StyleSheet, Animated, Dimensions, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,7 +8,7 @@ import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-lis
 import moment from 'moment';
 
 import GetProfile from './GetProfile';
-import { NaVIG, Base_url, RequestOptionsGet, ShowDetailAnnonce } from '../utils/utils'
+import { NaVIG, Base_url, RequestOptionsGet, ShowDetailAnnonce, GetName } from '../utils/utils'
 import { dateDiff } from '../includes/functions';
 //import { ScrollView } from 'react-native-gesture-handler';
 import GetActivite from './GetActiviteScreen'
@@ -86,7 +86,7 @@ const HistoriqueScreen = ({ navigation }) => {
 
                                             <View style={styles.bcDetaille}>
 
-                                                <Text style={styles.bcText}>{item.activite.replace(String(item.id_activite), ' ')}<GetActivite activite={item.activite} id_activite={item.id_activite} />
+                                                <Text style={styles.bcText}>{item.activite}  <GetActivite activite={item.activite} id_activite={item.id_activite} navigation={navigation} />
                                                 </Text>
 
                                                 <View

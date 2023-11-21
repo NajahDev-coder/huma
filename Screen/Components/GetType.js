@@ -11,7 +11,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
 } from 'react-native';
 import { Base_url, RequestOptionsGet } from '../utils/utils';
@@ -43,6 +43,7 @@ const GetType = ({ id_annonce }) => {
 
   return (
     <Text
+      accessibilityLabel="getType-Bloc"
       style={{
         color: '#FFFFFF',
         fontSize: 11,

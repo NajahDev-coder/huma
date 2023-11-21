@@ -4,11 +4,11 @@ import { ShowDetailAnnonce, ViewProfile, RequestOptionsGet } from '../utils/util
 import { Text, TouchableOpacity, View } from 'react-native'
 
 
-const GetActivite = ({ activite, id_activite }) => {
+const GetActivite = ({ activite, id_activite, navigation }) => {
 
 
-    const [Activite, setActivite] = useState('')
-
+    const [Activite, setActivite] = useState('');
+    const [type, setType] = useState('');
 
     useEffect(() => {
         let isMounted = true;
@@ -18,6 +18,7 @@ const GetActivite = ({ activite, id_activite }) => {
                 const fetchURL = `/annonce/${id_activite}`;
                 const response = await RequestOptionsGet(fetchURL);
                 const annonce = response.data[0].titre;
+                setType('annonce')
                 setActivite(annonce);
 
             }
@@ -26,6 +27,7 @@ const GetActivite = ({ activite, id_activite }) => {
                 const fetchURL2 = `/user/${id_activite}`;
                 const response2 = await RequestOptionsGet(fetchURL2);
                 const nom = response2.data[0].nom;
+                setType('user')
                 setActivite(nom);
 
             }
@@ -37,10 +39,29 @@ const GetActivite = ({ activite, id_activite }) => {
         return () => (isMounted = false);
     }, [activite, id_activite]);
     return (
-        <Text
-            style={{
-                fontWeight: 'bold',
-            }}>{Activite}</Text>
+        <>
+            {type == "annonce" && (
+                <TouchableOpacity
+                    onPress={() => ShowDetailAnnonce(id_activite, navigation)}
+                >
+                    <Text
+                        style={{
+                            fontWeight: 'bold',
+                        }}>  {Activite}</Text>
+                </TouchableOpacity>
+            )}
+            {
+                type == "user" && (<TouchableOpacity
+                    onPress={() => ViewProfile(id_activite, navigation)}
+                >
+                    <Text
+                        style={{
+                            fontWeight: 'bold',
+                        }}>  {Activite}</Text>
+                </TouchableOpacity>
+                )
+            }
+        </>
     );
 };
 export default GetActivite;

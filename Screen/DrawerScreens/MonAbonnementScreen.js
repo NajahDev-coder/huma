@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 10,
     backgroundColor: '#c4d63c',
-    padding: 10,
+    padding: 15,
   },
 
   titleModal:
@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
     color: 'rgba(140, 153, 44 , 0.80)',
     borderBottomColor: '#c4d63c',
     borderBottomWidth: 5,
+    paddingTop: 10,
     paddingBottom: 20,
     marginBottom: 10
   },
@@ -184,6 +185,7 @@ const styles = StyleSheet.create({
     color: '#823a14',
     borderBottomColor: '#823a14',
     borderBottomWidth: 5,
+    paddingTop: 10,
     paddingBottom: 20,
     marginBottom: 10
   }

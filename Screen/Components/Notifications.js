@@ -1,5 +1,5 @@
 import React, { useState, createRef, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions, Platform, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Animated, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,7 +8,7 @@ import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-lis
 import moment from 'moment';
 
 import GetProfile from '../Components/GetProfile';
-import { NaVIG, Base_url, RequestOptionsGet, ShowDetailAnnonce, ViewProfile } from '../utils/utils'
+import { NaVIG, Base_url, RequestOptionsGet, ShowDetailAnnonce, ViewProfile, getNbreNotifications } from '../utils/utils'
 import { dateDiff } from '../includes/functions';
 
 
@@ -42,19 +42,14 @@ const Notifications = ({ navigation, widthIcone }) => {
 
     let isSubscribed = true;
 
-
-    /*const intervalId = setInterval(() => {
-      getNotification()
-    }, 1000 * 5) // in milliseconds
-    return () => clearInterval(intervalId)*/
-
     if (isSubscribed) {
-
+      getNbreNotifications()
       console.log('NbreNotifNonLU::::', global.NbreNotifNonLU)
     }
 
     return () => (isSubscribed = false);
-  }, [global.NbreNotifNonLU]);
+    //}, [global.NbreNotifNonLU]);
+  }, []);
 
 
   return (

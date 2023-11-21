@@ -24,24 +24,25 @@ export default function NavigationBottomTabsAuth(props) {
         {(global.TotalMsgNonLU > 0) &&
           <Text style={styles.isnotif}>{global.TotalMsgNonLU}</Text>
         }
-        <AntDesign name="message1" size={24} color={color} style={{ marginTop: 3 }} />
+        <AntDesign name="message1" size={24} color={color} />
       </View>
     )
   }
   useEffect(() => {
 
-    // alert('rr');
-    //getTotalMsgNnLu();
+    let isSubscribed = true;
 
+    if (isSubscribed) {
+      getTotalMsgNnLu()
+      console.log('global.TotalMsgNonLU::::', global.TotalMsgNonLU)
+    }
 
-  }, [global.TotalMsgNonLU])
+    return () => (isSubscribed = false);
+  }, [])
 
   return (
     <Tab.Navigator initialRouteName="AccueilScreen"
-      /* tabBarOptions={{
-         activeTintColor: '#a7b730',
-         inactiveTintColor: '#49382f'
-       }}*/
+
       screenOptions=
       {{
         "tabBarActiveTintColor": "#a7b730",
@@ -171,8 +172,8 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 22,
     position: 'absolute',
-    top: 5,
-    right: -15,
+    top: -5,
+    left: -15,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

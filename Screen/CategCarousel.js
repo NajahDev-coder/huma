@@ -5,8 +5,7 @@ import {
     TouchableOpacity,
     View,
     Dimensions,
-    ImageBackground,
-    Platform
+    ImageBackground
 } from 'react-native';
 import Carousel from 'react-native-anchor-carousel';
 

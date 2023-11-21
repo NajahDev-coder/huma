@@ -11,12 +11,12 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
   Animated,
   Dimensions,
+  Platform
 } from 'react-native';
-
 import { Picker } from '@react-native-picker/picker';
 import * as Location from 'expo-location';
 

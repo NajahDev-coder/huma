@@ -17,7 +17,6 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
   FlatList,
 } from 'react-native';
 import { Base_url, RequestOptionsGet } from './utils/utils'

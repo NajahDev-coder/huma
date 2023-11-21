@@ -11,7 +11,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
   ActivityIndicator
 } from 'react-native';
@@ -82,7 +82,7 @@ const GetOffres = ({ navigation, id_annonce, id_auteur_annonce, id_user, typeAnn
     RequestOptionsPost(dataToSend, fetchUrl).then((response, error) => {
 
       if (response.status == 'success') {
-        Add_historique(global.User_connecte, `Vous avez proposé une offre pour la demande ${id_annonce}`, id_annonce);
+        Add_historique(global.User_connecte, `Vous avez proposé une offre pour la demande`, id_annonce);
 
 
         setRefreshKey((oldKey) => oldKey + 1);

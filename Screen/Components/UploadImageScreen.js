@@ -6,10 +6,11 @@ import {
     Button,
     Image,
     ActivityIndicator,
-    Platform,
+
     SafeAreaView,
     Text,
-    TouchableHighlight
+    TouchableHighlight,
+    Platform
 } from "react-native";
 import storage from '@react-native-firebase/storage';
 import { Base_url } from '../utils/utils';

@@ -28,7 +28,7 @@ const PaymentScreen: React.FC<Props> = ({ paymentMethod, children, amount }) => 
         setLoading(false);
       }
     }
-    initialize();
+    //initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     setLoading(false)
   }, []);

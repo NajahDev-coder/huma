@@ -6,12 +6,8 @@ const NotifMessages = ({ color }) => {
 
 
   useEffect(() => {
-    /*getTotalMsgNnLu();
-    const intervalId = setInterval(() => {
-      // alert('rr');
-      getTotalMsgNnLu();
-    }, 1000 * 10)*/
-  }, [global.TotalMsgNonLU])
+    getTotalMsgNnLu();
+  }, [])
 
   return (
     <View style={styles.bc_notifmsg}>

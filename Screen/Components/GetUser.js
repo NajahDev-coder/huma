@@ -11,7 +11,7 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+
   FlatList,
 } from 'react-native';
 
@@ -44,8 +44,8 @@ const GetUser = ({ navigation, route, id_user }) => {
     fetch(baseUrl)
       .then((response) => response.json())
       .then((responseJson) => {
-        
-        
+
+
         setUserName(responseJson.data[0].nom);
       });
   };

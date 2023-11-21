@@ -10,17 +10,15 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+  Linking,
   StatusBar,
   Alert,
-  Pressable
+  Platform
 } from 'react-native';
-
 import { MaterialIcons, AntDesign, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
 
 import { initStripe, useStripe } from '@stripe/stripe-react-native';
 import Button from '../Components/Button';
-import PaymentScreen from '../Components/PaymentScreen';
 import ModalScreenIsVIP from '../ModalIsVIP';
 //import { API_URL } from '../Config';
 
@@ -191,152 +189,151 @@ const AbonnementScreen = ({ navigation }) => {
   }, [global.User_VIP]);
 
   return (
-    <>
-      {Platform.OS != 'web' &&
-        <View style={styles.mainBody}>
-          <ImageBackground
-            source={{ uri: Base_url + 'images/bg_screen.png' }}
-            resizeMode="cover"
-            style={styles.image}>
-            <ScrollView
-              keyboardShouldPersistTaps="handled"
-              contentContainerStyle={{
-                // flex: 1,
-                alignItem: 'center',
-                justifyContent: 'center',
 
-              }}>
-              <View>
-                <KeyboardAvoidingView enabled>
-                  <View style={{ alignItems: 'center', marginTop: 20, width: '100%' }}>
+    <View style={styles.mainBody}>
+      <ImageBackground
+        source={{ uri: Base_url + 'images/bg_screen.png' }}
+        resizeMode="cover"
+        style={styles.image}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            // flex: 1,
+            alignItem: 'center',
+            justifyContent: 'center',
 
-                    {global.User_VIP > 0 && (
-                      <ModalScreenIsVIP navigation={navigation} choix={global.User_VIP} />
-                    )}
+          }}>
+          <View>
+            <KeyboardAvoidingView enabled>
+              <View style={{ alignItems: 'center', marginTop: 20, width: '100%' }}>
 
-                    <>
-                      <Text style={{ fontSize: 16, color: '#533627', padding: 8, }}>HüMA, bien plus que des échanges.</Text>
-                      <Text style={{ fontSize: 18, color: '#98ab0c', padding: 8 }}>Abonnement</Text>
-                      <Text style={{ fontSize: 12, padding: 20, paddingVertical: 8 }}>HûMA est gratuit, vous pouvez cependant choisir un Abonnement
-                        pour une meilleure expérience.</Text>
-                    </>
-                    {!loading ? (
-                      <ActivityIndicator size="large" style={StyleSheet.absoluteFill} />
-                    ) :
-                      (
-                        <View style={styles.threeBloc}>
-                          {/* <PaymentScreen amount={Abnmt_amount1}>*/}
+                {global.User_VIP > 0 && (
+                  <ModalScreenIsVIP navigation={navigation} choix={global.User_VIP} />
+                )}
 
-                          <View style={styles.blocAbnmt}>
-
-                            <View style={{ flexDirection: 'row' }}>
-                              <Text style={styles.titleModal}>Gold - </Text>
-                              <Text style={styles.chiffre}>{Abnmt_duree1}</Text>
-                              <Text style={styles.titleModal}> mois: {Abnmt_amount1}€ !</Text>
-                            </View>
-
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Recevoir des notifications. </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposez vos offres</Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
-                            <View style={{ flexDirection: 'row' }}>
+                <>
+                  <Text style={{ fontSize: 16, color: '#533627', padding: 8, }}>HüMA, bien plus que des échanges.</Text>
+                  <Text style={{ fontSize: 18, color: '#98ab0c', padding: 8 }}>Abonnement</Text>
+                  <Text style={{ fontSize: 12, padding: 20, paddingVertical: 8 }}>HûMA est gratuit, vous pouvez cependant choisir un Abonnement
+                    pour une meilleure expérience.</Text>
+                </>
+                {!loading ? (
+                  <ActivityIndicator size="large" style={StyleSheet.absoluteFill} />
+                ) :
+                  (
+                    <View style={styles.threeBloc}>
 
 
-                              <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(1, Abnmt_amount1) }} disabled={!loading} />
-                            </View>
-                          </View>
+                      <View style={styles.blocAbnmt}>
+
+                        <View style={{ flexDirection: 'row' }}>
+                          <Text style={styles.titleModal}>Gold - </Text>
+                          <Text style={styles.chiffre}>{Abnmt_duree1}</Text>
+                          <Text style={styles.titleModal}> mois: {Abnmt_amount1}€ !</Text>
+                        </View>
+
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Recevoir des notifications. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Proposez vos offres</Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
+                        <View style={{ flexDirection: 'row' }}>
 
 
-
-                          <View style={styles.blocAbnmt}>
-
-
-                            <View style={{ flexDirection: 'row' }}>
-                              <Text style={styles.titleModal}>Silver - </Text>
-                              <Text style={styles.chiffre}>{Abnmt_duree2}</Text>
-                              <Text style={styles.titleModal}> mois: {Abnmt_amount2}€ !</Text>
-                            </View>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Publiez des Posts. </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Recevoir des notifications. </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
-                            <View style={{ flexDirection: 'row' }}>
-                              <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(2, Abnmt_amount2) }} disabled={!loading} />
-
-                            </View>
-                          </View>
-
-
-                          <View style={styles.blocAbnmt}>
-
-                            <View style={{ flexDirection: 'row' }}>
-                              <Text style={styles.titleModal}>Gold - </Text>
-                              <Text style={styles.chiffre}>{Abnmt_duree3}</Text>
-                              <Text style={styles.titleModal}> mois: {Abnmt_amount3}€ !</Text>
-                            </View>
-
-
-
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" />Vos Publicités Produits.</Text>
-                            <View style={{ flexDirection: 'row' }}>
-
-                              <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(3, Abnmt_amount3) }} disabled={!loading} />
-
-                            </View>
-                          </View>
-
-
-                          <View style={styles.blocAbnmt}>
-
-                            <View style={{ flexDirection: 'row' }}>
-                              <Text style={styles.titleModal}>Platinium - </Text>
-                              {Abnmt_duree4 == 12 ? (
-                                <>
-                                  <Text style={styles.chiffre}>1</Text>
-                                  <Text style={styles.titleModal}> An : {Abnmt_amount4}€ !</Text>
-                                </>
-                              ) : (
-                                <>
-                                  <Text style={styles.chiffre}>{Abnmt_duree4}</Text>
-                                  <Text style={styles.titleModal}> mois  : {Abnmt_amount4}€ !</Text>
-                                </>
-                              )
-                              }
-                            </View>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
-                            <Text><Feather name="check" size={24} color="#c4d63c" /> Changez les Visuels de vos pubs comme vous le souhaitez et mettez vos produits
-                              en avant.</Text>
-                            <View style={{ flexDirection: 'row' }}>
-
-                              <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(4, Abnmt_amount4) }} disabled={!loading} />
-
-                            </View>
-                          </View>
+                          <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { Platform.OS == 'web' ? Linking.openURL('https://play.google.com/store/search?q=huma&c=apps') : openPaymentSheet(1, Abnmt_amount1) }} disabled={!loading} />
 
                         </View>
-                      )
-                    }
+                      </View>
 
 
 
-                  </View>
-                </KeyboardAvoidingView>
+                      <View style={styles.blocAbnmt}>
+
+
+                        <View style={{ flexDirection: 'row' }}>
+                          <Text style={styles.titleModal}>Silver - </Text>
+                          <Text style={styles.chiffre}>{Abnmt_duree2}</Text>
+                          <Text style={styles.titleModal}> mois: {Abnmt_amount2}€ !</Text>
+                        </View>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Publiez des Posts. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Recevoir des notifications. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                          <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(2, Abnmt_amount2) }} disabled={!loading} />
+
+                        </View>
+                      </View>
+
+
+                      <View style={styles.blocAbnmt}>
+
+                        <View style={{ flexDirection: 'row' }}>
+                          <Text style={styles.titleModal}>Gold - </Text>
+                          <Text style={styles.chiffre}>{Abnmt_duree3}</Text>
+                          <Text style={styles.titleModal}> mois: {Abnmt_amount3}€ !</Text>
+                        </View>
+
+
+
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" />Vos Publicités Produits.</Text>
+                        <View style={{ flexDirection: 'row' }}>
+
+                          <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { openPaymentSheet(3, Abnmt_amount3) }} disabled={!loading} />
+
+                        </View>
+                      </View>
+
+
+                      <View style={styles.blocAbnmt}>
+
+                        <View style={{ flexDirection: 'row' }}>
+                          <Text style={styles.titleModal}>Platinium - </Text>
+                          {Abnmt_duree4 == 12 ? (
+                            <>
+                              <Text style={styles.chiffre}>1</Text>
+                              <Text style={styles.titleModal}> An : {Abnmt_amount4}€ !</Text>
+                            </>
+                          ) : (
+                            <>
+                              <Text style={styles.chiffre}>{Abnmt_duree4}</Text>
+                              <Text style={styles.titleModal}> mois  : {Abnmt_amount4}€ !</Text>
+                            </>
+                          )
+                          }
+                        </View>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Publier des Posts. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Proposer des offres </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Avis & Commentaires. </Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Vos Publicités Produits.</Text>
+                        <Text><Feather name="check" size={24} color="#c4d63c" /> Changez les Visuels de vos pubs comme vous le souhaitez et mettez vos produits
+                          en avant.</Text>
+                        <View style={{ flexDirection: 'row' }}>
+
+                          <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { Platform.OS == 'web' ? Linking.openURL('https://play.google.com/store/search?q=huma&c=apps') : openPaymentSheet(4, Abnmt_amount4) }} disabled={!loading} />
+
+                        </View>
+                      </View>
+
+                    </View>
+                  )
+                }
+
+
+
               </View>
-            </ScrollView>
-          </ImageBackground>
-        </View>
-      }
-    </>
+            </KeyboardAvoidingView>
+          </View>
+        </ScrollView>
+      </ImageBackground>
+    </View>
+
   )
 }
 const styles = StyleSheet.create({
@@ -383,7 +380,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 10,
     backgroundColor: '#c4d63c',
-    padding: 10,
+    padding: 15,
   },
 
   titleModal:
@@ -392,6 +389,7 @@ const styles = StyleSheet.create({
     color: 'rgba(140, 153, 44 , 0.80)',
     borderBottomColor: '#c4d63c',
     borderBottomWidth: 5,
+    paddingTop: 10,
     paddingBottom: 20,
     marginBottom: 10
   },

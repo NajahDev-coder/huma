@@ -14,11 +14,11 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
-  FlatList,
-  Animated
-} from 'react-native';
 
+  FlatList,
+  Animated,
+  Platform
+} from 'react-native';
 
 
 const useNativeDriver = Platform.OS === 'ios' || Platform.OS === 'android';
