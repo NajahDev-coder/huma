@@ -11,6 +11,7 @@
     "@babel/plugin-transform-export-namespace-from": "^7.23.3",
     "@expo/config-plugins": "~6.0.0",
     "@expo/vector-icons": "^13.0.0",
+    "@expo/webpack-config": "^18.0.1",
     "@gorhom/bottom-sheet": "4.4.1",
     "@mapbox/polyline": "*",
     "@progress/kendo-date-math": "^1.5.11",
@@ -19,6 +20,7 @@
     "@react-native-firebase/app": "17.4.3",
     "@react-native-firebase/storage": "17.4.3",
     "@react-native-picker/picker": "2.4.8",
+    "@react-native/assets-registry": "^0.74.0",
     "@react-navigation/bottom-tabs": "*",
     "@react-navigation/drawer": "*",
     "@react-navigation/native": "6.0.13",
@@ -30,8 +32,10 @@
     "axios": "*",
     "babel-plugin-react-native-web": "^0.19.9",
     "babel-preset-expo": "^9.5.2",
+    "browser-process": "^0.0.1",
     "eject": "^0.0.4",
     "expo": "~48.0.18",
+    "expo-asset": "~8.9.1",
     "expo-camera": "~13.2.1",
     "expo-cli": "^6.3.10",
     "expo-constants": "~14.2.1",
@@ -48,13 +52,15 @@
     "expo-status-bar": "~1.4.4",
     "expo-updates": "~0.16.4",
     "jdk11": "^2.0.0",
+    "loader-utils": "^3.2.1",
     "markdown-it": "*",
     "metro-minify-terser": "^0.64.0",
     "metro-react-native-babel-preset": "^0.77.0",
     "moment": "*",
+    "path-browserify": "^1.0.1",
     "prop-types": "*",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react-dom": "^18.2.0",
     "react-native": "0.71.14",
     "react-native-anchor-carousel": "*",
     "react-native-calendar-picker": "*",
@@ -86,14 +92,18 @@
     "react-native-screens": "~3.20.0",
     "react-native-slideshow-improved": "*",
     "react-native-vector-icons": "*",
-    "react-native-web": "^0.18.12",
+    "react-native-web": "~0.18.10",
     "react-native-webview": "11.26.0",
     "react-redux": "*",
     "react-router": "*",
     "react-router-dom": "*",
     "react-simple-star-rating": "^3.0.0",
     "redux": "4.0.0",
-    "vercel": "^27.3.4"
+    "vercel": "^27.3.4",
+    "webpack": "^5.89.0"
+  },
+  "browser": {
+    "crypto": false
   },
   "engines": {
     "npm": ">=9.6.4"
@@ -108,6 +118,14 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-typescript": "^7.23.2",
-    "sharp-cli": "^4.1.1"
+    "assert": "^2.1.0",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "null-loader": "^4.0.1",
+    "os-browserify": "^0.3.0",
+    "sharp-cli": "^4.1.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "uurl": "^0.0.1"
   }
 }

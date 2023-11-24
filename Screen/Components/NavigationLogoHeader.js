@@ -42,15 +42,15 @@ const NavigationLogoHeader = ({ navigationProps }) => {
 
 const styles = StyleSheet.create({
   logo: {
-    // width: Platform.OS == 'web' ? (global.User_connecte != null ? 120 : 140) : 160,
+    width: Platform.OS === 'web' ? (global.User_connecte != null ? 120 : 140) : 160,
     position: 'absolute',
-    //right: Platform.OS === 'web' ? (global.User_connecte != null ? 100 : 10) : (global.User_connecte != null ? Marge : 10),
+    right: Platform.OS === 'web' ? (global.User_connecte != null ? 80 : 10) : (global.User_connecte != null ? Marge : 10),
     //top: -20,
     height: 50,
   },
 
   imglogo: {
-    width: Platform.OS == 'web' ? 130 : 150,
+    width: Platform.OS === 'web' ? 130 : 150,
     height: 40,
 
   }

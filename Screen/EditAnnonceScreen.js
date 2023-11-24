@@ -301,7 +301,7 @@ export default function EditAnnonceScreen({ navigation, route }) {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: `${Base_url}images/bg_screen.png` }}
-        resizeMode="cover"
+
         style={styles.image}>
         <Loader loading={loading} />
         <ScrollView
@@ -318,7 +318,10 @@ export default function EditAnnonceScreen({ navigation, route }) {
               {PreviewVisible1 && Photo ? (
                 <ImageBackground
                   source={{ uri: Photo && Photo }}
-                  style={{ width: '100%', height: 150 }}>
+                  style={{
+                    flex: 1,
+                    resizeMode: 'cover', width: '100%', height: 150
+                  }}>
                   <View>
                     <AntDesign name="picture" size={24} color="white" style={{ left: 5, top: 5 }} onPress={() => setPreviewVisible1(false)} />
                   </View>
@@ -327,7 +330,10 @@ export default function EditAnnonceScreen({ navigation, route }) {
               ) : (
                 <CameraImage
                   captureImage={setPhotoNew}
-                  PStyle={{ width: '100%', height: 150 }}
+                  PStyle={{
+                    flex: 1,
+                    resizeMode: 'cover', width: '100%', height: 150
+                  }}
                   isinvisible={true}
                 />
               )}
@@ -569,6 +575,8 @@ const styles = StyleSheet.create({
   thumbSizeIMg: {
     height: 100,
     width: 100,
+    flex: 1,
+    resizeMode: 'cover'
   },
   sectionStyle: {
     flexDirection: 'row',
@@ -584,7 +592,8 @@ const styles = StyleSheet.create({
     marginVertical: 5
   },
   image: {
-    //flex: 1,
+    resizeMode: 'cover',
+    flex: 1,
     justifyContent: 'center',
   },
 

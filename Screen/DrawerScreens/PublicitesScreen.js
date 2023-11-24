@@ -75,7 +75,7 @@ const PublicitesScreen = ({ navigation }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
@@ -100,7 +100,7 @@ const PublicitesScreen = ({ navigation }) => {
                         style={styles.post}>
                         <ImageBackground
                           source={{ uri: value.url }}
-                          resizeMode="cover"
+
                           style={styles.bcImageBlock}>
 
                           <TouchableOpacity
@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
   },
@@ -181,6 +182,8 @@ const styles = StyleSheet.create({
     // flexDirection: 'column',
   },
   bcImageBlock: {
+    flex: 1,
+    resizeMode: 'cover',
     width: '100%',
     height: 170,
   },

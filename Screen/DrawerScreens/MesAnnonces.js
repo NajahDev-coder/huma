@@ -124,7 +124,7 @@ const MesAnnonces = ({ navigation, route }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
@@ -231,6 +231,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
   },

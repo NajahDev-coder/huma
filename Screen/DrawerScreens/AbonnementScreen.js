@@ -193,7 +193,7 @@ const AbonnementScreen = ({ navigation }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
@@ -214,7 +214,7 @@ const AbonnementScreen = ({ navigation }) => {
                 <>
                   <Text style={{ fontSize: 16, color: '#533627', padding: 8, }}>HüMA, bien plus que des échanges.</Text>
                   <Text style={{ fontSize: 18, color: '#98ab0c', padding: 8 }}>Abonnement</Text>
-                  <Text style={{ fontSize: 12, padding: 20, paddingVertical: 8 }}>HûMA est gratuit, vous pouvez cependant choisir un Abonnement
+                  <Text style={{ fontSize: 12, padding: 20, paddingVertical: 8 }}>HüMA est gratuit, vous pouvez cependant choisir un Abonnement
                     pour une meilleure expérience.</Text>
                 </>
                 {!loading ? (
@@ -240,7 +240,7 @@ const AbonnementScreen = ({ navigation }) => {
                         <View style={{ flexDirection: 'row' }}>
 
 
-                          <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { Platform.OS == 'web' ? Linking.openURL('https://play.google.com/store/search?q=huma&c=apps') : openPaymentSheet(1, Abnmt_amount1) }} disabled={!loading} />
+                          <Button style={styles.buttVIP} title={'Abonnez-vous!'} onPress={() => { Platform.OS == 'web' ? Linking.openURL('https://play.google.com/store/apps/details?id=com.devnajah.HuMA') : openPaymentSheet(1, Abnmt_amount1) }} disabled={!loading} />
 
                         </View>
                       </View>
@@ -342,6 +342,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
   },
   threeBloc: {

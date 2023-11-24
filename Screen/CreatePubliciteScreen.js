@@ -194,7 +194,7 @@ export default function CreatePubliciteScreen(props) {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: `${Base_url}images/bg_screen.png` }}
-        resizeMode="cover"
+
         style={styles.image}>
         <Loader loading={loading} />
         <ScrollView
@@ -287,6 +287,7 @@ const styles = StyleSheet.create({
 
 
   image: {
+    resizeMode: 'cover',
     //flex: 1,
     justifyContent: 'center',
     minHeight: Dimensions.get('window').height

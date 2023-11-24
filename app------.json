@@ -1,9 +1,9 @@
 {
-  "name": "HuMA",
-  "displayName": "HuMA",
-  "appName": "HuMA",
+  "name": "HüMA",
+  "displayName": "HüMA",
+  "appName": "HüMA",
   "expo": {
-    "name": "HuMA",
+    "name": "HüMA",
     "slug": "HuMA",
     "platforms": [
       "ios",
@@ -19,6 +19,7 @@
       "backgroundColor": "#ffffff"
     },
     "packagerOpts": {
+      "config": "metro.config.js",
       "sourceExts": [
         "js",
         "jsx",
@@ -36,16 +37,16 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "HuMA",
+      "bundleIdentifier": "HüMA",
       "requireFullScreen": true
     },
     "android": {
-      "package": "com.devnajah.HuMA",
+      "package": "HüMA",
       "versionCode": 9,
       "config": {}
     },
     "web": {
-      "package": "HuMA"
+      "bundler": "metro"
     },
     "plugins": [
       [

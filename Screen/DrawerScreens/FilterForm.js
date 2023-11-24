@@ -243,13 +243,15 @@ const FilterForm = ({ navigation }) => {
 
 
     <View style={styles.mainBody}>
-      <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={image} style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
             alignContent: 'center',
           }}
-        ><>
+        >
+
+          <View style={{ flex: 1, width: '100%' }}>
 
             <View style={styles.rowTop}></View>
 
@@ -334,7 +336,7 @@ const FilterForm = ({ navigation }) => {
                         size={24}
                         color="black"
                         onPress={onPressCalendar}
-                        style={{ position: 'absolute', top: 10, right: 15 }}
+                        style={{ position: 'absolute', top: 4, right: 15 }}
                       />
                     </TouchableOpacity>
                     {showCalendar && (
@@ -448,7 +450,7 @@ const FilterForm = ({ navigation }) => {
                 </>
               )}
             </View>
-          </>
+          </View>
         </ScrollView>
       </ImageBackground>
     </View>
@@ -465,13 +467,14 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
   },
   row: {
 
     width: '96%',
-    paddingLeft: Platform.OS == 'web' ? 0 : 12,
+    paddingLeft: Platform.OS === 'web' ? 0 : 12,
     marginVertical: 5,
     zIndex: 1
   },
@@ -515,7 +518,8 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-end',
     alignContent: 'flex-end', position: 'absolute',
-    bottom: 10
+    bottom: 20,
+    paddingRight: 40
   },
   rowAC: {
     flexDirection: 'row',
@@ -592,7 +596,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingRight: 20,
     paddingLeft: 20,
-    marginLeft: 10,
+    marginRight: 10,
     marginTop: 10
   },
   buttonTextStyle: {

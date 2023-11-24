@@ -214,7 +214,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
@@ -235,7 +235,7 @@ const DetailAnnonceScreen = ({ navigation, route }) => {
 
 
                   <View style={styles.bcBlockpf}>
-                    <View style={{ width: 50, justifyContent: 'center', marginLeft: 10, zIndex: 2 }}>
+                    <View style={styles.avatarProfile} >
                       <GetProfile user_id={AnnonceDetails.user_id} navigation={navigation} img_prof={imageProfile} />
                     </View>
                     <View style={styles.auteurProfile}>
@@ -399,6 +399,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
   },
@@ -456,8 +457,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   bcBlockpf: {
-    width: '100%',
-    marginLeft: 8,
+    width: '99%',
+
     position: 'absolute',
     bottom: 30
   },
@@ -472,11 +473,18 @@ const styles = StyleSheet.create({
     //marginLeft: '13%',
     padding: 10,
   },
+  avatarProfile: {
+
+    width: 50,
+    justifyContent: 'center',
+    marginLeft: 18,
+    zIndex: 2
+  },
   auteurProfile: {
     backgroundColor: 'rgba(255, 255, 255,0.8)',
     padding: 10,
-    paddingLeft: 75,
-    marginTop: -63,
+    paddingLeft: 85,
+    marginTop: -50,
     zIndx: 1
   },
   titAuteurProfile: {

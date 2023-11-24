@@ -248,7 +248,8 @@ const AccueilScreen = ({ navigation }) => {
                   },
                 ],
                   { useNativeDriver: false }
-                )}>
+                )}
+              >
                 <FlatList
                   data={CategroiesList}
                   renderItem={({ item }) => (
@@ -263,7 +264,10 @@ const AccueilScreen = ({ navigation }) => {
                         (item.id == 1 || item.id == 3 || item.id == 5) && styles.selected,
                       ]}>
 
-                      <ImageBackground source={getBeerImage(item.id)} resizeMode="cover" style={{ height: 200, width: 160 }} >
+                      <ImageBackground source={getBeerImage(item.id)} style={{
+                        flex: 1,
+                        resizeMode: 'cover', height: 200, width: 160
+                      }} >
 
                         <Text
                           style={[
@@ -341,6 +345,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
   },

@@ -257,7 +257,7 @@ export default function CreateAnnonceScreen(props) {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: `${Base_url}images/bg_screen.png` }}
-        resizeMode="cover"
+
         style={styles.image}>
         <Loader loading={loading} />
         <ScrollView
@@ -273,7 +273,10 @@ export default function CreateAnnonceScreen(props) {
               <CameraImage
                 captureImage={setPhoto}
                 //style={{ height: 150, width: '100%' }}
-                PStyle={{ width: '100%', height: 150 }}
+                PStyle={{
+                  flex: 1,
+                  resizeMode: 'cover', width: '100%', height: 150
+                }}
                 isinvisible={true}
               />
             </View>
@@ -485,6 +488,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   thumbSizeIMg: {
+    flex: 1,
+    resizeMode: 'cover',
     height: 100,
     width: 100,
   },
@@ -502,8 +507,9 @@ const styles = StyleSheet.create({
     marginVertical: 5
   },
   image: {
-    //flex: 1,
-    justifyContent: 'center',
+    flex: 1,
+    resizeMode: 'cover'
+
   },
 
   buttonStyle: {

@@ -15,7 +15,8 @@ import {
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView,
-
+  Linking,
+  Platform,
   FlatList,
 } from 'react-native';
 import { Link } from 'react-router-dom';
@@ -63,7 +64,12 @@ const TypeScreen = ({ navigation }) => {
   };
   const navigateCateg = async (typeId) => {
     if (typeId == 3) {
-      navigation.navigate('Don');
+      if (Platform.OS == 'web') {
+        Linking.openURL('https://play.google.com/store/apps/details?id=com.devnajah.HuMA');
+      }
+      else {
+        navigation.navigate('Don');
+      }
     }
     else {
 
@@ -75,7 +81,7 @@ const TypeScreen = ({ navigation }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
@@ -99,7 +105,10 @@ const TypeScreen = ({ navigation }) => {
                     styles.button,
                     [1, 4, 5].includes(value.id) && styles.selected,
                   ]}>
-                  <ImageBackground source={getBeerImage(value.id)} resizeMode="cover" style={{ height: 200, width: 160 }} >
+                  <ImageBackground source={getBeerImage(value.id)} style={{
+                    flex: 1,
+                    resizeMode: 'cover', height: 200, width: 160
+                  }} >
 
                     <Text
                       style={[
@@ -130,6 +139,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
   },

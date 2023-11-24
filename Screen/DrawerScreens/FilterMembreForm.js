@@ -249,8 +249,10 @@ const FilterMembreForm = ({ OnFilter, OnIndex }) => {
 const styles = StyleSheet.create({
   row: {
 
-    width: '98%',
-    paddingLeft: Platform.OS == 'web' ? 0 : 10,
+    width: Platform.OS === 'web' ? '98%' : '96%',
+    paddingLeft: Platform.OS === 'web' ? 10 : 12,
+
+    marginLeft: Platform.OS === 'web' ? 4 : 0,
     marginVertical: 2
   },
   rowF: {
@@ -312,11 +314,12 @@ const styles = StyleSheet.create({
   inputStyle: {
     flex: 1,
     color: '#5a5959',
-    paddingHorizontal: 15,
     paddingVertical: 8,
+    paddingHorizontal: 15,
     borderWidth: 1,
     borderRadius: 30,
     borderColor: '#646363',
+    //height: 35,
     width: '100%',
     backgroundColor: 'transparent',
     marginBottom: 5,

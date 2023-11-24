@@ -31,7 +31,6 @@ import MembresScreen from './DrawerScreens/MembresScreen';
 import GetMessages from './Components/GetMessages';
 import MonAbonnementScreen from './DrawerScreens/MonAbonnementScreen';
 import ListEvaluations from './Components/ListEvaluations';
-import DonateScreen from './DrawerScreens/DonateScreen';
 import FilterForm from './DrawerScreens/FilterForm';
 import NavigationBackHeader from './Components/NavigationBackHeader';
 import PublicitesScreen from './DrawerScreens/PublicitesScreen';
@@ -41,6 +40,7 @@ var AbonnementScreen;
 
 if (Platform.OS != 'web') {
   AbonnementScreen = require('./DrawerScreens/AbonnementScreen').default;
+  DonateScreen = require('./DrawerScreens/DonateScreen').default;
 }
 const Stack = createStackNavigator();
 //const Drawer = createDrawerNavigator();
@@ -398,17 +398,18 @@ const HomeScreenStack = ({ navigation }) => {
           ),
         }}
       />
-      <Stack.Screen
-        name="Don"
-        component={DonateScreen}
-        options={{
-          title: 'Faire un Don', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' },
-          headerRight: () => (
-            <NavigationLogoHeader navigationProps={navigation} />
-          ),
-        }}
-      />
+      {Platform.OS != 'web' && (
+        <Stack.Screen
+          name="Don"
+          component={DonateScreen}
+          options={{
+            title: 'Faire un Don', headerTintColor: '#97ab00',
+            headerTitleStyle: { color: '#97ab00' },
+            headerRight: () => (
+              <NavigationLogoHeader navigationProps={navigation} />
+            ),
+          }}
+        />)}
       <Stack.Screen
         name="Filter"
         component={FilterForm}
@@ -691,17 +692,19 @@ const MonCompteScreenStack = ({ navigation }) => {
           ),
         }}
       />
-      <Stack.Screen
-        name="Don"
-        component={DonateScreen}
-        options={{
-          title: 'Faire un Don', headerTintColor: '#97ab00',
-          headerTitleStyle: { color: '#97ab00' },
-          headerRight: () => (
-            <NavigationLogoHeader navigationProps={navigation} />
-          ),
-        }}
-      />
+      {Platform.OS != 'web' && (
+        <Stack.Screen
+          name="Don"
+          component={DonateScreen}
+          options={{
+            title: 'Faire un Don', headerTintColor: '#97ab00',
+            headerTitleStyle: { color: '#97ab00' },
+            headerRight: () => (
+              <NavigationLogoHeader navigationProps={navigation} />
+            ),
+          }}
+        />
+      )}
     </Stack.Navigator>
   );
 };
@@ -819,15 +822,17 @@ const DrawerNavigatorAuthRoutes = (props) => {
         }}
         component={CreateAnnonceScreenStack}
       />
-      <LeftDrawer.Screen
-        name="Don"
-        options={{
-          drawerLabel: 'Faire un Don',
-          drawerIcon: ({ color, size }) => (
-            <FontAwesome5 name="donate" size={24} color="#97ab00" />),
-        }}
-        component={FaitDonScreenStack}
-      />
+      {(Platform.OS != 'web') && (
+        <LeftDrawer.Screen
+          name="Don"
+          options={{
+            drawerLabel: 'Faire un Don',
+            drawerIcon: ({ color, size }) => (
+              <FontAwesome5 name="donate" size={24} color="#97ab00" />),
+          }}
+          component={FaitDonScreenStack}
+        />
+      )}
       {(global.User_VIP > 0) && (
         <LeftDrawer.Screen
           name="CreatePubliciteScreenStack"

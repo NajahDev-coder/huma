@@ -215,7 +215,7 @@ const DonateScreen = ({ navigation }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
@@ -276,7 +276,7 @@ const DonateScreen = ({ navigation }) => {
 
                   <View style={{ flex: 1, alignContent: 'center', width: '100%' }}>
 
-                    <Button style={styles.buttVIP} title={`Donner ${DonateAmount}€ ${choixDuree}`} onPress={() => { Platform.OS == 'web' ? Linking.openURL('https://play.google.com/store/search?q=huma&c=apps') : openPaymentSheet(DonateDuree, DonateAmount) }} disabled={loading} />
+                    <Button style={styles.buttVIP} title={`Donner ${DonateAmount}€ ${choixDuree}`} onPress={() => { Platform.OS == 'web' ? Linking.openURL('https://play.google.com/store/apps/details?id=com.devnajah.HuMA') : openPaymentSheet(DonateDuree, DonateAmount) }} disabled={loading} />
 
                   </View>
 
@@ -300,6 +300,7 @@ const styles = StyleSheet.create({
 
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
   },
   row: {

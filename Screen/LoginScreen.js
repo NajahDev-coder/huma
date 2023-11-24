@@ -144,7 +144,7 @@ const LoginScreen = ({ navigation, connecte }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <Loader loading={loading} />
         <ScrollView
@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
   },
   SectionStyle: {

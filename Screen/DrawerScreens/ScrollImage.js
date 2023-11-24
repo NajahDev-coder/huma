@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     },
     card: {
         flex: 1,
+        resizeMode: 'cover',
         marginVertical: 4,
         // marginHorizontal: 16,
         borderRadius: 5,

@@ -11,21 +11,36 @@ import { Base_url } from '../utils/utils';
 //import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import * as ScreenOrientation from 'expo-screen-orientation';
 
-const Marge = parseInt(Dimensions.get('screen').width / 4) + 28;
+const Marge = parseInt(Dimensions.get('window').width / 2 + 80);
 
 const NavigationLogoNotifHeader = ({ navigationProps }) => {
+  const [position, setPosition] = useState(0);
+  const [margeLogo, setMargeLogo] = useState(Marge);
 
+  useEffect(() => {
+    //setPosition(ScreenOrientation.getOrientationAsync())
+    //const Marge = parseInt(Dimensions.get('window').width / 2 + 80);
+    Dimensions.addEventListener('change', (e) => {
+      // const { width, height } = e.window;
 
+      const Marge = parseInt(Dimensions.get('window').width / 2 + 80);
+
+      setMargeLogo(Marge)
+    })
+  }, [])
   return (
-    <View style={{ flexDirection: 'row', marginTop: -40 }}>
+    <View style={{
+      flexDirection: 'row', marginTop: -40, width: margeLogo,
+    }}>
 
       <TouchableOpacity
         accessibilityLabel="logo_block"
         onPress={() => navigationProps.navigate('Accueil')}
         style={{
           position: 'absolute', height: 50,
-          right: Platform.OS === 'web' ? (global.User_connecte != null ? '30%' : 10) : (global.User_connecte != null ? Marge : 10),
+          left: 0,
         }}>
         <Image
 

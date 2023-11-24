@@ -163,7 +163,7 @@ const CompteScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.mainBody}>
-      <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={image} style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{
@@ -179,7 +179,7 @@ const CompteScreen = ({ navigation, route }) => {
                   //ref={img_annonce_cv}  
                   source={ImageCouvProfile ? ImageCouvProfile : DefaultimageCouvProfile}
                   onError={(e) => setImageCouvProfile(DefaultimageCouvProfile)}
-                  resizeMode="cover"
+
                   style={[styles.image, { minHeight: 185 }]}>
 
                   <View style={styles.bcBlockpf1}>
@@ -380,7 +380,7 @@ const CompteScreen = ({ navigation, route }) => {
                       <FontAwesome5 name="donate" size={24} color="#97ab00" style={styles.icone} />
                       <Text
                         style={[styles.linkdtl, { color: '#97ab00' }]}
-                        onPress={() => navigation.navigate('Don')}>Faire un Don
+                        onPress={() => { Platform.OS == 'web' ? Linking.openURL('https://play.google.com/store/apps/details?id=com.devnajah.HuMA') : navigation.navigate('Don') }}>Faire un Don
                       </Text>
                     </View>
 
@@ -462,6 +462,7 @@ const styles = StyleSheet.create({
     elevation: 7,
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
   },

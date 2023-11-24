@@ -33,11 +33,6 @@ const MonAbonnementScreen = ({ navigation }) => {
 
 
   useEffect(() => {
-    // In your app’s checkout, make a network request to the backend and initialize PaymentSheet.
-    // To reduce loading time, make this request before the Checkout button is tapped, e.g. when the screen is loaded.
-    //   initialisePaymentSheet();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const getDayAbnmt = async () => {
       const fetchUrl = `user/${global.User_connecte}`;
       const response = await RequestOptionsGet(fetchUrl)
@@ -49,20 +44,21 @@ const MonAbonnementScreen = ({ navigation }) => {
         Date_abonnement = moment(Date_abonnement, 'DD-MM-YYYY')
         // const ToDay = new Date();
 
-        let endDateAbnmt
-        if (global.User_VIP < 4)
+        let endDateAbnmt;
+        if (global.User_VIP < 4) {
           endDateAbnmt = moment(Date_abonnement).add(global.User_VIP, 'M');
-        else
+        }
+        else {
           endDateAbnmt = moment(Date_abonnement).add(12, 'M');
+        }
 
         const restDay = endDateAbnmt.diff(Date_abonnement, 'days');
-        //const diffDuration = moment.duration(diff);
-        //const duration = durationInMonths(Date_abonnement, ToDay);
-        // const restDay = diffDuration.days()
+
 
         setRestAbnmt(restDay)
       }
     }
+
     getDayAbnmt();
   }, []);
 
@@ -72,7 +68,7 @@ const MonAbonnementScreen = ({ navigation }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
@@ -104,7 +100,7 @@ const MonAbonnementScreen = ({ navigation }) => {
                     <Text><Feather name="check" size={24} color="#c4d63c" />Vos Publicités Produits.</Text>
                     <View style={{ flexDirection: 'row' }}>
 
-
+                      &nbsp;
                     </View>
 
                   </View>
@@ -118,7 +114,7 @@ const MonAbonnementScreen = ({ navigation }) => {
           </View>
         </ScrollView>
       </ImageBackground>
-    </View >
+    </View>
 
   )
 }
@@ -128,6 +124,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
   },
   threeBloc: {

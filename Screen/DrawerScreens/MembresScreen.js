@@ -139,7 +139,7 @@ const MembresScreen = ({ navigation }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
@@ -153,6 +153,7 @@ const MembresScreen = ({ navigation }) => {
 
             <FilterMembreForm OnIndex={(value) => setZindexF(value)} OnFilter={GetFilter} />
           </View>
+
           <Animated.View
             style={{
               width: '100%',
@@ -160,15 +161,18 @@ const MembresScreen = ({ navigation }) => {
               opacity: fadeAnimation,
               marginTop: 80,
             }}>
-            <View style={{
-              padding: 10,
-              flex: 1,
-              width: '100%',
-              minHeight: 200,
-            }}>
-              <MapTransporteur navigation={navigation} refresh={refreshing} position={UserLocation} />
-            </View>
+            {(Platform.OS != 'web') && (
+              <View style={{
+                padding: 10,
+                flex: 1,
+                width: '100%',
+                minHeight: 200,
+              }}>
+                <MapTransporteur navigation={navigation} refresh={refreshing} position={UserLocation} />
+              </View>
+            )}
           </Animated.View>
+
           <Animated.View
             style={{
               width: '100%',
@@ -258,6 +262,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
   },

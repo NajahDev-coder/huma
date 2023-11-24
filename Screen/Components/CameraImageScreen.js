@@ -144,6 +144,6 @@ export default function CameraImage({ captureImage, isinvisible, PStyle }) {
   );
 }
 const styles = StyleSheet.create({
-  StCamera: { flex: 1, borderRadius: 10, maxHeight: 150 },
+  StCamera: { flex: 1, resizeMode: 'cover', borderRadius: 10, maxHeight: 150 },
   rowCamera: { flexDirection: 'row', justifyContent: 'space-between', padding: 5 }
 });

@@ -62,7 +62,7 @@ const PublicitesSlideshow = ({ navigation, rang }) => {
           style={styles.post}>
           <ImageBackground
             source={{ uri: value.url }}
-            resizeMode="cover"
+
             style={styles.bcImageBlock}>
 
             <View style={styles.bcCaption}>
@@ -103,6 +103,8 @@ const styles = StyleSheet.create({
     // flexDirection: 'column',
   },
   bcImageBlock: {
+    flex: 1,
+    resizeMode: 'cover',
     width: '100%',
     height: 170,
   },

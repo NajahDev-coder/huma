@@ -303,7 +303,7 @@ const EditProfile = ({ navigation, route }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <Loader loading={loading} />
         <ScrollView
@@ -322,7 +322,7 @@ const EditProfile = ({ navigation, route }) => {
                 onError={(e) =>
                   setUserImageCouvProfile(DefaultimageCouvProfile)
                 }
-                resizeMode="cover"
+
                 style={[styles.image, { minHeight: 185 }]}>
                 <View style={styles.bcBlockpf1}>
                   <View
@@ -601,6 +601,7 @@ const styles = StyleSheet.create({
     elevation: 7,
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
   },

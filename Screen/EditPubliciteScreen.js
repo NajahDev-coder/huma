@@ -205,7 +205,7 @@ export default function EditPubliciteScreen({ navigation, route }) {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: `${Base_url}images/bg_screen.png` }}
-        resizeMode="cover"
+
         style={styles.image}>
         <Loader loading={loading} />
         <ScrollView
@@ -220,7 +220,10 @@ export default function EditPubliciteScreen({ navigation, route }) {
               {PreviewVisible && Photo ? (
                 <ImageBackground
                   source={{ uri: Photo }}
-                  style={{ width: '100%', height: 150, marginLeft: 5 }}>
+                  style={{
+                    flex: 1,
+                    resizeMode: 'cover', width: '100%', height: 150, marginLeft: 5
+                  }}>
                   <View>
                     <AntDesign name="picture" size={24} color="white" style={{ left: 5, top: 5 }} onPress={() => setPreviewVisible(false)} />
                   </View>
@@ -313,6 +316,7 @@ const styles = StyleSheet.create({
 
 
   image: {
+    resizeMode: 'cover',
     //flex: 1,
     justifyContent: 'center',
     minHeight: Dimensions.get('window').height

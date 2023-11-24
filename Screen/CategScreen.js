@@ -97,7 +97,7 @@ const CategScreen = ({ navigation }) => {
     <View style={styles.mainBody}>
       <ImageBackground
         source={{ uri: Base_url + 'images/bg_screen.png' }}
-        resizeMode="cover"
+
         style={styles.image}>
         <ScrollView
           keyboardShouldPersistTaps="handled"
@@ -177,7 +177,10 @@ const CategScreen = ({ navigation }) => {
                       ]}>
 
 
-                      <ImageBackground source={getBeerImageCateg(item.id)}  >
+                      <ImageBackground source={getBeerImageCateg(item.id)} style={{
+                        flex: 1,
+                        resizeMode: 'cover',
+                      }}>
                         <Text
                           style={[
                             styles.buttonLabel,
@@ -278,6 +281,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   image: {
+    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
   },
@@ -328,6 +332,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     margin: 1,
     justifyContent: 'center',
+    height: 100
   },
   /*shadBT:
   {
@@ -365,7 +370,7 @@ const styles = StyleSheet.create({
   },
   txtThumb: {
     padding: 5,
-    //marginTop: '30%',
+    marginTop: 50,
     backgroundColor: 'rgba(140, 153, 44, 0.45)',
     width: '100%',
     fontSize: 14,
@@ -376,6 +381,8 @@ const styles = StyleSheet.create({
     //fontFamily: 'Arial',
   },
   imageThumbnail: {
+    flex: 1,
+    resizeMode: 'cover',
     justifyContent: 'center',
     alignItems: 'center',
     height: 100,

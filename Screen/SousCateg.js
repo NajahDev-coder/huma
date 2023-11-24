@@ -99,7 +99,7 @@ const SousCateg = ({ navigation, OnFilter, CategId, refresh }) => {
       )}
       //Setting the number of column
       numColumns={3}
-
+      scrollEnabled={false}
       keyExtractor={(item, index) => index}
     />
 
@@ -107,6 +107,8 @@ const SousCateg = ({ navigation, OnFilter, CategId, refresh }) => {
 };
 const styles = StyleSheet.create({
   imageThumbnail: {
+    flex: 1,
+    resizeMode: 'cover',
     justifyContent: 'center',
     alignItems: 'center',
     height: 100,
@@ -117,18 +119,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     margin: 1,
+    height: 100,
   },
   txtThumb: {
     padding: 5,
-    //marginTop: '30%',
+    marginTop: 50,
     backgroundColor: 'rgba(140, 153, 44, 0.45)',
     width: '100%',
     fontSize: 14,
     color: '#ffffff',
     textAlign: 'center',
-    //fontSize: '16px',
-
-    //fontFamily: 'Arial',
+    // bottom: 30
   },
 });
 export default SousCateg;
